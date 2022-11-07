@@ -17,22 +17,22 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(AccessTokenInvalidException.class)
     public ResponseEntity<String> accessTokenInvalidExceptionHandler() {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Access token is not valid");
     }
 
     @ExceptionHandler(RefreshTokenInvalidException.class)
     public ResponseEntity<String> refreshTokenExpiredExceptionHandler() {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Refresh token is expired");
     }
 
     @ExceptionHandler(LoginException.class)
     public ResponseEntity<String> loginExceptionHandler() {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Wrong login or password");
     }
 
     @ExceptionHandler(RegistrationException.class)
     public ResponseEntity<String> registrationExceptionHandler() {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Registration failed");
     }
 
     @ExceptionHandler(BindException.class)
