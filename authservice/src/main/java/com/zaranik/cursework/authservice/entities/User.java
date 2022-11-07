@@ -3,7 +3,6 @@ package com.zaranik.cursework.authservice.entities;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.Set;
 
 @Data
 @Entity
