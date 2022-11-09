@@ -2,78 +2,49 @@ import React, { useContext, useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { AuthContext } from "../../App";
 
-const AuthProvider = ({ children }) => {
-  const {getToken, setToken} = useContext(AuthContext);
-  const [tokenValid, setTokenValid] = useState(getToken());
+const AuthProvider = ({ children, roles }) => {
+  const { getToken, setToken, removeToken } = useContext(AuthContext);
+  const [hasPermission, setHasPermission] = useState(false);
+  const [permissionAsked, setPermissionAsked] = useState(false);
 
-  //validate token
-  function validateToken() {
+  async function askForPermission() {
     const myHeaders = new Headers();
     myHeaders.append("Authorization", "Bearer " + getToken());
-
     const requestOptions = {
       method: "GET",
       headers: myHeaders,
-      redirect: "follow",
     };
 
 
-    fetch("http://localhost:8081/validate-token", requestOptions)
-      .then(response => {
-        if(!response.ok) {
-          refreshToken();
-        }
-        setTokenValid(true);
-        return response;
-      })
-      .catch((error) => {
-        
-      });
+    const responseValidate = await fetch("http://localhost:8081/validate-token", requestOptions);
+    if(responseValidate.ok){
+      setHasPermission(() => true);
+      return;
+    }
+    const responseRefresh = await fetch("http://localhost:8081/refresh-token", requestOptions);
+    if(responseRefresh.ok){
+      const jsonResponse = await responseRefresh.json();
+      setToken(jsonResponse.token);
+      setHasPermission(() => true);
+      return;
+    }
+    removeToken();
+    setHasPermission(() => false);
   }
 
-
-
-  //refresh token
-  function refreshToken() {
-    const myHeaders = new Headers();
-    myHeaders.append("Authorization", "Bearer " + getToken());
-
-    const requestOptions = {
-      method: "GET",
-      headers: myHeaders,
-      redirect: "follow",
-    };
-
-
-    fetch("http://localhost:8081/refresh-token", requestOptions)
-      .then(response => {
-        if(!response.ok) {
-          setTokenValid(false);
-          throw new Error();
-        }
-        return response;
-      })
-      .then(response => response.json())
-      .then(responseJson => responseJson.token)
-      .then(token => {
-        console.log('auth : ' + getToken());
-        setTokenValid(true);
-        setToken(token);
-      })
-      .catch((error) => {
-        
-      });
+  useEffect(()=>{
+    askForPermission().then(()=>{
+      setPermissionAsked(true);
+    });
+  });
+  
+  if(!permissionAsked){
+    return <div>Loading spinner...</div>;
   }
-
-  useEffect(() => {
-    validateToken();
-  }, []);
-
-  return (
-    <div>
-      <div>{tokenValid ? children : <Navigate to="/login" />}</div>
-    </div>
-  );
+  if(hasPermission){
+    return children;
+  }
+  return <Navigate to="/login" replace/>;
 };
 
 export default AuthProvider;

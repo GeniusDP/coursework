@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { AuthContext } from "../../App";
 
@@ -37,7 +37,6 @@ const LoginForm = () => {
       .then((response) => response.json())
       .then(responseJson => responseJson.token)
       .then((token) => {
-        console.log('login: ' + token);
         setToken(token);
         setRedirect(true);
         setIsLoginError(false);

@@ -6,16 +6,20 @@ export const AuthContext = createContext();
 const App = () => {
   
   const getToken = () => {
-    return localStorage.getItem('token999');
+    return localStorage.getItem('token');
   }
 
   const setToken = (value) => {
-    localStorage.setItem('token999', value);
+    localStorage.setItem('token', value);
+  }
+
+  const removeToken = () => {
+    localStorage.removeItem('token');
   }
 
   return (
     <div>
-      <AuthContext.Provider value={{getToken, setToken}}>
+      <AuthContext.Provider value={{getToken, setToken, removeToken}}>
         <Router/>
       </AuthContext.Provider>
     </div>
