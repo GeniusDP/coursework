@@ -1,12 +1,12 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { Navigate } from "react-router-dom";
 
 const RegisterForm = () => {
-  const [username, setUsername] = useState("usr");
-  const [password, setPassword] = useState("123");
-  const [email, setEmail] = useState("zaranik@gmail.com");
-  const [firstName, setFirstName] = useState("bogdan");
-  const [lastName, setLastName] = useState("zaranik");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
 
   const [isRegistrationError, setIsRegistrationError] = useState(false);
   const [redirect, setRedirect] = useState(false);

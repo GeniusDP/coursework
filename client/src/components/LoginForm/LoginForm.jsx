@@ -3,8 +3,8 @@ import { Navigate } from "react-router-dom";
 import { AuthContext } from "../../App";
 
 const LoginForm = () => {
-  const [username, setUsername] = useState("zar2002");
-  const [password, setPassword] = useState("1234");
+  const [username, setUsername] = useState("usr");
+  const [password, setPassword] = useState("123");
   const {setToken} = useContext(AuthContext);
   const [isLoginError, setIsLoginError] = useState(false);
   const [redirect, setRedirect] = useState(false);
@@ -46,10 +46,16 @@ const LoginForm = () => {
       });
   }
 
+  if(redirect){
+    return <Navigate to={"/"}/>;
+  }
+
+  if(isLoginError){
+    return <div>Not valid data!</div>;
+  }
+
   return (
     <div>
-      {redirect && <Navigate to={"/"}/>}
-      {isLoginError && <div>Not valid data!</div>}
       <input
         value={username}
         onChange={(event) => setUsername(event.target.value)}

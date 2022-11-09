@@ -24,6 +24,9 @@ const MainPage = () => {
       <div>
         <Link to={"/account-settings"}>{username}</Link>
       </div>
+      <div>
+        <Link to={"/forbidden"}>Forbidden(only for Admin)</Link>
+      </div>
 
     </div>
   );

@@ -26,7 +26,7 @@ const Router = () => {
           <Route
             path="/forbidden"
             element={
-              <AuthProvider roles={"*"}>
+              <AuthProvider roles={["ADMIN"]}>
                 <Forbidden />
               </AuthProvider>
             }
