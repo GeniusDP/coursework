@@ -11,12 +11,5 @@ export default async function customFetch(url, body) {
     redirect: "follow",
   };
 
-  // function handleErrors(response) {
-  //   if (!response.ok) {
-  //     throw Error(response.statusText);
-  //   }
-  //   return response;
-  // }
-
   return fetch(url, requestOptions);
 }

@@ -18,8 +18,6 @@ const AuthProvider = ({ children, roles }) => {
 
 
   useEffect(() => {
-    console.log("auth provider rerender");
-    console.log("permissionAsked = " + permissionAsked);
     if (!permissionAsked) {
       askForPermission().then(() => {
         setPermissionAsked(() => true);
@@ -28,8 +26,6 @@ const AuthProvider = ({ children, roles }) => {
   });
 
   const askForPermission = async () => {
-    const myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
     const url = "http://localhost:8081/api/auth/validate-token";
     const body = {
       accessToken: getAccessToken(),
@@ -42,7 +38,6 @@ const AuthProvider = ({ children, roles }) => {
         setHasPermission(roles === "*" ? true : roles.includes(role));
       } else {
         const refreshedSuccessfully = await refreshToken();
-        console.log("refreshedSuccessfully = " + refreshedSuccessfully);
         if (refreshedSuccessfully) {
           const { role } = parseJwt(getAccessToken());
           setHasPermission(roles === "*" ? true : roles.includes(role));
@@ -52,14 +47,11 @@ const AuthProvider = ({ children, roles }) => {
         }
       }
     } catch (e) {
-      console.log("auth provider = " + e);
       setErrorOccured(true);
     }
   };
 
   const refreshToken = async () => {
-    const myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
     const url = "http://localhost:8081/api/auth/refresh-token";
     const body = {
       accessToken: getAccessToken(),
