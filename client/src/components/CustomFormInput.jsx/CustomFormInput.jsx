@@ -1,6 +1,6 @@
 import React from "react";
 
-const CustomFormInput = ({ id, value, onChange, placeholder, label }) => {
+const CustomFormInput = ({ id, value, onChange, placeholder, label, ...args }) => {
   return (
     <div className="custom-input">
       <div className="label-wrapper">
@@ -12,6 +12,7 @@ const CustomFormInput = ({ id, value, onChange, placeholder, label }) => {
         value={value}
         placeholder={placeholder}
         onChange={onChange}
+        {...args}
       />
     </div>
   );

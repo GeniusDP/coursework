@@ -53,6 +53,7 @@ const LoginForm = () => {
             onChange={(event) => setPassword(event.target.value)}
             placeholder={"password"}
             value={password}
+            type={"password"}
           />
         </div>
         <div>

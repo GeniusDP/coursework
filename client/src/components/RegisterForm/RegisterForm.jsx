@@ -4,6 +4,7 @@ import "./register-form-styles.css";
 import "./../component-styles.css";
 import customFetch from "../../customFetch";
 import CustomFormInput from "../CustomFormInput.jsx/CustomFormInput";
+import Modal from "../Modal/Modal";
 
 const RegisterForm = () => {
   const [username, setUsername] = useState("");
@@ -11,7 +12,8 @@ const RegisterForm = () => {
   const [email, setEmail] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-
+  const [modalVisible, setModalVisible] = useState(false);
+  const [errors, setErrors] = useState([]);
   const [registrationError, setRegistrationError] = useState(false);
   const [redirect, setRedirect] = useState(false);
   const [networkError, setNetworkError] = useState(false);
@@ -19,7 +21,6 @@ const RegisterForm = () => {
   async function performRegister() {
     setNetworkError(false);
     setRegistrationError(false);
-
     const body = {
       username,
       password,
@@ -30,17 +31,22 @@ const RegisterForm = () => {
 
     try {
       const response = await customFetch(
-        "http://localhost:8081/register",
+        "http://localhost:8081/api/auth/register",
         body
       );
       if (response.ok) {
         setRegistrationError(false);
+        setNetworkError(false);
         setRedirect(true);
       } else {
+        const json = await response.json();
+        const errorsArray = json?.violations;
+        setErrors(errorsArray);
         setRegistrationError(true);
+        setModalVisible(true);
       }
     } catch (error) {
-      console.log(error);
+      setRegistrationError(false);
       setNetworkError(true);
     }
   }
@@ -49,26 +55,34 @@ const RegisterForm = () => {
     alert("Problem occured! May be internet connection lost.");
   }
 
-  if (registrationError) {
-    alert("User with such username already exists:(");
-  }
-
   if (redirect) {
     return <Navigate to={"/login"} />;
   }
 
   return (
     <div className="register-form-wrapper">
+      <Modal visible={modalVisible} setVisible={() => setModalVisible(false)}>
+        {errors.map((el, idx) => (
+          <div key = {idx}>
+            <div>{el.fieldName}</div>
+            <div>{el.message}</div>
+          </div>
+        ))}
+      </Modal>
       <div className="register-form">
         <div className="large-font-text">Registration</div>
         <div>
           <CustomFormInput
             id={"username-register-input"}
             label={"Username"}
-            onChange={(event) => setUsername(event.target.value)}
+            onChange={(event) => {
+              console.log("on change");
+              console.log(registrationError);
+              setUsername(event.target.value);
+            }}
             placeholder={"username"}
             value={username}
-          />{" "}
+          />
           <CustomFormInput
             id={"email-register-input"}
             label={"Email"}
@@ -82,6 +96,7 @@ const RegisterForm = () => {
             onChange={(event) => setPassword(event.target.value)}
             placeholder={"password"}
             value={password}
+            type={"password"}
           />
         </div>
         <div className="middle-font-text">Your first and last names:</div>
