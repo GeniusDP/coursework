@@ -8,28 +8,29 @@ import javax.validation.constraints.Size;
 
 @Setter
 @Getter
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 public class RegistrationUserDto {
 
-    @NotNull
-    @Size(max = 50)
-    private final String username;
+  @NotNull
+  @Size(max = 50)
+  private String username;
 
-    @NotNull
-    @Size(max = 50)
-    @Email
-    private final String email;
+  @NotNull
+  @Size(max = 50)
+  @Email
+  private String email;
 
-    @NotNull
-    @Size(max = 50)
-    private final String password;
+  @NotNull
+  @Size(max = 50)
+  private String password;
 
-    @NotNull
-    @Size(max = 50)
-    private final String firstName;
+  @NotNull
+  @Size(max = 50)
+  private String firstName;
 
-    @NotNull
-    @Size(max = 50)
-    private final String lastName;
-    
+  @NotNull
+  @Size(max = 50)
+  private String lastName;
+
 }
