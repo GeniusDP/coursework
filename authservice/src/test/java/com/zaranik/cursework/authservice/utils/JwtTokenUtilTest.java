@@ -1,5 +1,6 @@
 package com.zaranik.cursework.authservice.utils;
 
+import com.zaranik.cursework.authservice.entities.RoleValue;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -26,14 +27,14 @@ class JwtTokenUtilTest {
     @Test
     void testExpirationOfToken() {
         JwtTokenUtil jwtTokenUtil = new JwtTokenUtil(jwtSecret, ALREADY_EXPIRED, WILL_NOT_EXPIRE);
-        String token = jwtTokenUtil.generateAccessJwtToken(john123Username);
+        String token = jwtTokenUtil.generateAccessJwtToken(john123Username, RoleValue.STUDENT);
         assertThat(jwtTokenUtil.tokenIsValid(token)).isFalse();
     }
 
     @Test
     void testTamperedToken() {
         JwtTokenUtil jwtTokenUtil = new JwtTokenUtil(jwtSecret, WILL_NOT_EXPIRE, WILL_NOT_EXPIRE);
-        String token = jwtTokenUtil.generateAccessJwtToken(john123Username);
+        String token = jwtTokenUtil.generateAccessJwtToken(john123Username, RoleValue.STUDENT);
         token = tamperToken(token);
         assertThat(jwtTokenUtil.tokenIsValid(token)).isFalse();
     }
@@ -41,7 +42,7 @@ class JwtTokenUtilTest {
     @Test
     void testsSafeExtractionOfSubjectFromExpiredToken() {
         JwtTokenUtil jwtTokenUtil = new JwtTokenUtil(jwtSecret, ALREADY_EXPIRED, WILL_NOT_EXPIRE);
-        String token = jwtTokenUtil.generateAccessJwtToken(john123Username);
+        String token = jwtTokenUtil.generateAccessJwtToken(john123Username, RoleValue.STUDENT);
 
         Assertions.assertDoesNotThrow(() -> jwtTokenUtil.safeGetUserNameFromProbablyExpiredJwtToken(token));
 
@@ -52,7 +53,7 @@ class JwtTokenUtilTest {
     @Test
     void testsSafeExtractionOfSubjectFromTamperedToken() {
         JwtTokenUtil jwtTokenUtil = new JwtTokenUtil(jwtSecret, ALREADY_EXPIRED, WILL_NOT_EXPIRE);
-        String token = jwtTokenUtil.generateAccessJwtToken(john123Username);
+        String token = jwtTokenUtil.generateAccessJwtToken(john123Username, RoleValue.STUDENT);
 
         Assertions.assertDoesNotThrow(() -> jwtTokenUtil.safeGetUserNameFromProbablyExpiredJwtToken(token));
 
