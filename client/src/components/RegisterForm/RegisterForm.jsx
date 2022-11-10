@@ -1,5 +1,7 @@
 import React, { useState } from "react";
-import { Navigate } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
+import "./register-form-styles.css";
+import "./../component-styles.css";
 
 const RegisterForm = () => {
   const [username, setUsername] = useState("");
@@ -45,46 +47,69 @@ const RegisterForm = () => {
       })
       .catch((error) => {
         console.log(error);
-         setIsRegistrationError(true);
+        setIsRegistrationError(true);
       });
   }
 
   if (isRegistrationError) {
-    alert('Some problem occured! May be internet connetction lost.');
+    alert("Some problem occured! May be internet connetction lost.");
   }
   if (redirect) {
     return <Navigate to={"/login"} />;
   }
 
   return (
-    <div>
-      <input
-        value={username}
-        onChange={(event) => setUsername(event.target.value)}
-        placeholder={"username"}
-      />
-      <input
-        value={email}
-        placeholder={"email"}
-        onChange={(event) => setEmail(event.target.value)}
-      />
-      <input
-        type={"password"}
-        value={password}
-        onChange={(event) => setPassword(event.target.value)}
-        placeholder={"password"}
-      />
-      <input
-        value={firstName}
-        onChange={(event) => setFirstName(event.target.value)}
-        placeholder={"firstName"}
-      />
-      <input
-        value={lastName}
-        onChange={(event) => setLastName(event.target.value)}
-        placeholder={"lastName"}
-      />
-      <button onClick={performLogin}>Register</button>
+    <div className="register-form-wrapper">
+      <div className="register-form">
+        <div  className="large-font-text">Registration</div>
+        <div>
+          <input
+            className={"form-control custom-input"}
+            value={username}
+            onChange={(event) => setUsername(event.target.value)}
+            placeholder={"username"}
+          />
+          <input
+            className={"form-control custom-input"}
+            value={email}
+            placeholder={"email"}
+            onChange={(event) => setEmail(event.target.value)}
+          />
+          <input
+            className={"form-control custom-input"}
+            type={"password"}
+            value={password}
+            onChange={(event) => setPassword(event.target.value)}
+            placeholder={"password"}
+          />
+        </div>
+        <div className="middle-font-text">Your first and last names:</div>
+        <div>
+          <input
+            className={"form-control custom-input"}
+            value={firstName}
+            onChange={(event) => setFirstName(event.target.value)}
+            placeholder={"firstName"}
+          />
+          <input
+            className={"form-control custom-input"}
+            value={lastName}
+            onChange={(event) => setLastName(event.target.value)}
+            placeholder={"lastName"}
+          />
+        </div>
+        <div>
+          <button
+            className={"btn btn-outline-success btn-lg login-button"}
+            onClick={performLogin}
+          >
+            Register
+          </button>
+        </div>
+        <div>
+          <Link to="/login">Already have an account? Login now!</Link>
+        </div>
+      </div>
     </div>
   );
 };

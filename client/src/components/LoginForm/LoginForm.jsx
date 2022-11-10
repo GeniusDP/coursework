@@ -6,8 +6,8 @@ import "./../component-styles.css";
 import "./login-form-styles.css";
 
 const LoginForm = () => {
-  const [username, setUsername] = useState("usr");
-  const [password, setPassword] = useState("123");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const { setAccessToken, setRefreshToken } = useContext(AuthContext);
   const [isLoginError, setIsLoginError] = useState(false);
   const [redirect, setRedirect] = useState(false);
@@ -34,18 +34,20 @@ const LoginForm = () => {
   return (
     <div className="login-form-wrapper">
       <div className="login-form">
-        <div id={"login-message"}>Login to your account</div>
+        <div className="large-font-text">Login to your account</div>
         {isLoginError && <div>Not valid data!</div>}
         <div>
           <input
             className={"form-control custom-input"}
             value={username}
+            placeholder={"username"}
             onChange={(event) => setUsername(event.target.value)}
           />
           <input
             className={"form-control custom-input"}
             type={"password"}
             value={password}
+            placeholder={"password"}
             onChange={(event) => setPassword(event.target.value)}
           />
         </div>

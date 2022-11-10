@@ -1,8 +1,20 @@
 .custom-input {
-  min-width: 400px;
+  min-width: 500px;
   margin: 7px;
 }
 
 .custom-button{
   min-width: 150px;
+}
+
+.middle-font-text{
+  font-size: 20px;
+}
+
+.big-font-text{
+  font-size: 30px;
+}
+
+.large-font-text{
+  font-size: 40px;
 }
