@@ -7,7 +7,7 @@ create table if not exists roles
 );
 
 insert into roles (name)
-values ('USER'),
+values ('STUDENT'),
        ('TEACHER'),
        ('ADMIN');
 
