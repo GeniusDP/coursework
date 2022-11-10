@@ -20,6 +20,11 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Access token is not valid");
     }
 
+    @ExceptionHandler(UserNotActivatedException.class)
+    public ResponseEntity<String> userNotActivatedExceptionHandler() {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User is not activated yet");
+    }
+
     @ExceptionHandler(RefreshTokenInvalidException.class)
     public ResponseEntity<String> refreshTokenExpiredExceptionHandler() {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Refresh token is expired");
