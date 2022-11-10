@@ -4,13 +4,9 @@ import { AuthContext } from "../../App";
 import { parseJwt } from "../../jwtUtil";
 
 const MainPage = () => {
-  const { getToken } = useContext(AuthContext);
-  let username = null;
-  try {
-    username = parseJwt(getToken());
-  } catch (e) {
-    username = null;
-  }
+  const { getAccessToken } = useContext(AuthContext);
+  const jwtPayload = parseJwt(getAccessToken());
+  const username = jwtPayload?.sub;
 
   return (
     <div>
