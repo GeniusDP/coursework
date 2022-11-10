@@ -27,7 +27,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(RefreshTokenInvalidException.class)
     public ResponseEntity<String> refreshTokenExpiredExceptionHandler() {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Refresh token is expired");
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Refresh token is not valid: tampered or expired");
     }
 
     @ExceptionHandler(LoginException.class)
