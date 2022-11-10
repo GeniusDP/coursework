@@ -2,6 +2,7 @@ import React, { useContext, useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { AuthContext } from "../../App";
 import loginFetch from "../../customFetch";
+import CustomFormInput from "../CustomFormInput.jsx/CustomFormInput";
 import "./../component-styles.css";
 import "./login-form-styles.css";
 
@@ -13,6 +14,8 @@ const LoginForm = () => {
   const [redirect, setRedirect] = useState(false);
 
   async function performLogin() {
+    setIsLoginError(false);
+    setRedirect(false);
     try {
       const url = "http://localhost:8081/api/auth/login";
       const loginDto = { username, password };
@@ -37,31 +40,20 @@ const LoginForm = () => {
         <div className="large-font-text">Login to your account</div>
         {isLoginError && <div>Not valid data!</div>}
         <div>
-          <div className="custom-input">
-            <div className="label-wrapper">
-              <label htmlFor="username-login-input">Username</label>
-            </div>
-            <input
-              id="username-login-input"
-              className={"form-control"}
-              value={username}
-              placeholder={"username"}
-              onChange={(event) => setUsername(event.target.value)}
-            />
-          </div>
-          <div className="custom-input">
-            <div className="label-wrapper">
-              <label htmlFor="password-login-input">Password</label>
-            </div>
-            <input
-              id="password-login-input"
-              className={"form-control"}
-              type={"password"}
-              value={password}
-              placeholder={"password"}
-              onChange={(event) => setPassword(event.target.value)}
-            />
-          </div>
+          <CustomFormInput
+            id={"username-login-input"}
+            label={"Username"}
+            onChange={(event) => setUsername(event.target.value)}
+            placeholder={"username"}
+            value={username}
+          />
+          <CustomFormInput
+            id={"password-login-input"}
+            label={"Password"}
+            onChange={(event) => setPassword(event.target.value)}
+            placeholder={"password"}
+            value={password}
+          />
         </div>
         <div>
           <button
