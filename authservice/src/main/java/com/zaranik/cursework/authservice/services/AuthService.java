@@ -14,110 +14,116 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.Valid;
+
 @Service
 @RequiredArgsConstructor
 public class AuthService {
 
-    private final JwtTokenUtil jwtTokenUtil;
-    private final RoleRepository roleRepository;
-    private final UserRepository userRepository;
-    private final PasswordService passwordService;
+  private final JwtTokenUtil jwtTokenUtil;
+  private final RoleRepository roleRepository;
+  private final UserRepository userRepository;
+  private final HashingUtilityService hashingUtilityService;
 
-    public TokenDto login(LoginUserDto loginUserDto) {
-        String username = loginUserDto.getUsername();
-        String password = loginUserDto.getPassword();
+  public TokenDto login(LoginUserDto loginUserDto) {
+    String username = loginUserDto.getUsername();
+    String password = loginUserDto.getPassword();
 
-        if (!userRepository.existsByUsername(username)) {
-            throw new LoginException();
-        }
-
-        User user = userRepository.findByUsername(username);
-        if (!passwordService.match(user.getPassword(), password)) {
-            throw new LoginException();
-        }
-        String refreshJwtToken = jwtTokenUtil.generateRefreshJwtToken(username);
-        user.setRefreshToken(refreshJwtToken);
-        userRepository.save(user);
-
-        String accessJwtToken = jwtTokenUtil.generateAccessJwtToken(username);
-        return new TokenDto(accessJwtToken);
+    if (!userRepository.existsByUsername(username)) {
+      throw new LoginException();
     }
 
-    @Transactional
-    public void register(RegistrationUserDto registrationUserDto) {
-        String username = registrationUserDto.getUsername();
-        String password = registrationUserDto.getPassword();
-        String email = registrationUserDto.getEmail();
-        String firstName = registrationUserDto.getFirstName();
-        String lastName = registrationUserDto.getLastName();
-        if (userRepository.existsByUsername(username)) {
-            throw new RegistrationException("User with such username already exists");
-        }
-        Role userRole = roleRepository.findByName(RoleValue.USER);
-        User newUser = User.builder()
-                .setUsername(username)
-                .setPassword(password)
-                .setEmail(email)
-                .setFirstName(firstName)
-                .setLastName(lastName)
-                .setActivated(false)
-                .build();
-        newUser.setRole(userRole);
-        userRepository.save(newUser);
+    User user = userRepository.findByUsername(username);
+    if (!user.isActivated()) {
+      throw new UserNotActivatedException();
     }
 
-    public TokenDto refreshToken(String authHeader) {
-        String token = getTokenFromAuthHeader(authHeader);
-        String username = jwtTokenUtil.safeGetUserNameFromProbablyExpiredJwtToken(token);
-        if(!userRepository.existsByUsername(username)){
-            throw new AccessTokenInvalidException();
-        }
-        String refreshToken = userRepository.findByUsername(username).getRefreshToken();
-        if (!jwtTokenUtil.tokenIsValid(refreshToken)) {
-            throw new RefreshTokenInvalidException();
-        }
-        String accessJwtToken = jwtTokenUtil.generateAccessJwtToken(username);
-        return new TokenDto(accessJwtToken);
+    if (!hashingUtilityService.match(user.getPassword(), password)) {
+      throw new LoginException();
     }
 
-    public void validateToken(String authHeader) {
-        String token = getTokenFromAuthHeader(authHeader);
-        if (!jwtTokenUtil.tokenIsValid(token)) {
-            throw new AccessTokenInvalidException();
-        }
+    RoleValue role = user.getRole().getName();
+
+    String refreshJwtToken = jwtTokenUtil.generateRefreshJwtToken(username, role);
+    user.setRefreshToken(refreshJwtToken);
+    userRepository.save(user);
+
+    String accessJwtToken = jwtTokenUtil.generateAccessJwtToken(username, role);
+    return new TokenDto(accessJwtToken, refreshJwtToken);
+  }
+
+  @Transactional
+  public void register(RegistrationUserDto registrationUserDto) {
+    String username = registrationUserDto.getUsername();
+    String password = registrationUserDto.getPassword();
+    String email = registrationUserDto.getEmail();
+    String firstName = registrationUserDto.getFirstName();
+    String lastName = registrationUserDto.getLastName();
+    if (userRepository.existsByUsername(username)) {
+      throw new RegistrationException("User with such username already exists");
+    }
+    Role userRole = roleRepository.findByName(RoleValue.STUDENT);
+    User newUser = User.builder()
+        .setUsername(username)
+        .setPassword(password)
+        .setEmail(email)
+        .setFirstName(firstName)
+        .setLastName(lastName)
+        .setActivated(false)
+        .build();
+    newUser.setRole(userRole);
+    userRepository.save(newUser);
+  }
+
+  public TokenDto refreshToken(@Valid TokenDto tokenDto) {
+    String accessToken = tokenDto.getAccessToken();
+    String username = jwtTokenUtil.safeGetUserNameFromProbablyExpiredJwtToken(accessToken);
+    RoleValue roleValue = RoleValue.valueOf(
+        jwtTokenUtil.safeGetRoleNameFromProbablyExpiredToken(accessToken));
+
+    if (!userRepository.existsByUsername(username)) {
+      throw new AccessTokenInvalidException();
     }
 
-    @Transactional
-    public void logout(String authHeader) {
-        String token = getTokenFromAuthHeader(authHeader);
-        String username = jwtTokenUtil.safeGetUserNameFromProbablyExpiredJwtToken(token);
+    User user = userRepository.findByUsername(username);
 
-        if(!userRepository.existsByUsername(username)){
-            throw new AccessTokenInvalidException();
-        }
+    String providedRefreshToken = tokenDto.getRefreshToken();
 
-        User user = userRepository.findByUsername(username);
-        user.setRefreshToken(null);
-        userRepository.save(user);
+    if (!hashingUtilityService.match(user.getRefreshToken(), providedRefreshToken)) {
+      throw new RefreshTokenInvalidException();
     }
 
-    private String getTokenFromAuthHeader(String authHeader){
-        if(authHeader == null || authHeader.length() < 7){
-            throw new AccessTokenInvalidException("Not a token provided in Authorization request header");
-        }
-        return authHeader.substring(7);
+    if (!jwtTokenUtil.tokenIsValid(providedRefreshToken)) {
+      throw new RefreshTokenInvalidException();
     }
 
-    public RoleValue getUserRole(String authHeader) {
-        validateToken(authHeader);
-        String token = getTokenFromAuthHeader(authHeader);
-        String username = jwtTokenUtil.safeGetUserNameFromProbablyExpiredJwtToken(token);
+    String accessJwtToken = jwtTokenUtil.generateAccessJwtToken(username, roleValue);
+    String refreshJwtToken = jwtTokenUtil.generateRefreshJwtToken(username, roleValue);
 
-        if(!userRepository.existsByUsername(username)){
-            throw new AccessTokenInvalidException();
-        }
+    user.setRefreshToken(hashingUtilityService.hash(refreshJwtToken));
+    userRepository.save(user);
 
-        User user = userRepository.findByUsername(username);
-        return user.getRole().getName();
+    return new TokenDto(accessJwtToken, refreshJwtToken);
+  }
+
+  public void validateToken(@Valid TokenDto tokenDto) {
+    String accessToken = tokenDto.getAccessToken();
+    if (!jwtTokenUtil.tokenIsValid(accessToken)) {
+      throw new AccessTokenInvalidException();
     }
+  }
+
+  public void logout(@Valid TokenDto tokenDto) {
+    String accessToken = tokenDto.getAccessToken();
+
+    if (!jwtTokenUtil.tokenIsValid(accessToken)) {
+      throw new AccessTokenInvalidException();
+    }
+    String username = jwtTokenUtil.safeGetUserNameFromProbablyExpiredJwtToken(accessToken);
+
+    User user = userRepository.findByUsername(username);
+    user.setRefreshToken(null);
+    userRepository.save(user);
+  }
+
 }
