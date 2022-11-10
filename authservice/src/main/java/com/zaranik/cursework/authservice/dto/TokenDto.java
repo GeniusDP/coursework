@@ -12,6 +12,9 @@ import javax.validation.constraints.NotNull;
 public class TokenDto {
 
     @NotNull
-    private String token;
+    private String accessToken;
+
+    @NotNull
+    private String refreshToken;
 
 }
