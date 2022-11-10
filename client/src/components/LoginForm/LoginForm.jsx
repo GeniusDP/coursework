@@ -37,26 +37,43 @@ const LoginForm = () => {
         <div className="large-font-text">Login to your account</div>
         {isLoginError && <div>Not valid data!</div>}
         <div>
-          <input
-            className={"form-control custom-input"}
-            value={username}
-            placeholder={"username"}
-            onChange={(event) => setUsername(event.target.value)}
-          />
-          <input
-            className={"form-control custom-input"}
-            type={"password"}
-            value={password}
-            placeholder={"password"}
-            onChange={(event) => setPassword(event.target.value)}
-          />
+          <div className="custom-input">
+            <div className="label-wrapper">
+              <label htmlFor="username-login-input">Username</label>
+            </div>
+            <input
+              id="username-login-input"
+              className={"form-control"}
+              value={username}
+              placeholder={"username"}
+              onChange={(event) => setUsername(event.target.value)}
+            />
+          </div>
+          <div className="custom-input">
+            <div className="label-wrapper">
+              <label htmlFor="password-login-input">Password</label>
+            </div>
+            <input
+              id="password-login-input"
+              className={"form-control"}
+              type={"password"}
+              value={password}
+              placeholder={"password"}
+              onChange={(event) => setPassword(event.target.value)}
+            />
+          </div>
         </div>
         <div>
-          <button className={"btn btn-outline-success btn-lg login-button"} onClick={performLogin}>
+          <button
+            className={"btn btn-outline-success btn-lg login-button"}
+            onClick={performLogin}
+          >
             Login
           </button>
         </div>
-        <div><Link to="/register">Don`t have an account? Register now!</Link></div>
+        <div>
+          <Link to="/register">Don`t have an account? Register now!</Link>
+        </div>
       </div>
     </div>
   );

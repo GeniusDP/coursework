@@ -61,42 +61,73 @@ const RegisterForm = () => {
   return (
     <div className="register-form-wrapper">
       <div className="register-form">
-        <div  className="large-font-text">Registration</div>
+        <div className="large-font-text">Registration</div>
         <div>
-          <input
-            className={"form-control custom-input"}
-            value={username}
-            onChange={(event) => setUsername(event.target.value)}
-            placeholder={"username"}
-          />
-          <input
-            className={"form-control custom-input"}
-            value={email}
-            placeholder={"email"}
-            onChange={(event) => setEmail(event.target.value)}
-          />
-          <input
-            className={"form-control custom-input"}
-            type={"password"}
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-            placeholder={"password"}
-          />
+          <div className="custom-input">
+            <div className="label-wrapper">
+              <label htmlFor="username-input">Username</label>
+            </div>
+            <input
+              id="username-input"
+              className={"form-control"}
+              value={username}
+              onChange={(event) => setUsername(event.target.value)}
+              placeholder={"username"}
+            />
+          </div>
+          <div className="custom-input">
+            <div className="label-wrapper">
+              <label htmlFor="email-input">Email</label>
+            </div>
+            <input
+              id="email-input"
+              className={"form-control"}
+              value={email}
+              type={"email"}
+              placeholder={"email"}
+              onChange={(event) => setEmail(event.target.value)}
+            />
+          </div>
+          <div className="custom-input">
+            <div className="label-wrapper">
+              <label htmlFor="password-input">Password</label>
+            </div>
+            <input
+              id="password-input"
+              className={"form-control"}
+              type={"password"}
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              placeholder={"password"}
+            />
+          </div>
         </div>
         <div className="middle-font-text">Your first and last names:</div>
         <div>
-          <input
-            className={"form-control custom-input"}
-            value={firstName}
-            onChange={(event) => setFirstName(event.target.value)}
-            placeholder={"firstName"}
-          />
-          <input
-            className={"form-control custom-input"}
-            value={lastName}
-            onChange={(event) => setLastName(event.target.value)}
-            placeholder={"lastName"}
-          />
+          <div className="custom-input">
+            <div className="label-wrapper">
+              <label htmlFor="first-name-input">First name</label>
+            </div>
+            <input
+              id="first-name-input"
+              className={"form-control"}
+              value={firstName}
+              onChange={(event) => setFirstName(event.target.value)}
+              placeholder={"firstName"}
+            />
+          </div>
+          <div className="custom-input">
+            <div className="label-wrapper">
+              <label htmlFor="last-name-input">Last name</label>
+            </div>
+            <input
+              id="last-name-input"
+              className={"form-control"}
+              value={lastName}
+              onChange={(event) => setLastName(event.target.value)}
+              placeholder={"lastName"}
+            />
+          </div>
         </div>
         <div>
           <button

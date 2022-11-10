@@ -1,20 +1,35 @@
 .custom-input {
-  min-width: 500px;
-  margin: 7px;
+  min-width: 600px;
+  margin: 7px 0;
+  display: grid;
+  grid-template-columns: 2fr 7fr;
+  padding-left: 10px;
 }
 
-.custom-button{
+.label-wrapper {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.custom-button {
   min-width: 150px;
+  display: flex;
+  flex-direction: row;
 }
 
-.middle-font-text{
+.middle-font-text {
   font-size: 20px;
 }
 
-.big-font-text{
+.big-font-text {
   font-size: 30px;
 }
 
-.large-font-text{
+.large-font-text {
   font-size: 40px;
+}
+
+label {
+  cursor: pointer;
 }
