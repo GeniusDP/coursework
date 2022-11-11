@@ -1,26 +1,52 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import "./register-form-styles.css";
 import "./../component-styles.css";
 import customFetch from "../../customFetch";
 import CustomFormInput from "../CustomFormInput.jsx/CustomFormInput";
 import Modal from "../Modal/Modal";
+import { Spinner } from "../Spinner/Spinner";
+import useInput from "../../hooks/useInput";
 
 const RegisterForm = () => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [email, setEmail] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+  const username = useInput("", { isEmpty: true, minLength: 3, maxLength: 50 });
+  const password = useInput("", { isEmpty: true, minLength: 5, maxLength: 50 });
+  const email = useInput("", {
+    isEmpty: true,
+    maxLength: 50,
+    isValidEmail: true,
+  });
+  const firstName = useInput("", {
+    isEmpty: true,
+    minLength: 5,
+    maxLength: 50,
+  });
+  const lastName = useInput("", { isEmpty: true, minLength: 5, maxLength: 50 });
+
+  const [formIsFullValid, setFormIsFullValid] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
-  const [errors, setErrors] = useState([]);
-  const [registrationError, setRegistrationError] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+
   const [redirect, setRedirect] = useState(false);
-  const [networkError, setNetworkError] = useState(false);
+
+  const [spinner, setSpinner] = useState(false);
+
+  useEffect(() => {
+    setFormIsFullValid(
+      username.isFullValid() &&
+        password.isFullValid() &&
+        email.isFullValid() &&
+        firstName.isFullValid() &&
+        lastName.isFullValid()
+    );
+
+    console.log([username, password, email, firstName, lastName]);
+  }, [username, password, email, firstName, lastName]);
 
   async function performRegister() {
-    setNetworkError(false);
-    setRegistrationError(false);
+    setModalMessage("");
+    setModalVisible(false);
+    setSpinner(true);
     const body = {
       username,
       password,
@@ -35,24 +61,16 @@ const RegisterForm = () => {
         body
       );
       if (response.ok) {
-        setRegistrationError(false);
-        setNetworkError(false);
         setRedirect(true);
       } else {
-        const json = await response.json();
-        const errorsArray = json?.violations;
-        setErrors(errorsArray);
-        setRegistrationError(true);
+        setModalMessage("Registration failed.");
         setModalVisible(true);
       }
     } catch (error) {
-      setRegistrationError(false);
-      setNetworkError(true);
+      setModalMessage("Inet connection lost:(");
+      setModalVisible(true);
     }
-  }
-
-  if (networkError) {
-    alert("Problem occured! May be internet connection lost.");
+    setSpinner(false);
   }
 
   if (redirect) {
@@ -61,13 +79,9 @@ const RegisterForm = () => {
 
   return (
     <div className="register-form-wrapper">
+      {spinner && <Spinner />}
       <Modal visible={modalVisible} setVisible={() => setModalVisible(false)}>
-        {errors.map((el, idx) => (
-          <div key = {idx}>
-            <div>{el.fieldName}</div>
-            <div>{el.message}</div>
-          </div>
-        ))}
+        {modalMessage}
       </Modal>
       <div className="register-form">
         <div className="large-font-text">Registration</div>
@@ -75,53 +89,103 @@ const RegisterForm = () => {
           <CustomFormInput
             id={"username-register-input"}
             label={"Username"}
-            onChange={(event) => {
-              console.log("on change");
-              console.log(registrationError);
-              setUsername(event.target.value);
-            }}
+            onChange={username.onChange}
+            onBlur={username.onBlur}
             placeholder={"username"}
-            value={username}
+            value={username.value}
           />
+          {username.isDirty && username.isEmpty && (
+            <div style={{ color: "red" }}>Username must not be empty</div>
+          )}
+          {username.isDirty &&
+            (username.minLengthError || username.maxLengthError) && (
+              <div style={{ color: "red" }}>
+                Username size should be from 3 to 50
+              </div>
+            )}
+
           <CustomFormInput
             id={"email-register-input"}
             label={"Email"}
-            onChange={(event) => setEmail(event.target.value)}
+            onChange={email.onChange}
+            onBlur={email.onBlur}
             placeholder={"email"}
-            value={email}
+            value={email.value}
           />
+          {email.isDirty && email.isEmpty && (
+            <div style={{ color: "red" }}>Email must not be empty</div>
+          )}
+          {email.isDirty && email.emailError && (
+            <div style={{ color: "red" }}>Value must be valid email</div>
+          )}
+          {email.isDirty && email.maxLengthError && (
+            <div style={{ color: "red" }}>
+              Email size should not be bigger than 50
+            </div>
+          )}
+
           <CustomFormInput
             id={"password-register-input"}
             label={"Password"}
-            onChange={(event) => setPassword(event.target.value)}
+            onChange={password.onChange}
+            onBlur={password.onBlur}
             placeholder={"password"}
-            value={password}
+            value={password.value}
             type={"password"}
           />
+          {password.isDirty && password.isEmpty && (
+            <div style={{ color: "red" }}>Password must not be empty</div>
+          )}
+          {password.isDirty &&
+            (password.minLengthError || password.maxLengthError) && (
+              <div style={{ color: "red" }}>
+                Paasword size should be from 5 to 50
+              </div>
+            )}
         </div>
         <div className="middle-font-text">Your first and last names:</div>
         <div>
           <CustomFormInput
             id={"first-name-register-input"}
             label={"First name"}
-            onChange={(event) => setFirstName(event.target.value)}
+            onChange={firstName.onChange}
             placeholder={"first name"}
-            value={firstName}
+            value={firstName.value}
           />
+          {firstName.isDirty && firstName.isEmpty && (
+            <div style={{ color: "red" }}>First name must not be empty</div>
+          )}
+          {firstName.isDirty &&
+            (firstName.minLengthError || firstName.maxLengthError) && (
+              <div style={{ color: "red" }}>
+                First name size should be from 5 to 50
+              </div>
+            )}
+
           <CustomFormInput
             id={"last-name-register-input"}
             label={"Last name"}
-            onChange={(event) => setLastName(event.target.value)}
+            onChange={lastName.onChange}
             placeholder={"last name"}
-            value={lastName}
+            value={lastName.value}
           />
+          {lastName.isDirty && lastName.isEmpty && (
+            <div style={{ color: "red" }}>Last name must not be empty</div>
+          )}
+          {lastName.isDirty &&
+            (lastName.minLengthError || lastName.maxLengthError) && (
+              <div style={{ color: "red" }}>
+                Last name size should be from 5 to 50
+              </div>
+            )}
         </div>
         <div>
           <button
             className={"btn btn-outline-success btn-lg login-button"}
             onClick={performRegister}
+            disabled={!formIsFullValid}
           >
-            Register
+            {String(formIsFullValid)}
           </button>
         </div>
         <div>
