@@ -46,11 +46,11 @@ const RegisterForm = () => {
     setModalVisible(false);
     setSpinner(true);
     const body = {
-      username,
-      password,
-      email,
-      firstName,
-      lastName,
+      username: username.value,
+      password: password.value,
+      email: email.value,
+      firstName: firstName.value,
+      lastName: lastName.value,
     };
 
     try {

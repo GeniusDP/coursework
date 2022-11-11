@@ -35,7 +35,7 @@ const LoginForm = () => {
       const loginDto = { username: username.value, password: password.value };
       const response = await loginFetch(url, loginDto);
       if (!response.ok) {
-        setModalMessage("Not correct username or password!");
+        setModalMessage("Incorrect username or password. Or user is not activated.");
         setModalVisible(true);
 
         return;
