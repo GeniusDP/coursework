@@ -9,6 +9,7 @@ import com.zaranik.cursework.authservice.entities.RoleValue;
 import com.zaranik.cursework.authservice.entities.User;
 import com.zaranik.cursework.authservice.repositories.RoleRepository;
 import com.zaranik.cursework.authservice.repositories.UserRepository;
+import com.zaranik.cursework.authservice.services.hashingutility.HashingUtilityService;
 import com.zaranik.cursework.authservice.utils.JwtTokenUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

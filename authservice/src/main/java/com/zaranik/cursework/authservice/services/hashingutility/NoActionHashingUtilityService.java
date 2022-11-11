@@ -1,4 +1,4 @@
-package com.zaranik.cursework.authservice.services;
+package com.zaranik.cursework.authservice.services.hashingutility;
 
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;

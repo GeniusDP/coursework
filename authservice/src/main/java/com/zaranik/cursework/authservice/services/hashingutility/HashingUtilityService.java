@@ -1,4 +1,4 @@
-package com.zaranik.cursework.authservice.services;
+package com.zaranik.cursework.authservice.services.hashingutility;
 
 public interface HashingUtilityService {
 
