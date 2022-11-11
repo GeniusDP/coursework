@@ -1,7 +1,7 @@
 import React from "react";
 import "./modal-styles.css";
 
-const Modal = ({ children, visible, setVisible }) => {
+const Modal = ({ children, visible, onClose }) => {
   return (
     <>
       {visible && (
@@ -10,7 +10,7 @@ const Modal = ({ children, visible, setVisible }) => {
             <div>{children}</div>
             <button
               className="btn btn-danger custom-button"
-              onClick={setVisible}
+              onClick={onClose}
             >
               Close
             </button>

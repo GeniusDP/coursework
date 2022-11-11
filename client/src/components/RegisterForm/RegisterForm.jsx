@@ -40,7 +40,6 @@ const RegisterForm = () => {
         lastName.isFullValid()
     );
 
-    console.log([username, password, email, firstName, lastName]);
   }, [username, password, email, firstName, lastName]);
 
   async function performRegister() {
@@ -67,7 +66,7 @@ const RegisterForm = () => {
         setModalVisible(true);
       }
     } catch (error) {
-      setModalMessage("Inet connection lost:(");
+      setModalMessage("No access to server:( May be internet connection lost.");
       setModalVisible(true);
     }
     setSpinner(false);
@@ -80,7 +79,7 @@ const RegisterForm = () => {
   return (
     <div className="register-form-wrapper">
       {spinner && <Spinner />}
-      <Modal visible={modalVisible} setVisible={() => setModalVisible(false)}>
+      <Modal visible={modalVisible} onClose={() => setModalVisible(false)}>
         {modalMessage}
       </Modal>
       <div className="register-form">
@@ -185,7 +184,7 @@ const RegisterForm = () => {
             onClick={performRegister}
             disabled={!formIsFullValid}
           >
-            {String(formIsFullValid)}
+            {formIsFullValid ? "Register now!" : "Input correct data"}
           </button>
         </div>
         <div>
