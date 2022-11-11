@@ -1,9 +1,9 @@
 package com.zaranik.cursework.authservice.exceptions;
 
+import com.zaranik.cursework.authservice.dto.errors.AppError;
 import com.zaranik.cursework.authservice.dto.errors.ValidationExceptionResponse;
 import com.zaranik.cursework.authservice.dto.errors.Violation;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -16,28 +16,33 @@ import java.util.List;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(AccessTokenInvalidException.class)
-    public ResponseEntity<String> accessTokenInvalidExceptionHandler() {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Access token is not valid");
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public AppError accessTokenInvalidExceptionHandler() {
+        return AppError.justNow("Access token is not valid");
     }
 
     @ExceptionHandler(UserNotActivatedException.class)
-    public ResponseEntity<String> userNotActivatedExceptionHandler() {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User is not activated yet");
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public AppError userNotActivatedExceptionHandler() {
+        return AppError.justNow("User is not activated yet");
     }
 
     @ExceptionHandler(RefreshTokenInvalidException.class)
-    public ResponseEntity<String> refreshTokenExpiredExceptionHandler() {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Refresh token is not valid: tampered or expired");
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public AppError refreshTokenExpiredExceptionHandler() {
+        return AppError.justNow("Refresh token is not valid: tampered or expired");
     }
 
     @ExceptionHandler(LoginException.class)
-    public ResponseEntity<String> loginExceptionHandler() {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Wrong login or password");
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public AppError loginExceptionHandler() {
+        return AppError.justNow("Wrong login or password");
     }
 
     @ExceptionHandler(RegistrationException.class)
-    public ResponseEntity<String> registrationExceptionHandler() {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Registration failed");
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public AppError registrationExceptionHandler() {
+        return AppError.justNow("Registration failed");
     }
 
     @ExceptionHandler(BindException.class)
