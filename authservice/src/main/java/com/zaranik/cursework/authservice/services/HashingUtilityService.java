@@ -1,18 +1,8 @@
 package com.zaranik.cursework.authservice.services;
 
-import org.springframework.stereotype.Service;
+public interface HashingUtilityService {
 
-import java.util.Objects;
+  boolean match(String hashedValue, String actualValue);
 
-@Service
-public class HashingUtilityService {
-
-  public boolean match(String hashedValue, String actualValue) {
-    return Objects.equals(hashedValue, actualValue);
-  }
-
-  public String hash(String value) {
-    return value;
-  }
-
+  String hash(String value);
 }
