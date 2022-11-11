@@ -1,65 +1,21 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { AuthContext } from "../../App";
+import customFetch from "../../customFetch";
+import { parseJwt } from "../../jwtUtil";
 
 const AuthProvider = ({ children, roles }) => {
-  const { getToken, setToken, removeToken } = useContext(AuthContext);
+  const {
+    getAccessToken,
+    getRefreshToken,
+    setAccessToken,
+    setRefreshToken,
+    removeTokens,
+  } = useContext(AuthContext);
   const [hasPermission, setHasPermission] = useState(false);
   const [permissionAsked, setPermissionAsked] = useState(false);
+  const [errorOccured, setErrorOccured] = useState(false);
 
-  async function checkRolePermission() {
-    const myHeaders = new Headers();
-    myHeaders.append("Authorization", "Bearer " + getToken());
-    const requestOptions = {
-      method: "GET",
-      headers: myHeaders,
-    };
-
-    const responseRole = await fetch(
-      "http://localhost:8081/get-role",
-      requestOptions
-    );
-    if (!responseRole.ok) {
-      setHasPermission(() => false);
-      return false;
-    }
-    const json = await responseRole.json();
-    const role = json.role;
-    return roles.includes(role);
-  }
-
-  async function askForPermission() {
-    const myHeaders = new Headers();
-    myHeaders.append("Authorization", "Bearer " + getToken());
-    const requestOptions = {
-      method: "GET",
-      headers: myHeaders,
-    };
-
-    const responseValidate = await fetch(
-      "http://localhost:8081/validate-token",
-      requestOptions
-    );
-    if (!responseValidate.ok) {
-      const responseRefresh = await fetch(
-        "http://localhost:8081/refresh-token",
-        requestOptions
-      );
-      if (responseRefresh.ok) {
-        const jsonResponse = await responseRefresh.json();
-        setToken(jsonResponse.token);
-      }else{
-        removeToken();
-        setHasPermission(() => false);
-      }
-    }
-    if (roles === "*") {
-      setHasPermission(() => true);
-      return;
-    }
-    const rolePermission = await checkRolePermission();
-    setHasPermission(() => rolePermission);
-  }
 
   useEffect(() => {
     if (!permissionAsked) {
@@ -68,6 +24,57 @@ const AuthProvider = ({ children, roles }) => {
       });
     }
   });
+
+  const askForPermission = async () => {
+    const url = "http://localhost:8081/api/auth/validate-token";
+    const body = {
+      accessToken: getAccessToken(),
+      refreshToken: getRefreshToken(),
+    };
+    try {
+      const response = await customFetch(url, body);
+      if (response.ok) {
+        const { role } = parseJwt(getAccessToken());
+        setHasPermission(roles === "*" ? true : roles.includes(role));
+      } else {
+        const refreshedSuccessfully = await refreshToken();
+        if (refreshedSuccessfully) {
+          const { role } = parseJwt(getAccessToken());
+          setHasPermission(roles === "*" ? true : roles.includes(role));
+        } else {
+          removeTokens();
+          setHasPermission(false);
+        }
+      }
+    } catch (e) {
+      setErrorOccured(true);
+    }
+  };
+
+  const refreshToken = async () => {
+    const url = "http://localhost:8081/api/auth/refresh-token";
+    const body = {
+      accessToken: getAccessToken(),
+      refreshToken: getRefreshToken(),
+    };
+    try {
+      const response = await customFetch(url, body);
+      if (response.ok) {
+        const json = await response.json();
+        setAccessToken(json.accessToken);
+        setRefreshToken(json.refreshToken);
+        return true;
+      }
+      return false;
+    } catch (e) {
+      return false;
+    }
+  };
+
+  if(errorOccured){
+    alert('Connection with server was not successful:(\nMay be, you are offline.');
+    return <Navigate to="/" replace />;
+  }
 
   if (!permissionAsked) {
     return <div>Loading spinner...</div>;

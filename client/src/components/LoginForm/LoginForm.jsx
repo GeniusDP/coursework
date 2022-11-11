@@ -1,71 +1,73 @@
 import React, { useContext, useState } from "react";
-import { Navigate } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { AuthContext } from "../../App";
+import loginFetch from "../../customFetch";
+import CustomFormInput from "../CustomFormInput.jsx/CustomFormInput";
+import "./../component-styles.css";
+import "./login-form-styles.css";
 
 const LoginForm = () => {
-  const [username, setUsername] = useState("usr");
-  const [password, setPassword] = useState("123");
-  const {setToken} = useContext(AuthContext);
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const { setAccessToken, setRefreshToken } = useContext(AuthContext);
   const [isLoginError, setIsLoginError] = useState(false);
   const [redirect, setRedirect] = useState(false);
 
-  function performLogin() {
-    const myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-
-    const raw = JSON.stringify({
-      username,
-      password,
-    });
-
-    const requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow",
-    };
-
-    function handleErrors(response) {
-      if (!response.ok) {
-        throw Error(response.statusText);
-      }
-      return response;
+  async function performLogin() {
+    setIsLoginError(false);
+    setRedirect(false);
+    try {
+      const url = "http://localhost:8081/api/auth/login";
+      const loginDto = { username, password };
+      const response = await loginFetch(url, loginDto);
+      const json = await response.json();
+      setAccessToken(json.accessToken);
+      setRefreshToken(json.refreshToken);
+      setRedirect(true);
+      setIsLoginError(false);
+    } catch (e) {
+      setIsLoginError(true);
     }
-
-    fetch("http://localhost:8081/login", requestOptions)
-      .then(handleErrors)
-      .then((response) => response.json())
-      .then(responseJson => responseJson.token)
-      .then((token) => {
-        setToken(token);
-        setRedirect(true);
-        setIsLoginError(false);
-      })
-      .catch((error) => {
-        setIsLoginError(true);
-      });
   }
 
-  if(redirect){
-    return <Navigate to={"/"}/>;
-  }
-
-  if(isLoginError){
-    return <div>Not valid data!</div>;
+  if (redirect) {
+    return <Navigate to={"/"} />;
   }
 
   return (
-    <div>
-      <input
-        value={username}
-        onChange={(event) => setUsername(event.target.value)}
-      />
-      <input
-        type={"password"}
-        value={password}
-        onChange={(event) => setPassword(event.target.value)}
-      />
-      <button onClick={performLogin}>Login</button>
+    <div className="login-form-wrapper">
+      <div className="login-form">
+        <div className="large-font-text">Login to your account</div>
+        {isLoginError && <div>Not valid data!</div>}
+        <div>
+          <CustomFormInput
+            id={"username-login-input"}
+            label={"Username"}
+            onChange={(event) => setUsername(event.target.value)}
+            placeholder={"username"}
+            value={username}
+          />
+          <CustomFormInput
+            id={"password-login-input"}
+            label={"Password"}
+            onChange={(event) => setPassword(event.target.value)}
+            placeholder={"password"}
+            value={password}
+            type={"password"}
+          />
+        </div>
+        <div>
+          <button
+            className={"btn btn-outline-success btn-lg login-button"}
+            onClick={performLogin}
+          >
+            Login
+          </button>
+        </div>
+        <div>
+          <Link to="/register">Don`t have an account? Register now!</Link>
+        </div>
+      </div>
     </div>
   );
 };

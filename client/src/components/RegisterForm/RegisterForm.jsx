@@ -1,5 +1,10 @@
 import React, { useState } from "react";
-import { Navigate } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
+import "./register-form-styles.css";
+import "./../component-styles.css";
+import customFetch from "../../customFetch";
+import CustomFormInput from "../CustomFormInput.jsx/CustomFormInput";
+import Modal from "../Modal/Modal";
 
 const RegisterForm = () => {
   const [username, setUsername] = useState("");
@@ -7,84 +12,122 @@ const RegisterForm = () => {
   const [email, setEmail] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-
-  const [isRegistrationError, setIsRegistrationError] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [errors, setErrors] = useState([]);
+  const [registrationError, setRegistrationError] = useState(false);
   const [redirect, setRedirect] = useState(false);
+  const [networkError, setNetworkError] = useState(false);
 
-  function performLogin() {
-    const myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-
-    const raw = JSON.stringify({
+  async function performRegister() {
+    setNetworkError(false);
+    setRegistrationError(false);
+    const body = {
       username,
       password,
       email,
       firstName,
       lastName,
-    });
-
-    const requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow",
     };
 
-    function handleFetchError(request) {
-      if (!request.ok) {
-        throw new Error("status code is " + request.status);
-      }
-      return request;
-    }
-
-    fetch("http://localhost:8081/register", requestOptions)
-      .then(handleFetchError)
-      .then((request) => {
-        setIsRegistrationError(false);
+    try {
+      const response = await customFetch(
+        "http://localhost:8081/api/auth/register",
+        body
+      );
+      if (response.ok) {
+        setRegistrationError(false);
+        setNetworkError(false);
         setRedirect(true);
-      })
-      .catch((error) => {
-        console.log(error);
-         setIsRegistrationError(true);
-      });
+      } else {
+        const json = await response.json();
+        const errorsArray = json?.violations;
+        setErrors(errorsArray);
+        setRegistrationError(true);
+        setModalVisible(true);
+      }
+    } catch (error) {
+      setRegistrationError(false);
+      setNetworkError(true);
+    }
   }
 
-  if (isRegistrationError) {
-    alert('Some problem occured! May be internet connetction lost.');
+  if (networkError) {
+    alert("Problem occured! May be internet connection lost.");
   }
+
   if (redirect) {
     return <Navigate to={"/login"} />;
   }
 
   return (
-    <div>
-      <input
-        value={username}
-        onChange={(event) => setUsername(event.target.value)}
-        placeholder={"username"}
-      />
-      <input
-        value={email}
-        placeholder={"email"}
-        onChange={(event) => setEmail(event.target.value)}
-      />
-      <input
-        type={"password"}
-        value={password}
-        onChange={(event) => setPassword(event.target.value)}
-        placeholder={"password"}
-      />
-      <input
-        value={firstName}
-        onChange={(event) => setFirstName(event.target.value)}
-        placeholder={"firstName"}
-      />
-      <input
-        value={lastName}
-        onChange={(event) => setLastName(event.target.value)}
-        placeholder={"lastName"}
-      />
-      <button onClick={performLogin}>Register</button>
+    <div className="register-form-wrapper">
+      <Modal visible={modalVisible} setVisible={() => setModalVisible(false)}>
+        {errors.map((el, idx) => (
+          <div key = {idx}>
+            <div>{el.fieldName}</div>
+            <div>{el.message}</div>
+          </div>
+        ))}
+      </Modal>
+      <div className="register-form">
+        <div className="large-font-text">Registration</div>
+        <div>
+          <CustomFormInput
+            id={"username-register-input"}
+            label={"Username"}
+            onChange={(event) => {
+              console.log("on change");
+              console.log(registrationError);
+              setUsername(event.target.value);
+            }}
+            placeholder={"username"}
+            value={username}
+          />
+          <CustomFormInput
+            id={"email-register-input"}
+            label={"Email"}
+            onChange={(event) => setEmail(event.target.value)}
+            placeholder={"email"}
+            value={email}
+          />
+          <CustomFormInput
+            id={"password-register-input"}
+            label={"Password"}
+            onChange={(event) => setPassword(event.target.value)}
+            placeholder={"password"}
+            value={password}
+            type={"password"}
+          />
+        </div>
+        <div className="middle-font-text">Your first and last names:</div>
+        <div>
+          <CustomFormInput
+            id={"first-name-register-input"}
+            label={"First name"}
+            onChange={(event) => setFirstName(event.target.value)}
+            placeholder={"first name"}
+            value={firstName}
+          />
+          <CustomFormInput
+            id={"last-name-register-input"}
+            label={"Last name"}
+            onChange={(event) => setLastName(event.target.value)}
+            placeholder={"last name"}
+            value={lastName}
+          />
+        </div>
+        <div>
+          <button
+            className={"btn btn-outline-success btn-lg login-button"}
+            onClick={performRegister}
+          >
+            Register
+          </button>
+        </div>
+        <div>
+          <Link to="/login">Already have an account? Login now!</Link>
+        </div>
+      </div>
     </div>
   );
 };

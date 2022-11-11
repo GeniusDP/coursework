@@ -4,23 +4,39 @@ import Router from "./routes/AppRouter";
 export const AuthContext = createContext();
 
 const App = () => {
-  
-  const getToken = () => {
-    return localStorage.getItem('token');
-  }
+  const getAccessToken = () => {
+    return localStorage.getItem("accessToken");
+  };
 
-  const setToken = (value) => {
-    localStorage.setItem('token', value);
-  }
+  const getRefreshToken = () => {
+    return localStorage.getItem("refreshToken");
+  };
 
-  const removeToken = () => {
-    localStorage.removeItem('token');
-  }
+  const setAccessToken = (accessToken) => {
+    localStorage.setItem("accessToken", accessToken);
+  };
+
+  const setRefreshToken = (refreshToken) => {
+    localStorage.setItem("refreshToken", refreshToken);
+  };
+
+  const removeTokens = () => {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+  };
+
+  const tokenFunctions = {
+    getAccessToken,
+    getRefreshToken,
+    setAccessToken,
+    setRefreshToken,
+    removeTokens,
+  };
 
   return (
     <div>
-      <AuthContext.Provider value={{getToken, setToken, removeToken}}>
-        <Router/>
+      <AuthContext.Provider value={tokenFunctions}>
+        <Router />
       </AuthContext.Provider>
     </div>
   );

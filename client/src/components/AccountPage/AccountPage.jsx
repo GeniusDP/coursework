@@ -4,12 +4,15 @@ import { AuthContext } from "../../App";
 import { parseJwt } from "../../jwtUtil";
 
 const AccountPage = () => {
-  const { getToken } = useContext(AuthContext);
-  const username = parseJwt(getToken());
+  const { getAccessToken } = useContext(AuthContext);
+  const tokenPayload = parseJwt(getAccessToken());
+  const username = tokenPayload.sub;
+  const role = tokenPayload.role;
   return (
     <div>
       <div>Account page</div>
-      <div>{username}</div>
+      <div>Username = {username}</div>
+      <div>Role = {role}</div>
       <div>
         {" "}
         <Link to={"/"}>To main</Link>
