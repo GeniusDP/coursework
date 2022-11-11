@@ -39,7 +39,6 @@ const RegisterForm = () => {
         firstName.isFullValid() &&
         lastName.isFullValid()
     );
-
   }, [username, password, email, firstName, lastName]);
 
   async function performRegister() {
@@ -68,8 +67,9 @@ const RegisterForm = () => {
     } catch (error) {
       setModalMessage("No access to server:( May be internet connection lost.");
       setModalVisible(true);
+    } finally {
+      setSpinner(false);
     }
-    setSpinner(false);
   }
 
   if (redirect) {
