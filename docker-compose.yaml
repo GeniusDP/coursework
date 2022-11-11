@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+  auth_postgres:
+    image: 'postgres'
+    container_name: 'auth_postgres'
+    ports:
+      - 5433
+    environment:
+      - 'POSTGRES_USER=postgres'
+      - 'POSTGRES_HOST_AUTH_METHOD=trust'
+      - 'POSTGRES_DB=postgres'
+    volumes:
+      - ./authservice/src/main/resources/init_db.sql:/docker-entrypoint-initdb.d/init.sql
+  auth_service:
+    build: ./authservice
+    container_name: 'auth_service'
+    ports:
+      - 8081:8081
+    environment:
+      - 'DB_HOST=auth_postgres'
+    depends_on:
+      - auth_postgres
