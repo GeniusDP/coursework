@@ -1,0 +1,27 @@
+server:
+  port: 8082
+  servlet:
+    context-path: /api/user-details
+spring:
+  main:
+    allow-circular-references: true
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: postgres
+    url: jdbc:postgresql://${DB_HOST}/postgres
+  jpa:
+    hibernate:
+      ddl-auto: validate
+
+auth-service:
+  url: http://${AUTH_SERVICE_HOST}/api/auth
+zaranik:
+  app:
+    jwtAccessTokenExpirationSeconds: 900 # 15 minutes
+    jwtRefreshTokenExpirationSeconds: 2678400 # a one month
+    jwtSecret: BogdanZaranikBogdanZaranikBogdanZaranikBogdanZaranikBogdanZaranikBogdanZaranikBogdanZaranikBogdanZaranik
+
+springdoc:
+  swagger-ui:
+    path: /swagger
