@@ -1,6 +1,6 @@
 package com.example.demo.controllers;
 
-import com.example.demo.aspect.security.admin.AdminGrant;
+import com.example.demo.aspect.security.roles.admin.AdminGrant;
 import com.example.demo.aspect.security.basic.SecuredRoute;
 import com.example.demo.dto.ChangeRoleDto;
 import com.example.demo.dto.RegistrationUserDto;
@@ -40,7 +40,6 @@ public class UserManagementController {
   public ResponseStringWrapper activateUserByLink() {
     throw new IllegalArgumentException("Feature not implemented yet");
   }
-
 
   @SecuredRoute
   @PutMapping("/update")

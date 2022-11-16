@@ -1,9 +1,8 @@
-package com.example.demo.aspect.security.admin;
+package com.example.demo.aspect.security.roles;
 
 import com.example.demo.dto.AccessTokenInvalidException;
 import com.example.demo.dto.TokenContainingDto;
 import com.example.demo.entities.RoleValue;
-import com.example.demo.exceptions.AuthServiceUnreachableException;
 import com.example.demo.exceptions.ForbiddenAccessException;
 import com.example.demo.exceptions.UnauthorizedException;
 import com.example.demo.utils.JwtTokenUtil;
@@ -11,23 +10,15 @@ import java.util.Arrays;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.Around;
-import org.aspectj.lang.annotation.Aspect;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
-@Aspect
 @Component
-@Order(-1)
 @RequiredArgsConstructor
-public class CheckAdminGrantAspect {
+public class RoleChecker {
 
-  @Autowired
-  private JwtTokenUtil jwtTokenUtil;
+  private final JwtTokenUtil jwtTokenUtil;
 
-  @Around("com.example.demo.aspect.security.SecurityPointcuts.aroundMethodWithAdminGrant()")
-  public Object aroundMethodWithAdminGrant(ProceedingJoinPoint joinPoint) {
+  public Object checkRole(ProceedingJoinPoint joinPoint, RoleValue roleValue){
     Object[] args = joinPoint.getArgs();
 
     Optional<TokenContainingDto> tokenDtoOptional = Arrays.stream(args)
@@ -47,8 +38,7 @@ public class CheckAdminGrantAspect {
       if(roleName == null){
         throw new AccessTokenInvalidException();
       }
-      RoleValue roleValue = RoleValue.valueOf(roleName);
-      if(roleValue != RoleValue.ADMIN){
+      if(RoleValue.valueOf(roleName) != roleValue){
         throw new ForbiddenAccessException();
       }
       return joinPoint.proceed();
@@ -56,6 +46,5 @@ public class CheckAdminGrantAspect {
       throw new RuntimeException(e);
     }
   }
-
 
 }
