@@ -23,7 +23,8 @@ public class User extends BaseEntity {
 
     private String lastName;
 
-    private boolean isActivated;
+    @Builder.Default
+    private boolean isActivated = false;
 
     @JsonIgnore
     private String refreshToken;
