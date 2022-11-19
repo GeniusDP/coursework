@@ -1,7 +1,6 @@
 package com.zaranik.cursework.authservice.controllers;
 
 import com.zaranik.cursework.authservice.dto.LoginUserDto;
-import com.zaranik.cursework.authservice.dto.RegistrationUserDto;
 import com.zaranik.cursework.authservice.dto.TokenDto;
 import com.zaranik.cursework.authservice.services.AuthService;
 import lombok.RequiredArgsConstructor;

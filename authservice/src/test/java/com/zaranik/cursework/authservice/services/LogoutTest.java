@@ -2,11 +2,8 @@ package com.zaranik.cursework.authservice.services;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zaranik.cursework.authservice.dto.LoginUserDto;
 import com.zaranik.cursework.authservice.dto.TokenDto;
@@ -16,7 +13,6 @@ import com.zaranik.cursework.authservice.entities.User;
 import com.zaranik.cursework.authservice.repositories.RoleRepository;
 import com.zaranik.cursework.authservice.repositories.UserRepository;
 import com.zaranik.cursework.authservice.services.hashingutility.HashingUtilityService;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
