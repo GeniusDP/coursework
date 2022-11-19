@@ -1,5 +1,6 @@
 package com.zaranik.cursework.authservice.controllers;
 
+import com.zaranik.cursework.authservice.dto.ResponseStringWrapper;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -9,8 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class PingController {
 
     @GetMapping(value = "/ping", produces = "application/json")
-    public String getPong(){
-        return "auth:pong";
+    public ResponseStringWrapper getPong(){
+        return ResponseStringWrapper.of("auth:pong");
     }
 
 }
