@@ -2,27 +2,24 @@ package com.zaranik.cursework.authservice.services;
 
 import com.zaranik.cursework.authservice.dto.LoginUserDto;
 import com.zaranik.cursework.authservice.dto.TokenDto;
-import com.zaranik.cursework.authservice.dto.RegistrationUserDto;
-import com.zaranik.cursework.authservice.exceptions.*;
-import com.zaranik.cursework.authservice.entities.Role;
 import com.zaranik.cursework.authservice.entities.RoleValue;
 import com.zaranik.cursework.authservice.entities.User;
-import com.zaranik.cursework.authservice.repositories.RoleRepository;
+import com.zaranik.cursework.authservice.exceptions.AccessTokenInvalidException;
+import com.zaranik.cursework.authservice.exceptions.LoginException;
+import com.zaranik.cursework.authservice.exceptions.RefreshTokenInvalidException;
+import com.zaranik.cursework.authservice.exceptions.UserNotActivatedException;
 import com.zaranik.cursework.authservice.repositories.UserRepository;
 import com.zaranik.cursework.authservice.services.hashingutility.HashingUtilityService;
 import com.zaranik.cursework.authservice.utils.JwtTokenUtil;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.validation.Valid;
 
 @Service
 @RequiredArgsConstructor
 public class AuthService {
 
   private final JwtTokenUtil jwtTokenUtil;
-  private final RoleRepository roleRepository;
   private final UserRepository userRepository;
   private final HashingUtilityService hashingUtilityService;
 
@@ -100,6 +97,11 @@ public class AuthService {
     String username = jwtTokenUtil.safeGetUserNameFromProbablyExpiredJwtToken(accessToken);
 
     User user = userRepository.findByUsername(username);
+    String userRefreshToken = user.getRefreshToken();
+
+    if(!userRefreshToken.equals(tokenDto.getRefreshToken())){
+      throw new RefreshTokenInvalidException();
+    }
     user.setRefreshToken(null);
     userRepository.save(user);
   }
