@@ -57,7 +57,7 @@ public class UserManagementController {
   @SecuredRoute
   @PostMapping("/users/{username}")
   public User getUserInfo(@PathVariable String username, @Valid @RequestBody TokenContainingDto dto){
-    return userManagementService.getUserInfo(username);
+    return userManagementService.getUserInfo(username, dto.getAccessToken());
   }
 
 

@@ -5,12 +5,14 @@ import com.example.demo.dto.UpdateUserDto;
 import com.example.demo.entities.Role;
 import com.example.demo.entities.RoleValue;
 import com.example.demo.entities.User;
+import com.example.demo.exceptions.ForbiddenAccessException;
 import com.example.demo.exceptions.RegistrationException;
 import com.example.demo.exceptions.UserDetailsUpdateException;
 import com.example.demo.exceptions.UserNotFoundException;
 import com.example.demo.repositories.RoleRepository;
 import com.example.demo.repositories.UserRepository;
 import com.example.demo.services.hashingutility.HashingUtilityService;
+import com.example.demo.utils.JwtTokenUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +24,7 @@ public class UserManagementService {
   private final RoleRepository roleRepository;
   private final UserRepository userRepository;
   private final HashingUtilityService hashingUtilityService;
-
+  private final JwtTokenUtil jwtTokenUtil;
 
   public boolean userExistsByUsername(String username) {
     boolean exists = userRepository.existsByUsername(username);
@@ -61,7 +63,7 @@ public class UserManagementService {
   @Transactional
   public User updateUser(UpdateUserDto updateDto) {
     User user = userRepository.findByUsername(updateDto.getUsername());
-    if(user == null || !user.isActivated()){
+    if(user == null || !user.getIsActivated()){
       throw new UserDetailsUpdateException();
     }
 
@@ -93,9 +95,13 @@ public class UserManagementService {
     return user;
   }
 
-  public User getUserInfo(String username) {
+  public User getUserInfo(String username, String accessToken) {
+    String usernameFromToken = jwtTokenUtil.safeGetUserNameFromProbablyExpiredJwtToken(accessToken);
+    if(!usernameFromToken.equals(username)){
+      throw new ForbiddenAccessException();
+    }
     User user = userRepository.findByUsername(username);
-    if(user == null || !user.isActivated()){
+    if(user == null || !user.getIsActivated()){
       throw new UserNotFoundException();
     }
     return user;
@@ -103,7 +109,7 @@ public class UserManagementService {
 
   public User changeRole(String username, RoleValue roleValue) {
     User user = userRepository.findByUsername(username);
-    if(user == null || !user.isActivated()){
+    if(user == null || !user.getIsActivated()){
       throw new UserNotFoundException();
     }
     Role role = roleRepository.findByName(roleValue);
