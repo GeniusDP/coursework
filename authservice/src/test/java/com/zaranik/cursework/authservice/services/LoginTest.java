@@ -49,11 +49,7 @@ class LoginTest {
   @BeforeEach
   public void initTestCase() {
     Role studentRole = new Role(RoleValue.STUDENT);
-    Role teacherRole = new Role(RoleValue.TEACHER);
-    Role adminRole = new Role(RoleValue.ADMIN);
     roleRepository.save(studentRole);
-    roleRepository.save(teacherRole);
-    roleRepository.save(adminRole);
     User student = User.builder()
       .setUsername("student")
       .setPassword("12345")
@@ -82,7 +78,7 @@ class LoginTest {
       .setActivated(true)
       .setEmail("student3@gmail.com")
       .build();
-    studentNotActivated.setRole(studentRole);
+    userLoggedIn.setRole(studentRole);
 
     userRepository.save(student);
     userRepository.save(studentNotActivated);

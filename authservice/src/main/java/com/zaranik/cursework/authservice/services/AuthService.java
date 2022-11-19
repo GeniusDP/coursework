@@ -64,11 +64,11 @@ public class AuthService {
 
     String providedRefreshToken = tokenDto.getRefreshToken();
 
-    if (!hashingUtilityService.match(user.getRefreshToken(), providedRefreshToken)) {
+    if (!jwtTokenUtil.tokenIsValid(providedRefreshToken)) {
       throw new RefreshTokenInvalidException();
     }
 
-    if (!jwtTokenUtil.tokenIsValid(providedRefreshToken)) {
+    if (!hashingUtilityService.match(user.getRefreshToken(), providedRefreshToken)) {
       throw new RefreshTokenInvalidException();
     }
 
