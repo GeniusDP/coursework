@@ -22,7 +22,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(UserNotActivatedException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public AppError userNotActivatedExceptionHandler() {
         return AppError.justNow("User is not activated yet");
     }
