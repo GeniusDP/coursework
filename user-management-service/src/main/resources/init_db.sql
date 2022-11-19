@@ -26,4 +26,6 @@ create table if not exists app_users
 );
 
 insert into app_users (username, email, password, first_name, last_name, is_activated, refresh_token, role_id)
-values ('usr', 'usr@gmail.com', '123', 'John', 'Doe', true, null, 1);
+values ('student', 'stud@gmail.com', 'student', 'John', 'Doe', true, null, 1),
+       ('teacher', 'teacher@gmail.com', 'teacher', 'Marco', 'Behler', true, null, 2),
+       ('admin', 'admin@gmail.com', 'admin', 'admin', 'admin', true, null, 3);
