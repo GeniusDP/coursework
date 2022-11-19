@@ -35,9 +35,6 @@ public class RoleChecker {
     try {
       String accessToken = tokenDto.getAccessToken();
       String roleName = jwtTokenUtil.safeGetRoleNameFromProbablyExpiredToken(accessToken);
-      if(roleName == null){
-        throw new AccessTokenInvalidException();
-      }
       if(RoleValue.valueOf(roleName) != roleValue){
         throw new ForbiddenAccessException();
       }
