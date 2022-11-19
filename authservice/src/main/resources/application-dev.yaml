@@ -18,8 +18,8 @@ spring:
 
 zaranik:
   app:
-    jwtAccessTokenExpirationSeconds: 60 # 15 minutes
-    jwtRefreshTokenExpirationSeconds: 120 # a one month
+    jwtAccessTokenExpirationSeconds: 900 # 15 minutes
+    jwtRefreshTokenExpirationSeconds: 2678400 # a one month
     jwtSecret: BogdanZaranikBogdanZaranikBogdanZaranikBogdanZaranikBogdanZaranikBogdanZaranikBogdanZaranikBogdanZaranik
 springdoc:
   swagger-ui:
