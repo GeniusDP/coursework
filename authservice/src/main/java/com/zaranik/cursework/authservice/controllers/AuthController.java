@@ -26,11 +26,6 @@ public class AuthController {
     authService.logout(tokenDto);
   }
 
-  @PostMapping("/register")
-  public void register(@Valid @RequestBody RegistrationUserDto registrationUserDto) {
-    authService.register(registrationUserDto);
-  }
-
   @PostMapping("/refresh-token")
   public TokenDto getNewAccessToken(@Valid @RequestBody TokenDto tokenDto) {
     return authService.refreshToken(tokenDto);

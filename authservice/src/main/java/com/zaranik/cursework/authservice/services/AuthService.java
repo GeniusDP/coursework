@@ -53,29 +53,6 @@ public class AuthService {
     return new TokenDto(accessJwtToken, refreshJwtToken);
   }
 
-  @Transactional
-  public void register(RegistrationUserDto registrationUserDto) {
-    String username = registrationUserDto.getUsername();
-    String password = registrationUserDto.getPassword();
-    String email = registrationUserDto.getEmail();
-    String firstName = registrationUserDto.getFirstName();
-    String lastName = registrationUserDto.getLastName();
-    if (userRepository.existsByUsername(username)) {
-      throw new RegistrationException("User with such username already exists");
-    }
-    Role userRole = roleRepository.findByName(RoleValue.STUDENT);
-    User newUser = User.builder()
-        .setUsername(username)
-        .setPassword(password)
-        .setEmail(email)
-        .setFirstName(firstName)
-        .setLastName(lastName)
-        .setActivated(false)
-        .build();
-    newUser.setRole(userRole);
-    userRepository.save(newUser);
-  }
-
   public TokenDto refreshToken(@Valid TokenDto tokenDto) {
     String accessToken = tokenDto.getAccessToken();
     String username = jwtTokenUtil.safeGetUserNameFromProbablyExpiredJwtToken(accessToken);
