@@ -1,65 +1,48 @@
 package com.example.demo.utils;
 
 import com.example.demo.dto.AccessTokenInvalidException;
-import io.jsonwebtoken.*;
-import org.springframework.beans.factory.annotation.Value;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
+import org.apache.tomcat.util.codec.binary.Base64;
+import org.apache.tomcat.util.codec.binary.StringUtils;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class JwtTokenUtil {
 
-  @Value("${zaranik.app.jwtSecret}")
-  private String jwtSecret;
+  private final ObjectMapper objectMapper;
 
-  public String safeGetUserNameFromProbablyExpiredJwtToken(String token) {
+  private String decodeToJson(final String base64) {
+    return StringUtils.newStringUtf8(Base64.decodeBase64(base64));
+  }
+
+  public String getUserNameFromToken(String token) {
+    return getClaim(token, "sub");
+  }
+
+  public String getRoleNameFromToken(String token) {
+    return getClaim(token, "role");
+  }
+
+  private String getClaim(String token, String claimName){
+    String payload = decodeToJson(token);
     try {
-      return Jwts.parser()
-        .setSigningKey(jwtSecret)
-        .parseClaimsJws(token)
-        .getBody()
-        .getSubject();
-    } catch (ExpiredJwtException e) {
-      return e.getClaims().getSubject();
-    } catch (Exception e) {
+      JsonNode node = objectMapper.readTree(payload);
+      JsonNode claim = node.get(claimName);
+      if (claim == null) {
+        throw new AccessTokenInvalidException();
+      }
+      String roleStringValue = claim.toString();
+      StringBuilder sb = new StringBuilder(roleStringValue);
+      sb.deleteCharAt(roleStringValue.length()-1);
+      sb.deleteCharAt(0);
+      return sb.toString();
+    } catch (JsonProcessingException e) {
       throw new AccessTokenInvalidException();
     }
   }
 
-  public boolean tokenIsValid(String authToken) {
-    try {
-      Jwts.parser()
-        .setSigningKey(jwtSecret)
-        .parseClaimsJws(authToken);
-      return true;
-    } catch (Exception e) {
-      return false;
-    }
-  }
-
-  public boolean tokenIsExpiredButNotTampered(String authToken) {
-    try {
-      Jwts.parser()
-        .setSigningKey(jwtSecret)
-        .parseClaimsJws(authToken);
-      return true;
-    } catch (ExpiredJwtException e) {
-      return true;
-    } catch (Exception e) {
-      return false;
-    }
-  }
-
-  public String safeGetRoleNameFromProbablyExpiredToken(String token) {
-    try {
-      return Jwts.parser()
-        .setSigningKey(jwtSecret)
-        .parseClaimsJws(token)
-        .getBody()
-        .get("role", String.class);
-    } catch (ExpiredJwtException e) {
-      return e.getClaims().get("role", String.class);
-    } catch (Exception e) {
-      throw new AccessTokenInvalidException();
-    }
-  }
 }
