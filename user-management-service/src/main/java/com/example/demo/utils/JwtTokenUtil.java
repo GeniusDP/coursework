@@ -28,9 +28,10 @@ public class JwtTokenUtil {
   }
 
   private String getClaim(String token, String claimName){
-    String payload = decodeToJson(token);
+    String payloadPartOfToken = token.split("\\.")[1];
+    String jsonPayload = decodeToJson(payloadPartOfToken);
     try {
-      JsonNode node = objectMapper.readTree(payload);
+      JsonNode node = objectMapper.readTree(jsonPayload);
       JsonNode claim = node.get(claimName);
       if (claim == null) {
         throw new AccessTokenInvalidException();

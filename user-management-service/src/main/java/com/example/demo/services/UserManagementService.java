@@ -96,7 +96,7 @@ public class UserManagementService {
   }
 
   public User getUserInfo(String username, String accessToken) {
-    String usernameFromToken = jwtTokenUtil.safeGetUserNameFromProbablyExpiredJwtToken(accessToken);
+    String usernameFromToken = jwtTokenUtil.getUserNameFromToken(accessToken);
     if(!usernameFromToken.equals(username)){
       throw new ForbiddenAccessException();
     }
