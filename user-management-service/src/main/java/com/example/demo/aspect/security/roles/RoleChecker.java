@@ -1,15 +1,13 @@
 package com.example.demo.aspect.security.roles;
 
-import com.example.demo.dto.AccessTokenInvalidException;
-import com.example.demo.dto.TokenContainingDto;
 import com.example.demo.entities.RoleValue;
 import com.example.demo.exceptions.ForbiddenAccessException;
 import com.example.demo.exceptions.UnauthorizedException;
 import com.example.demo.utils.JwtTokenUtil;
-import java.util.Arrays;
-import java.util.Optional;
+import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -17,25 +15,17 @@ import org.springframework.stereotype.Component;
 public class RoleChecker {
 
   private final JwtTokenUtil jwtTokenUtil;
+  private final HttpServletRequest httpServletRequest;
 
   public Object checkRole(ProceedingJoinPoint joinPoint, RoleValue roleValue){
-    Object[] args = joinPoint.getArgs();
-
-    Optional<TokenContainingDto> tokenDtoOptional = Arrays.stream(args)
-        .filter(arg -> arg instanceof TokenContainingDto)
-        .map(arg -> (TokenContainingDto) arg)
-        .findFirst();
-
-    if (tokenDtoOptional.isEmpty()) {
+    String authHeader = httpServletRequest.getHeader(HttpHeaders.AUTHORIZATION);
+    if(authHeader == null || !authHeader.matches("^Bearer\s.*$")){
       throw new UnauthorizedException();
     }
-
-    TokenContainingDto tokenDto = tokenDtoOptional.get();
-
     try {
-      String accessToken = tokenDto.getAccessToken();
-      String roleName = jwtTokenUtil.safeGetRoleNameFromProbablyExpiredToken(accessToken);
-      if(RoleValue.valueOf(roleName) != roleValue){
+      String accessToken = authHeader.substring(7);
+      String tokenRoleName = jwtTokenUtil.getRoleNameFromToken(accessToken);
+      if(RoleValue.getRoleValue(tokenRoleName) != roleValue){
         throw new ForbiddenAccessException();
       }
       return joinPoint.proceed();

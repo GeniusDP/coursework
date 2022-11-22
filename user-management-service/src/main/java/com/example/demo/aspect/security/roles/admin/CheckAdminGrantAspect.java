@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 @Aspect
 @Component
-@Order(-1)
+@Order(-100)
 @RequiredArgsConstructor
 public class CheckAdminGrantAspect {
 

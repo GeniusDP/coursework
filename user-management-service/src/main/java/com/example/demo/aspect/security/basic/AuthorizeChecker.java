@@ -1,36 +1,38 @@
 package com.example.demo.aspect.security.basic;
 
-import com.example.demo.dto.TokenContainingDto;
 import com.example.demo.exceptions.AuthServiceUnreachableException;
 import com.example.demo.exceptions.UnauthorizedException;
-import java.util.Arrays;
-import java.util.Optional;
+import javax.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 @Component
+@RequiredArgsConstructor
 public class AuthorizeChecker {
 
+  private final HttpServletRequest httpServletRequest;
+
   public Object validateTokens(ProceedingJoinPoint joinPoint, String url) throws Throwable {
-    Object[] args = joinPoint.getArgs();
-
-    Optional<TokenContainingDto> tokenDtoOptional = Arrays.stream(args)
-        .filter(arg -> arg instanceof TokenContainingDto)
-        .map(arg -> (TokenContainingDto) arg)
-        .findFirst();
-
-    if (tokenDtoOptional.isEmpty()) {
+    String authHeader = httpServletRequest.getHeader(HttpHeaders.AUTHORIZATION);
+    if(authHeader == null || !authHeader.matches("^Bearer\s.*$")){
       throw new UnauthorizedException();
     }
 
-    TokenContainingDto tokenDto = tokenDtoOptional.get();
     RestTemplate restTemplate = new RestTemplate();
+    HttpHeaders headers = new HttpHeaders();
+    headers.set(HttpHeaders.AUTHORIZATION, authHeader);
+
+    HttpEntity<?> requestEntity = new HttpEntity<>(headers);
 
     try {
-      restTemplate.postForEntity(url, tokenDto, Object.class);
+      restTemplate.exchange(url, HttpMethod.GET, requestEntity, Object.class);
     } catch (RestClientException e) {
       if (e instanceof HttpClientErrorException) {
         throw new UnauthorizedException();

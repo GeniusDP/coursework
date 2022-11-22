@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ChangeRoleDto extends TokenContainingDto {
+public class ChangeRoleDto {
 
   @NotNull
   private RoleValue roleValue;

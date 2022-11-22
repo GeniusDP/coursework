@@ -11,7 +11,7 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UpdateUserDto extends TokenContainingDto {
+public class UpdateUserDto {
 
   @Size(min = 3, max = 50, message = "username size should be from 3 to 50")
   private String username;

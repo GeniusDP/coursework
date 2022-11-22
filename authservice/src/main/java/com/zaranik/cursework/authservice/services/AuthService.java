@@ -14,8 +14,10 @@ import com.zaranik.cursework.authservice.utils.JwtTokenUtil;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 @Service
+@Validated
 @RequiredArgsConstructor
 public class AuthService {
 
@@ -81,8 +83,7 @@ public class AuthService {
     return new TokenDto(accessJwtToken, refreshJwtToken);
   }
 
-  public void validateToken(@Valid TokenDto tokenDto) {
-    String accessToken = tokenDto.getAccessToken();
+  public void validateToken(String accessToken) {
     if (!jwtTokenUtil.tokenIsValid(accessToken)) {
       throw new AccessTokenInvalidException();
     }
