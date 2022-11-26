@@ -6,10 +6,10 @@ public enum RoleValue {
   ADMIN;
 
   public static RoleValue getRoleValue(String name) {
-    if(name == null){
+    if (name == null) {
       return null;
     }
-    return switch (name){
+    return switch (name) {
       case "STUDENT" -> STUDENT;
       case "TEACHER" -> TEACHER;
       case "ADMIN" -> ADMIN;

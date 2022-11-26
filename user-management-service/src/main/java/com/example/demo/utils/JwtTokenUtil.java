@@ -27,7 +27,7 @@ public class JwtTokenUtil {
     return getClaim(token, "role");
   }
 
-  private String getClaim(String token, String claimName){
+  private String getClaim(String token, String claimName) {
     String payloadPartOfToken = token.split("\\.")[1];
     String jsonPayload = decodeToJson(payloadPartOfToken);
     try {
@@ -38,7 +38,7 @@ public class JwtTokenUtil {
       }
       String roleStringValue = claim.toString();
       StringBuilder sb = new StringBuilder(roleStringValue);
-      sb.deleteCharAt(roleStringValue.length()-1);
+      sb.deleteCharAt(roleStringValue.length() - 1);
       sb.deleteCharAt(0);
       return sb.toString();
     } catch (JsonProcessingException e) {

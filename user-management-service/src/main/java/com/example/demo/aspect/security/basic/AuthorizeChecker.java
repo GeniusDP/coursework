@@ -21,7 +21,7 @@ public class AuthorizeChecker {
 
   public Object validateTokens(ProceedingJoinPoint joinPoint, String url) throws Throwable {
     String authHeader = httpServletRequest.getHeader(HttpHeaders.AUTHORIZATION);
-    if(authHeader == null || !authHeader.matches("^Bearer\s.*$")){
+    if (authHeader == null || !authHeader.matches("^Bearer\s.*$")) {
       throw new UnauthorizedException();
     }
 
