@@ -7,6 +7,8 @@ import com.zaranik.coursework.checkerservice.repositories.CustomSolutionReposito
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Scanner;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +33,7 @@ public class SolutionService {
     Long solutionId = solution.getId();
 
     File zipFile = createFileWithZip(solutionZip.getBytes());
-    int statusCode = runContainer(zipFile.getAbsolutePath());
+    int statusCode = runContainer(zipFile.getName());
 
 //    zipFile.delete();
     System.out.println(statusCode);
@@ -55,14 +57,14 @@ public class SolutionService {
     try (FileOutputStream outputStream = new FileOutputStream(file)) {
       outputStream.write(data);
     } catch (IOException e) {
-      throw new RuntimeException(e);
+      System.out.println(e);
     }
     return file;
   }
 
   private int runContainer(String zipFileName) throws IOException {
     String cmdTemplate = dockerStartCommand;
-    String cmd = String.format(cmdTemplate, zipFileName);
+    String cmd = String.format(cmdTemplate, "/app/" + zipFileName);
     System.out.println(cmd);
 
     Runtime runtime = Runtime.getRuntime();

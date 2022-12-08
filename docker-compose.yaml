@@ -36,6 +36,7 @@ services:
   
   checkerservice-postgres:
     image: 'postgres'
+    restart: always
     container_name: 'checkerservice-postgres'
     ports:
       - 5434
@@ -48,13 +49,15 @@ services:
   
   checkerservice:
     build: ./checkerservice
+    restart: always
     container_name: 'checkerservice'
     ports:
       - 8084:8084
     environment:
       - DB_URL=jdbc:postgresql://checkerservice-postgres/postgres?user=postgres&password=postgres
       - AUTH_SERVICE_URL=http://auth-service:8081/api/auth
-      - CHECKER_IMAGE_NAME=zaranik/checker:1.5.4
+      - CHECKER_IMAGE_NAME=zaranik/checker:1.5.7
+      - NETWORK_NAME=coursework_default
     depends_on:
       - checkerservice-postgres
 #      - auth-service

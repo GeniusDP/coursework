@@ -56,4 +56,23 @@ public class HelloDockerController {
     return sb.toString();
   }
 
+  @GetMapping("/network")
+  public String cloneService() throws IOException, InterruptedException {
+    String cmd = "docker network ls";
+    Runtime runtime = Runtime.getRuntime();
+    Process process = runtime.exec(cmd);
+
+    StringBuilder sb = new StringBuilder();
+    Scanner sc = new Scanner(process.getInputStream());
+    int statusCode = process.waitFor();
+    System.out.println(statusCode);
+    while (sc.hasNextLine()) {
+      sb.append(sc.nextLine());
+    }
+    return sb.toString();
+  }
+
+
+
+
 }
