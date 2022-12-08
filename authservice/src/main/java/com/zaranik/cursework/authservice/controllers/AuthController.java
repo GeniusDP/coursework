@@ -3,7 +3,6 @@ package com.zaranik.cursework.authservice.controllers;
 import com.zaranik.cursework.authservice.dto.LoginUserDto;
 import com.zaranik.cursework.authservice.dto.TokenDto;
 import com.zaranik.cursework.authservice.services.AuthService;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

@@ -1,0 +1,23 @@
+server:
+  port: 8080
+
+spring:
+  main:
+    allow-circular-references: true
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/mydb
+    username: postgres
+    password: zaranik
+  jpa:
+    hibernate:
+      ddl-auto: validate
+
+  servlet:
+    multipart:
+      max-file-size: 150MB
+      max-request-size: 150MB
+
+container:
+  docker:
+    start-command: docker run --rm --privileged --network=host -v /var/run/docker.sock:/var/run/docker.sock -e solution_id=%d --name %s zaranik/checker:1.0.2

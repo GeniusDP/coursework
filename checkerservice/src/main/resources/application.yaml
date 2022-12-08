@@ -1,23 +1,24 @@
 server:
-  port: 8080
+  port: 8084
 
 spring:
   main:
     allow-circular-references: true
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/mydb
-    username: postgres
-    password: zaranik
+    url: ${DB_URL}
   jpa:
     hibernate:
       ddl-auto: validate
 
   servlet:
     multipart:
-      max-file-size: 150MB
-      max-request-size: 150MB
+      max-file-size: 15MB
+      max-request-size: 20MB
+
+auth-service:
+  url: ${AUTH_SERVICE_URL}
 
 container:
   docker:
-    start-command: docker run --privileged --network=host -v /var/run/docker.sock:/var/run/docker.sock -e solution_id=%d --name %s zaranik/checker:1.0.1
+    start-command: "docker run --privileged -v %s:/app/task.zip -v /var/run/docker.sock:/var/run/docker.sock"

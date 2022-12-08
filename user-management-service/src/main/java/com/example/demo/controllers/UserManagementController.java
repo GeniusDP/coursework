@@ -42,11 +42,6 @@ public class UserManagementController {
     userManagementService.register(registrationUserDto);
   }
 
-  @PostMapping("/activate-account")
-  public ResponseStringWrapper activateUserByLink() {
-    throw new IllegalArgumentException("Feature not implemented yet");
-  }
-
   @SecuredRoute
   @PatchMapping("/update")
   public User updateUser(@Valid @RequestBody UpdateUserDto updateDto) {
@@ -61,7 +56,7 @@ public class UserManagementController {
   }
 
   @SecuredRoute
-  @PostMapping("/users/{username}")
+  @GetMapping("/users/{username}")
   public User getUserInfo(@PathVariable String username, @RequestHeader("Authorization") @Pattern(regexp = "^Bearer\s.*$") String accessToken){
     return userManagementService.getUserInfo(username, accessToken);
   }

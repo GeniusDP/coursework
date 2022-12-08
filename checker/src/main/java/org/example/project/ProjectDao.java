@@ -9,16 +9,13 @@ import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 
 @AllArgsConstructor
-public
-class ProjectDao {
+public class ProjectDao {
 
-  private final String url;
-  private final String user;
-  private final String password;
+  private String url;
 
   @SneakyThrows
   public InputStream getZipStream(Long solutionId) {
-    Connection connection = DriverManager.getConnection(url, user, password);
+    Connection connection = DriverManager.getConnection(url);
 
     String sql = "select source_in_zip from code_sources where id = ?;";
     PreparedStatement statement = connection.prepareStatement(sql);
@@ -37,7 +34,7 @@ class ProjectDao {
 
   @SneakyThrows
   public void writeCompilationStatus(Long id, String value) {
-    Connection connection = DriverManager.getConnection(url, user, password);
+    Connection connection = DriverManager.getConnection(url);
 
     String sql = "update code_sources set compilation_status = ? where id = ?;";
     PreparedStatement statement = connection.prepareStatement(sql);
@@ -52,7 +49,7 @@ class ProjectDao {
 
   @SneakyThrows
   public void writeTestingStatistics(Long id, String value) {
-    Connection connection = DriverManager.getConnection(url, user, password);
+    Connection connection = DriverManager.getConnection(url);
 
     String sql = "update code_sources set testing_status = ? where id = ?;";
     PreparedStatement statement = connection.prepareStatement(sql);

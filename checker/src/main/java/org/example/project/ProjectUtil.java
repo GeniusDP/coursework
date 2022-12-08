@@ -2,7 +2,6 @@ package org.example.project;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -21,7 +20,6 @@ import org.example.project.exceptions.NotValidArchiveStructureException;
 @Slf4j
 public class ProjectUtil {
 
-  private static final String BUILD_SUCCESS = "BUILD SUCCESS";
   private static final int MAX_THREAD_POOL_SIZE = 5;
 
   private File mainDir;
@@ -47,7 +45,7 @@ public class ProjectUtil {
       }
     }
     String allMavenBuildLogs = sb.toString();
-    return allMavenBuildLogs.contains(BUILD_SUCCESS);
+    return allMavenBuildLogs.isEmpty();
   }
 
   public void runCheckers(Checker... checkers) {

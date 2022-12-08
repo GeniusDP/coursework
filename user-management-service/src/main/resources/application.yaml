@@ -5,15 +5,13 @@ spring:
     allow-circular-references: true
   datasource:
     driver-class-name: org.postgresql.Driver
-    username: postgres
-    password: postgres
-    url: jdbc:postgresql://${DB_HOST}/postgres
+    url: ${DB_URL}
   jpa:
     hibernate:
       ddl-auto: validate
 
 auth-service:
-  url: http://${AUTH_SERVICE_HOST}/api/auth
+  url: ${AUTH_SERVICE_URL}
 zaranik:
   app:
     jwtSecret: BogdanZaranikBogdanZaranikBogdanZaranikBogdanZaranikBogdanZaranikBogdanZaranikBogdanZaranikBogdanZaranik

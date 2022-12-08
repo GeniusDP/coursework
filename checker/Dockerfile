@@ -1,5 +1,4 @@
-FROM maven:3.8.5-openjdk-17-slim
-RUN mkdir /app
+FROM zaranik/maven-zip:1.0
 ARG JAR_FILE=/target/*-jar-with-dependencies.jar
 COPY ${JAR_FILE} /app/build.jar
 WORKDIR /app

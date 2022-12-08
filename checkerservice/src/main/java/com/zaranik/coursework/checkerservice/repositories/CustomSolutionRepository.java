@@ -2,7 +2,6 @@ package com.zaranik.coursework.checkerservice.repositories;
 
 import com.zaranik.coursework.checkerservice.entities.Solution;
 import com.zaranik.coursework.checkerservice.repositories.extractors.SolutionRowMapper;
-import java.sql.PreparedStatement;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

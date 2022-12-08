@@ -4,6 +4,8 @@ import com.zaranik.coursework.checkerservice.dtos.CheckingReport;
 import com.zaranik.coursework.checkerservice.entities.Solution;
 import com.zaranik.coursework.checkerservice.exceptions.ContainerRuntimeException;
 import com.zaranik.coursework.checkerservice.repositories.CustomSolutionRepository;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Scanner;
 import java.util.UUID;
@@ -28,11 +30,11 @@ public class SolutionService {
     solutionRepository.save(solution);
     Long solutionId = solution.getId();
 
-    String containerName = UUID.randomUUID().toString();
+    File zipFile = createFileWithZip(solutionZip.getBytes());
+    int statusCode = runContainer(zipFile.getAbsolutePath());
 
-    int statusCode = runContainer(containerName, solutionId);
+//    zipFile.delete();
     System.out.println(statusCode);
-    removeContainer(containerName);
 
     if(statusCode != 0){
       throw new ContainerRuntimeException();
@@ -47,26 +49,34 @@ public class SolutionService {
     );
   }
 
-  private int runContainer(String containerName, Long solutionId) throws IOException {
+  private File createFileWithZip(byte[] data) {
+    String zipFileName = UUID.randomUUID().toString();
+    File file = new File(zipFileName);
+    try (FileOutputStream outputStream = new FileOutputStream(file)) {
+      outputStream.write(data);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+    return file;
+  }
+
+  private int runContainer(String zipFileName) throws IOException {
     String cmdTemplate = dockerStartCommand;
-    String cmd = String.format(cmdTemplate, solutionId, containerName);
-    System.out.println("cmd = " + cmd);
+    String cmd = String.format(cmdTemplate, zipFileName);
+    System.out.println(cmd);
 
     Runtime runtime = Runtime.getRuntime();
     Process process = runtime.exec(cmd);
     Scanner scanner = new Scanner(process.getInputStream());
+    StringBuilder sb = new StringBuilder();
     while (process.isAlive()) {
       if(scanner.hasNextLine()){
-        System.out.println(scanner.nextLine());
+        String line = scanner.nextLine();
+        System.out.println(line);
+        sb.append(line);
       }
     }
     return process.exitValue();
-  }
-
-  private void removeContainer(String containerName) throws IOException {
-    String dockerContainerPrune = String.format("docker rm %s --force", containerName);
-    Runtime runtime = Runtime.getRuntime();
-    runtime.exec(dockerContainerPrune);
   }
 
 }

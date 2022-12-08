@@ -10,8 +10,7 @@ public class HelloDockerController {
 
   @GetMapping("/run-hello-world-docker")
   public String runDocker0() throws IOException, InterruptedException {
-    //String cmd = "docker run hello-world";
-    String cmd = "docker run --privileged --network=host -v /var/run/docker.sock:/var/run/docker.sock -e solution_id=2 zaranik/checker:1.0.1";
+    String cmd = "docker run --privileged -v /var/run/docker.sock:/var/run/docker.sock hello-world";
     Runtime runtime = Runtime.getRuntime();
     Process process = runtime.exec(cmd);
 
@@ -19,13 +18,41 @@ public class HelloDockerController {
     Scanner sc = new Scanner(process.getInputStream());
     int statusCode = process.waitFor();
     System.out.println(statusCode);
-    while(sc.hasNextLine()){
+    while (sc.hasNextLine()) {
       sb.append(sc.nextLine());
     }
+    return sb.toString();
+  }
 
-    String dockerContainerPrune = "docker container prune --force";
-    Process prune = runtime.exec(dockerContainerPrune);
-    prune.waitFor();
+  @GetMapping("/get-sum")
+  public String runDockerSum() throws IOException, InterruptedException {
+    String cmd = "echo \"10 12\" | docker run -i --privileged -v /var/run/docker.sock:/var/run/docker.sock aplusb:1.0";
+    Runtime runtime = Runtime.getRuntime();
+    Process process = runtime.exec(cmd);
+
+    StringBuilder sb = new StringBuilder();
+    Scanner sc = new Scanner(process.getInputStream());
+    int statusCode = process.waitFor();
+    System.out.println(statusCode);
+    while (sc.hasNextLine()) {
+      sb.append(sc.nextLine());
+    }
+    return sb.toString();
+  }
+
+  @GetMapping("/volumes")
+  public String runDockerWithVolumes() throws IOException, InterruptedException {
+    String cmd = "docker run --privileged -v /var/run/docker.sock:/var/run/docker.sock aplusb:1.0";
+    Runtime runtime = Runtime.getRuntime();
+    Process process = runtime.exec(cmd);
+
+    StringBuilder sb = new StringBuilder();
+    Scanner sc = new Scanner(process.getInputStream());
+    int statusCode = process.waitFor();
+    System.out.println(statusCode);
+    while (sc.hasNextLine()) {
+      sb.append(sc.nextLine());
+    }
     return sb.toString();
   }
 
