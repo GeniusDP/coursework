@@ -3,11 +3,11 @@ package com.zaranik.coursework.checkerservice.services;
 import com.zaranik.coursework.checkerservice.dtos.CheckingReport;
 import com.zaranik.coursework.checkerservice.entities.Solution;
 import com.zaranik.coursework.checkerservice.exceptions.ContainerRuntimeException;
+import com.zaranik.coursework.checkerservice.exceptions.SolutionCheckingFailedException;
 import com.zaranik.coursework.checkerservice.repositories.CustomSolutionRepository;
 import java.io.IOException;
 import java.util.Scanner;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,26 +21,29 @@ public class SolutionService {
   @Value("${container.docker.start-command}")
   private String dockerStartCommand;
 
-  @SneakyThrows
   public CheckingReport performChecking(MultipartFile solutionZip) {
-    Solution solution = new Solution(solutionZip.getBytes());
-    Long solutionId = solutionRepository.save(solution).getId();
+    try {
+      Solution solution = new Solution(solutionZip.getBytes());
+      Long solutionId = solutionRepository.save(solution).getId();
 
-    int statusCode = runContainer(solutionId);
+      int statusCode = runContainer(solutionId);
 
-    System.out.println(statusCode);
+      System.out.println(statusCode);
 
-    if(statusCode != 0){
-      throw new ContainerRuntimeException();
+      if (statusCode != 0) {
+        throw new ContainerRuntimeException();
+      }
+      Solution result = solutionRepository.findById(solutionId);
+      return new CheckingReport(
+        result.getId(),
+        result.getCompilationStatus(),
+        result.getTestsNumber(),
+        result.getTestsPassed(),
+        result.getTestingStatus()
+      );
+    } catch (IOException e) {
+      throw new SolutionCheckingFailedException(e);
     }
-    Solution result = solutionRepository.findById(solutionId);
-    return new CheckingReport(
-      result.getId(),
-      result.getCompilationStatus(),
-      result.getTestsNumber(),
-      result.getTestsPassed(),
-      result.getTestingStatus()
-    );
   }
 
   private int runContainer(Long solutionId) throws IOException {
@@ -53,7 +56,7 @@ public class SolutionService {
     Scanner scanner = new Scanner(process.getInputStream());
     StringBuilder sb = new StringBuilder();
     while (process.isAlive()) {
-      if(scanner.hasNextLine()){
+      if (scanner.hasNextLine()) {
         String line = scanner.nextLine();
         System.out.println(line);
         sb.append(line);

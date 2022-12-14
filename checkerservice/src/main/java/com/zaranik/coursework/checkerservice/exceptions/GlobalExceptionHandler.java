@@ -17,15 +17,21 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
 
   @ExceptionHandler(ContainerRuntimeException.class)
-  @ResponseStatus(HttpStatus.BAD_REQUEST)
-  public String containerRuntimeExceptionHandler(){
-    return "Runtime container error";
+  @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+  public AppError containerRuntimeExceptionHandler(){
+    return AppError.justNow("Runtime container error");
+  }
+
+  @ExceptionHandler(SolutionCheckingFailedException.class)
+  @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+  public AppError solutionCheckingFailedExceptionHandler() {
+    return AppError.justNow("Solution checking failed");
   }
 
   @ExceptionHandler(AuthServiceUnreachableException.class)
   @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
   public AppError authServiceUnreachableExceptionHandler() {
-    return AppError.justNow("Auth service unavailable");
+    return AppError.justNow("Service unavailable");
   }
 
   @ExceptionHandler(AccessTokenInvalidException.class)
