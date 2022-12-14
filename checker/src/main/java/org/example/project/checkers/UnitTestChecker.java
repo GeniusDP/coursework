@@ -38,7 +38,7 @@ public class UnitTestChecker extends Checker {
     }
     String allMavenBuildLogs = sb.toString();
     boolean testsPassed = allMavenBuildLogs.isEmpty();
-    System.out.println(testsPassed ? "TESTS PASSED" : "SOME TESTS FAILED");
+    System.out.println(testsPassed ? "TESTS_PASSED" : "SOME_TESTS_FAILED");
   }
 
 }

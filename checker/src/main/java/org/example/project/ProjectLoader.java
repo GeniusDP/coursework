@@ -9,6 +9,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import org.example.project.dtos.SolutionDto;
+import org.example.project.exceptions.CouldNotFetchSolutionException;
 import org.zeroturnaround.zip.ZipUtil;
 
 public class ProjectLoader {
@@ -27,13 +28,13 @@ public class ProjectLoader {
 
     Unirest.setTimeouts(0, 0);
     HttpResponse<String> response = Unirest
-      .get(solutionPipeUrl + solutionId)
-      .asString();
+        .get(solutionPipeUrl + solutionId)
+        .asString();
 
     int status = response.getStatus();
-//    if(status != 200) {
-//      throw new CouldNotFetchSolutionException();
-//    }
+    if (status != 200) {
+      throw new CouldNotFetchSolutionException();
+    }
     String json = response.getBody();
     SolutionDto solutionDto = objectMapper.readValue(json, SolutionDto.class);
 
@@ -46,6 +47,3 @@ public class ProjectLoader {
   }
 
 }
-
-
-

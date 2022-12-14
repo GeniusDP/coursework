@@ -11,7 +11,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.example.project.checkers.Checker;
 import org.example.project.exceptions.CheckerException;
 import org.example.project.exceptions.NotValidArchiveStructureException;
@@ -25,8 +24,8 @@ public class ProjectUtil {
 
   public boolean compileProject() throws IOException {
     List<File> list = Arrays.stream(mainDir.listFiles())
-      .filter(File::isDirectory)
-      .toList();
+        .filter(File::isDirectory)
+        .toList();
     if (list.size() != 1) {
       throw new NotValidArchiveStructureException();
     }
@@ -37,12 +36,13 @@ public class ProjectUtil {
     StringBuilder sb = new StringBuilder();
     Scanner sc = new Scanner(process.getInputStream());
     while (process.isAlive()) {
-      if(sc.hasNextLine()) {
+      if (sc.hasNextLine()) {
         String line = sc.nextLine();
         sb.append(line);
         System.out.println(line);
       }
     }
+    sc.close();
     String allMavenBuildLogs = sb.toString();
     return allMavenBuildLogs.isEmpty();
   }
@@ -64,8 +64,9 @@ public class ProjectUtil {
       }
     } catch (InterruptedException | ExecutionException e) {
       throw new CheckerException(e);
+    } finally {
+      executorService.shutdown();
     }
-    executorService.shutdown();
   }
 
 }
