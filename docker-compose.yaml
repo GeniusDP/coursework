@@ -63,3 +63,14 @@ services:
 #      - auth-service
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+
+  solution-pipe-service:
+    build: ./solution-pipe-service
+    restart: always
+    container_name: 'solution-pipe-service'
+    ports:
+      - 8085
+    environment:
+      - DB_URL=jdbc:postgresql://checkerservice-postgres/postgres?user=postgres&password=postgres
+    depends_on:
+      - checkerservice

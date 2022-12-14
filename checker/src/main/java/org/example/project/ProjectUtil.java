@@ -32,7 +32,7 @@ public class ProjectUtil {
       throw new NotValidArchiveStructureException();
     }
     File taskDir = list.get(0);
-    String cmd = "mvn clean compile";
+    String cmd = "mvn clean compile -q";
     Runtime runtime = Runtime.getRuntime();
     Process process = runtime.exec(cmd, null, taskDir);
     StringBuilder sb = new StringBuilder();

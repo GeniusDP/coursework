@@ -1,30 +1,21 @@
 package org.example;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import org.example.project.ProjectLoader;
+import org.example.project.ProjectUtil;
+import org.example.project.checkers.Checker;
+import org.example.project.checkers.UnitTestChecker;
 
 public class Main {
 
   public static void main(String[] args) throws Exception {
     String dbUrl = System.getenv("DB_URL");
-    System.out.println("DB_URL = " + dbUrl);
-    Connection connection = DriverManager.getConnection(dbUrl);
-
-    PreparedStatement statement = connection.prepareStatement("select id from code_sources");
-    ResultSet resultSet = statement.executeQuery();
-    while (resultSet.next()){
-      System.out.println(resultSet.getLong("id"));
-    }
-    resultSet.close();
-    statement.close();
-    connection.close();
-
-
-/*    File sourceFolder = ProjectLoader.loadProject();
+    System.out.println("dbUrl = " + dbUrl);
+    String SOLUTION_ID = System.getenv("SOLUTION_ID");
+    System.out.println("SOLUTION_ID = " + SOLUTION_ID);
+    long solutionId = Long.parseLong(SOLUTION_ID);
+    System.out.println("solutionId = " + solutionId);
+    File sourceFolder = ProjectLoader.fetchProject(solutionId);
     System.out.println(sourceFolder.getAbsolutePath());
 
     ProjectUtil projectUtil = new ProjectUtil(sourceFolder);
@@ -38,7 +29,7 @@ public class Main {
       projectUtil.runCheckers(unitTestChecker);
       System.out.println("Finished testing!");
     }
-    System.out.println("Main finished");*/
+    System.out.println("Main finished");
   }
 
 }

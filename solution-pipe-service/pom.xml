@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.example</groupId>
-	<artifactId>solution-service</artifactId>
+	<artifactId>solution-pipe-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>dind</name>
-	<description>Dind testing </description>
+	<name>solution-pipe-service</name>
+	<description>Solution pipe service </description>
 	<properties>
 		<java.version>17</java.version>
 	</properties>
@@ -34,6 +34,11 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>42.4.1</version>
 		</dependency>
 	</dependencies>
 
