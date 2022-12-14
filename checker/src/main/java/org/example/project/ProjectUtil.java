@@ -17,7 +17,6 @@ import org.example.project.exceptions.CheckerException;
 import org.example.project.exceptions.NotValidArchiveStructureException;
 
 @AllArgsConstructor
-@Slf4j
 public class ProjectUtil {
 
   private static final int MAX_THREAD_POOL_SIZE = 5;
