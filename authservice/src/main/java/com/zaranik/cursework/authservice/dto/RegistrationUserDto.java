@@ -1,6 +1,5 @@
 package com.zaranik.cursework.authservice.dto;
 
-import javax.validation.constraints.NotBlank;
 import lombok.*;
 
 import javax.validation.constraints.Email;

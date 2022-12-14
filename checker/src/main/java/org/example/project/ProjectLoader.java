@@ -7,11 +7,8 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
-import java.util.Properties;
 import org.example.project.dtos.SolutionDto;
-import org.example.project.exceptions.CouldNotFetchSolutionException;
 import org.zeroturnaround.zip.ZipUtil;
 
 public class ProjectLoader {
