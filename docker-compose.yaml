@@ -74,6 +74,7 @@ services:
       - DB_URL=jdbc:postgresql://checkerservice-postgres/postgres?user=postgres&password=postgres
     depends_on:
       - checkerservice
+      - checkerservice-postgres
 
   task-management-service:
     build: ./task-management-service

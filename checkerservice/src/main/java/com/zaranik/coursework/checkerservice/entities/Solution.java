@@ -47,7 +47,7 @@ public class Solution {
 
   @ManyToOne
   @JoinColumn(name = "task_id")
-  private com.example.solutionservice.entities.Task task;
+  private Task task;
 
   public Solution(byte[] sourceInZip) {
     this.sourceInZip = sourceInZip;

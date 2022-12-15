@@ -2,10 +2,14 @@ package com.zaranik.coursework.checkerservice.services;
 
 import com.zaranik.coursework.checkerservice.dtos.CheckingReport;
 import com.zaranik.coursework.checkerservice.entities.Solution;
+import com.zaranik.coursework.checkerservice.entities.Task;
 import com.zaranik.coursework.checkerservice.exceptions.ContainerRuntimeException;
 import com.zaranik.coursework.checkerservice.exceptions.SolutionCheckingFailedException;
+import com.zaranik.coursework.checkerservice.exceptions.TaskNotFoundException;
 import com.zaranik.coursework.checkerservice.repositories.SolutionRepository;
+import com.zaranik.coursework.checkerservice.repositories.TaskRepository;
 import java.io.IOException;
+import java.util.Optional;
 import java.util.Scanner;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class SolutionService {
   
   private final SolutionRepository solutionJpaRepository;
+  private final TaskRepository taskRepository;
 
   private static final String COMPILED = "COMPILED";
   private static final String NA = "N/A";
@@ -31,8 +36,17 @@ public class SolutionService {
 
   @Transactional(noRollbackFor = {ContainerRuntimeException.class, SolutionCheckingFailedException.class})
   public CheckingReport performChecking(Long taskId, MultipartFile solutionZip) {
+    Optional<Task> taskOptional = taskRepository.findById(taskId);
+    if(taskOptional.isEmpty()){
+      throw new TaskNotFoundException();
+    }
+
+    Task task = taskOptional.get();
+
     try {
       Solution solution = new Solution(solutionZip.getBytes());
+
+      solution.setTask(task);
       solutionJpaRepository.save(solution);
       Long solutionId = solution.getId();
 

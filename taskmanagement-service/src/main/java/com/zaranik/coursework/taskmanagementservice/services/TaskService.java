@@ -6,6 +6,7 @@ import com.zaranik.coursework.taskmanagementservice.dto.response.TaskResponseDto
 import com.zaranik.coursework.taskmanagementservice.entities.Submission;
 import com.zaranik.coursework.taskmanagementservice.entities.Task;
 import com.zaranik.coursework.taskmanagementservice.exceptions.TaskCreationFailedException;
+import com.zaranik.coursework.taskmanagementservice.exceptions.TaskNotFoundException;
 import com.zaranik.coursework.taskmanagementservice.repositories.SubmissionRepository;
 import com.zaranik.coursework.taskmanagementservice.repositories.TaskRepository;
 import java.io.IOException;
@@ -44,6 +45,9 @@ public class TaskService {
   }
 
   public List<SubmissionResponseDto> getAllSubmissionsOfTask(Long taskId) {
+    if(!taskRepository.existsById(taskId)){
+      throw new TaskNotFoundException();
+    }
     List<Submission> allSubmissions = submissionRepository.getAllSubmissionsOfTask(taskId);
     return allSubmissions.stream()
       .map(s -> SubmissionResponseDto.builder()

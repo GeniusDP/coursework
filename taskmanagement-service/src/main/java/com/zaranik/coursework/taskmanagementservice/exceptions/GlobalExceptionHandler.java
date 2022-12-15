@@ -28,6 +28,12 @@ public class GlobalExceptionHandler {
     return AppError.justNow("creation of task failed");
   }
 
+  @ExceptionHandler(TaskNotFoundException.class)
+  @ResponseStatus(HttpStatus.NOT_FOUND)
+  public AppError taskNotFoundExceptionHandler() {
+    return AppError.justNow("no such task found");
+  }
+
   @ExceptionHandler(BindException.class)
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   public ValidationExceptionResponse argumentsNotValidExceptionHandle(BindException exception) {
