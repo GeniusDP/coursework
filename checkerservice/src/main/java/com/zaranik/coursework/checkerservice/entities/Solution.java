@@ -9,10 +9,12 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 @Entity
 @Builder
 @Table(name = "code_sources")
@@ -42,6 +44,19 @@ public class Solution {
 
   public Solution(byte[] sourceInZip) {
     this.sourceInZip = sourceInZip;
+    this.testingStatus = "N/A";
+    this.compilationStatus = "N/A";
+    this.testsNumber = -1;
+    this.testsPassed = -1;
+  }
+
+  @Override
+  public String toString() {
+    return "Solution{" +
+      "id=" + id +
+      ", compilationStatus='" + compilationStatus + '\'' +
+      ", testingStatus='" + testingStatus + '\'' +
+      '}';
   }
 
   @Override

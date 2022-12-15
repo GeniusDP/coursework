@@ -1,6 +1,5 @@
 package com.zaranik.coursework.checkerservice.controllers;
 
-import com.zaranik.coursework.checkerservice.aspect.security.basic.SecuredRoute;
 import com.zaranik.coursework.checkerservice.dtos.CheckingReport;
 import com.zaranik.coursework.checkerservice.entities.Solution;
 import com.zaranik.coursework.checkerservice.repositories.SolutionRepository;
