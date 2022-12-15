@@ -23,6 +23,7 @@ public class SolutionService {
   private final SolutionRepository solutionJpaRepository;
 
   private static final String COMPILED = "COMPILED";
+  private static final String NA = "N/A";
   private static final String NOT_COMPILED = "NOT_COMPILED";
   private static final String TESTS_PASSED = "TESTS_PASSED";
   private static final String SOME_TESTS_FAILED = "SOME_TESTS_FAILED";
@@ -40,7 +41,7 @@ public class SolutionService {
       SolutionCheckingResult result = runContainer(solutionId);
       System.out.println(result.statusCode);
 
-      if (true) {
+      if (result.statusCode != 0) {
         throw new ContainerRuntimeException();
       }
       solution.setTestingStatus(result.solution.testingStatus);
@@ -76,15 +77,15 @@ public class SolutionService {
       }
     }
     scanner.close();
-    SolutionDto solution = processSolutionCheckingResult(solutionId, sb);
+    SolutionDto solution = processSolutionCheckingResult(sb);
     return new SolutionCheckingResult(solution, process.exitValue());
   }
 
-  private SolutionDto processSolutionCheckingResult(Long solutionId, StringBuilder sb) {
+  private SolutionDto processSolutionCheckingResult(StringBuilder sb) {
 
     System.out.println("processSolutionCheckingResult");
     if(sb.indexOf(COMPILED) == -1) {
-      return new SolutionDto(NOT_COMPILED, SOME_TESTS_FAILED);
+      return new SolutionDto(NOT_COMPILED, NA);
     }
 
     if(sb.indexOf(TESTS_PASSED) == -1) {
