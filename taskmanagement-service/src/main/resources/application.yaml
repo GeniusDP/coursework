@@ -1,0 +1,12 @@
+server:
+  port: 8087
+spring:
+  main:
+    allow-circular-references: true
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: ${DB_URL}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+
