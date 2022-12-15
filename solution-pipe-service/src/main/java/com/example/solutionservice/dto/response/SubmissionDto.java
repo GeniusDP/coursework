@@ -1,5 +1,5 @@
 package com.example.solutionservice.dto.response;
 
-public record SolutionDto(byte[] bytes) {
+public record SubmissionDto(byte[] bytes) {
 
 }
