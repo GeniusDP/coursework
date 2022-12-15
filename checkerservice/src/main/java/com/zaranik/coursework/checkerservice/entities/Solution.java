@@ -6,18 +6,18 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Getter
-@Setter
+@Data
 @Entity
 @Builder
-@Table(name = "code_sources")
+@Table(name = "submissions")
 @NoArgsConstructor
 @AllArgsConstructor
 public class Solution {
@@ -41,6 +41,13 @@ public class Solution {
 
   @Column(name = "testing_status")
   private String testingStatus;
+
+  @Column(name = "user_id")
+  private Long userId;
+
+  @ManyToOne
+  @JoinColumn(name = "task_id")
+  private com.example.solutionservice.entities.Task task;
 
   public Solution(byte[] sourceInZip) {
     this.sourceInZip = sourceInZip;

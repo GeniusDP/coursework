@@ -4,10 +4,8 @@ import com.zaranik.coursework.checkerservice.dtos.CheckingReport;
 import com.zaranik.coursework.checkerservice.entities.Solution;
 import com.zaranik.coursework.checkerservice.exceptions.ContainerRuntimeException;
 import com.zaranik.coursework.checkerservice.exceptions.SolutionCheckingFailedException;
-import com.zaranik.coursework.checkerservice.repositories.CustomSolutionRepository;
 import com.zaranik.coursework.checkerservice.repositories.SolutionRepository;
 import java.io.IOException;
-import java.util.Optional;
 import java.util.Scanner;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +30,7 @@ public class SolutionService {
   private String dockerStartCommand;
 
   @Transactional(noRollbackFor = {ContainerRuntimeException.class, SolutionCheckingFailedException.class})
-  public CheckingReport performChecking(MultipartFile solutionZip) {
+  public CheckingReport performChecking(Long taskId, MultipartFile solutionZip) {
     try {
       Solution solution = new Solution(solutionZip.getBytes());
       solutionJpaRepository.save(solution);

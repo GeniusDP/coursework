@@ -21,9 +21,9 @@ public class MainController {
   private final SolutionRepository solutionRepository;
 
   //@SecuredRoute
-  @PostMapping(path = "/check-solution", consumes = "multipart/form-data")
-  public CheckingReport checkSolution(@RequestParam("file") MultipartFile solutionZip) {
-    return solutionService.performChecking(solutionZip);
+  @PostMapping(path = "/check-solution/{taskId}", consumes = "multipart/form-data")
+  public CheckingReport checkSolution(@PathVariable("taskId") Long taskId, @RequestParam("file") MultipartFile solutionZip) {
+    return solutionService.performChecking(taskId, solutionZip);
   }
 
   @GetMapping("/solutions/{id}")
