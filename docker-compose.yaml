@@ -74,3 +74,14 @@ services:
       - DB_URL=jdbc:postgresql://checkerservice-postgres/postgres?user=postgres&password=postgres
     depends_on:
       - checkerservice
+
+  task-management-service:
+    build: ./task-management-service
+    restart: always
+    container_name: 'task-management-service'
+    ports:
+      - 8083:8083
+    environment:
+      - DB_URL=jdbc:postgresql://checkerservice-postgres/postgres?user=postgres&password=postgres
+    depends_on:
+      - checkerservice-postgres
