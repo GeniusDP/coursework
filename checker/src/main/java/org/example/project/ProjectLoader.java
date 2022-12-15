@@ -14,7 +14,7 @@ import org.zeroturnaround.zip.ZipUtil;
 
 public class ProjectLoader {
 
-  public static File fetchProject(Long solutionId) throws Exception {
+  public static File fetchProject(Long taskId, Long solutionId) throws Exception {
     File sourceFolder = new File("solution");
     File taskZip = fetchTaskInZip(solutionId);
     FileInputStream fis = new FileInputStream(taskZip);
