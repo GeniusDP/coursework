@@ -29,8 +29,7 @@ public class ProjectLoader {
     File taskZip = fetchTaskInZip(solutionId);
     FileInputStream fis = new FileInputStream(taskZip);
     ZipUtil.unpack(fis, sourceFolder);
-    System.out.println("zip file of solution deleted: " + taskZip.delete());
-
+    taskZip.delete();
     File taskDir = getTheOnlySubfolderInFolder(sourceFolder);
     try {
       deleteAllXmlConfigs(taskDir);
@@ -61,9 +60,16 @@ public class ProjectLoader {
 
   private static void addFilesFromTaskSources(String testFolderPath, String configsPath, Long taskId) throws IOException, UnirestException {
     TaskSourcesDto taskDto = getTaskSources(taskId);
-    ZipUtil.unpack(new ByteArrayInputStream(taskDto.testSourceInZip()), new File(testFolderPath));
 
     File temporalDir = new File("temporal");
+    ZipUtil.unpack(new ByteArrayInputStream(taskDto.testSourceInZip()), temporalDir);//new File(testFolderPath)
+
+    File actualTestDir = getTheOnlySubfolderInFolder(temporalDir);
+    Files.move(actualTestDir.toPath(), new File(testFolderPath).toPath());
+
+    FileUtils.deleteDirectory(temporalDir);
+
+    temporalDir = new File("temporal");
     ZipUtil.unpack(new ByteArrayInputStream(taskDto.sourceInZip()), temporalDir);
 
     File taskFolder = getTheOnlySubfolderInFolder(temporalDir);// /app/temporal/<task-folder-name>

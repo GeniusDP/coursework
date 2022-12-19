@@ -12,22 +12,22 @@ import org.example.project.ProjectLoader;
 import org.example.project.ProjectUtil;
 import org.example.project.checkers.Checker;
 import org.example.project.checkers.checkstyle.CheckstyleChecker;
-import org.example.project.dtos.compilation.CompilationReport;
 import org.example.project.checkers.pmd.PmdChecker;
-import org.example.project.checkers.unittesting.UnitTestAbstractChecker;
+import org.example.project.checkers.unittesting.UnitTestChecker;
+import org.example.project.dtos.compilation.CompilationReport;
 
 public class Main {
 
   public static void main(String[] args) throws Exception {
-    long solutionId = Long.parseLong(System.getProperty("SOLUTION_ID", "1"));
-    long taskId = Long.parseLong(System.getProperty("TASK_ID", "1"));
+    long solutionId = Long.parseLong(System.getProperty("SOLUTION_ID", "2"));
+    long taskId = Long.parseLong(System.getProperty("TASK_ID", "2"));
     boolean checkPmd = Boolean.parseBoolean(System.getProperty("PMD", "true"));
     boolean useCheckstyle = Boolean.parseBoolean(System.getProperty("CHECKSTYLE", "true"));
 
-    System.out.println("solutionId = " + solutionId);
-    System.out.println("taskId = " + taskId);
-    System.out.println("checkPmd = " + checkPmd);
-    System.out.println("useCheckstyle = " + useCheckstyle);
+//    System.out.println("solutionId = " + solutionId);
+//    System.out.println("taskId = " + taskId);
+//    System.out.println("checkPmd = " + checkPmd);
+//    System.out.println("useCheckstyle = " + useCheckstyle);
 
     File taskDir = ProjectLoader.fetchProject(taskId, solutionId);
 
@@ -37,16 +37,16 @@ public class Main {
     FullReport fullReport = new FullReport();
     CompilationReport compilationReport = new CompilationReport(projectCompiled ? COMPILED : NOT_COMPILED);
     fullReport.setCompilationReport(compilationReport);
-    if(projectCompiled) {
-      Checker unitTestChecker = new UnitTestAbstractChecker(taskDir);
+    if (projectCompiled) {
+      Checker unitTestChecker = new UnitTestChecker(taskDir);
       List<Checker> checkerList = new ArrayList<>();
       checkerList.add(unitTestChecker);
 
-      if(checkPmd){
+      if (checkPmd) {
         checkerList.add(new PmdChecker(taskDir));
       }
 
-      if(useCheckstyle){
+      if (useCheckstyle) {
         checkerList.add(new CheckstyleChecker(taskDir));
       }
 

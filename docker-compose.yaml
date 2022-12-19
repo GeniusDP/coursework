@@ -76,10 +76,10 @@ services:
       - checkerservice
       - checkerservice-postgres
 
-  task-management-service:
-    build: ./task-management-service
+  taskmanagement-service:
+    build: ./taskmanagement-service
     restart: always
-    container_name: 'task-management-service'
+    container_name: 'taskmanagement-service'
     ports:
       - 8083:8083
     environment:

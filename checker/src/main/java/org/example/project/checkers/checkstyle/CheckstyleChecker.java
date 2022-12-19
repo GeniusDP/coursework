@@ -20,7 +20,7 @@ public class CheckstyleChecker extends AbstractChecker {
     Process process = runtime.exec(cmd, null, taskDir);
     while (process.isAlive()) {
     }
-    File checkstyleReport = new File(taskDir.getAbsolutePath() + "/target/.xml");
+    File checkstyleReport = new File(taskDir.getAbsolutePath() + "/target/checkstyle-result.xml");
     if (!checkstyleReport.exists()) {
       return new CheckstyleReport(Collections.emptyList());
     }

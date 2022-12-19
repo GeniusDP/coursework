@@ -7,6 +7,6 @@ import lombok.Data;
 @AllArgsConstructor
 public class UnitTestingReport {
   private String message;
-  private int testPassed;
+  private int testRun;
   private int testFailed;
 }
