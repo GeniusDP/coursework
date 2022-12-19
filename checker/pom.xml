@@ -21,10 +21,9 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.postgresql</groupId>
-      <artifactId>postgresql</artifactId>
-      <version>42.4.1</version>
-      <scope>runtime</scope>
+      <groupId>org.jdom</groupId>
+      <artifactId>jdom</artifactId>
+      <version>2.0.2</version>
     </dependency>
     <dependency>
       <groupId>org.projectlombok</groupId>
@@ -65,19 +64,6 @@
       <version>1.1.1</version>
     </dependency>
   </dependencies>
-
-  <reporting>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-checkstyle-plugin</artifactId>
-        <version>3.0.0</version>
-        <configuration>
-          <configLocation>checkstyle.xml</configLocation>
-        </configuration>
-      </plugin>
-    </plugins>
-  </reporting>
 
 
   <build>

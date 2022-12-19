@@ -48,18 +48,18 @@ public class SolutionService {
 
       solution.setTask(task);
       solutionJpaRepository.save(solution);
-      Long solutionId = solution.getId();
-
-      SolutionCheckingResult result = runContainer(solutionId);
-      System.out.println(result.statusCode);
-
-      if (result.statusCode != 0) {
-        throw new ContainerRuntimeException();
-      }
-      solution.setTestingStatus(result.solution.testingStatus);
-      solution.setCompilationStatus(result.solution.compilationStatus);
-      solutionJpaRepository.save(solution);
-      System.out.println(solution);
+//      Long solutionId = solution.getId();
+//
+//      SolutionCheckingResult result = runContainer(solutionId);
+//      System.out.println(result.statusCode);
+//
+//      if (result.statusCode != 0) {
+//        throw new ContainerRuntimeException();
+//      }
+//      solution.setTestingStatus(result.solution.testingStatus);
+//      solution.setCompilationStatus(result.solution.compilationStatus);
+//      solutionJpaRepository.save(solution);
+//      System.out.println(solution);
       return new CheckingReport(
         solution.getId(),
         solution.getCompilationStatus(),

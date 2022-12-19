@@ -1,30 +1,21 @@
-package org.example.project.checkers;
+package org.example.project.checkers.unittesting;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Scanner;
 import lombok.SneakyThrows;
-import org.example.project.exceptions.NotValidArchiveStructureException;
+import org.example.project.checkers.AbstractChecker;
+import org.example.project.dtos.unittesting.UnitTestingReport;
 
 
-public class UnitTestChecker extends Checker {
+public class UnitTestAbstractChecker extends AbstractChecker {
 
-  public UnitTestChecker(File mainDir) {
-    super(mainDir);
+  public UnitTestAbstractChecker(File taskDir) {
+    super(taskDir);
   }
 
   @SneakyThrows
   @Override
-  public void run() {
-    List<File> list = Arrays.stream(mainDir.listFiles())
-      .filter(File::isDirectory)
-      .toList();
-    if (list.size() != 1) {
-      throw new NotValidArchiveStructureException();
-    }
-    File taskDir = list.get(0);
-
+  public UnitTestingReport call() {
     String cmd = "mvn clean test -q";
     Runtime runtime = Runtime.getRuntime();
     Process process = runtime.exec(cmd, null, taskDir);
@@ -38,7 +29,7 @@ public class UnitTestChecker extends Checker {
     }
     String allMavenBuildLogs = sb.toString();
     boolean testsPassed = allMavenBuildLogs.isEmpty();
-    System.out.println(testsPassed ? "TESTS_PASSED" : "SOME_TESTS_FAILED");
+    return new UnitTestingReport(testsPassed ? "TESTS_PASSED" : "SOME_TESTS_FAILED", -1, -1);
   }
 
 }

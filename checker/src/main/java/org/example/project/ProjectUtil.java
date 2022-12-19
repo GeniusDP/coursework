@@ -3,7 +3,6 @@ package org.example.project;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.ExecutionException;
@@ -12,25 +11,20 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import lombok.AllArgsConstructor;
 import org.example.project.checkers.Checker;
+import org.example.project.dtos.checkstyle.CheckstyleReport;
+import org.example.project.dtos.pmd.PmdReport;
+import org.example.project.dtos.unittesting.UnitTestingReport;
 import org.example.project.exceptions.CheckerException;
-import org.example.project.exceptions.NotValidArchiveStructureException;
 
 @AllArgsConstructor
 public class ProjectUtil {
 
   private static final int MAX_THREAD_POOL_SIZE = 5;
 
-  private File mainDir;
+  private File taskDir;
 
   public boolean compileProject() throws IOException {
-    List<File> list = Arrays.stream(mainDir.listFiles())
-        .filter(File::isDirectory)
-        .toList();
-    if (list.size() != 1) {
-      throw new NotValidArchiveStructureException();
-    }
-    File taskDir = list.get(0);
-    String cmd = "mvn clean compile";
+    String cmd = "mvn clean compile -q";
     Runtime runtime = Runtime.getRuntime();
     Process process = runtime.exec(cmd, null, taskDir);
     StringBuilder sb = new StringBuilder();
@@ -47,9 +41,7 @@ public class ProjectUtil {
     return allMavenBuildLogs.isEmpty();
   }
 
-  public void runCheckers(Checker... checkers) {
-    List<Checker> checkerList = List.of(checkers);
-
+  public FullReport runCheckers(List<Checker> checkerList, FullReport fullReport) {
     int threadPoolSize = Math.min(checkerList.size(), MAX_THREAD_POOL_SIZE);
     ExecutorService executorService = Executors.newFixedThreadPool(threadPoolSize);
     List<Future<?>> futureCheckersList = new ArrayList<>();
@@ -60,13 +52,21 @@ public class ProjectUtil {
 
     try {
       for (var future : futureCheckersList) {
-        future.get();
+        Object report = future.get();
+        if(report instanceof UnitTestingReport unitTestingReport) {
+          fullReport.setUnitTestingReport(unitTestingReport);
+        } else if(report instanceof PmdReport pmdReport) {
+          fullReport.setPmdReport(pmdReport);
+        } else if(report instanceof CheckstyleReport checkstyleReport) {
+          fullReport.setCheckstyleReport(checkstyleReport);
+        }
       }
     } catch (InterruptedException | ExecutionException e) {
       throw new CheckerException(e);
     } finally {
       executorService.shutdown();
     }
+    return fullReport;
   }
 
 }

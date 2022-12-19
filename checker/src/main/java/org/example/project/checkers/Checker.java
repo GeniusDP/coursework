@@ -1,12 +1,7 @@
 package org.example.project.checkers;
 
+import java.util.concurrent.Callable;
 
-import java.io.File;
-import lombok.AllArgsConstructor;
-
-@AllArgsConstructor
-public abstract class Checker implements Runnable {
-
-  protected File mainDir;
+public interface Checker extends Callable {
 
 }
