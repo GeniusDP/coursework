@@ -28,6 +28,12 @@ public class GlobalExceptionHandler {
     return AppError.justNow("Solution checking failed");
   }
 
+  @ExceptionHandler(TaskNotFoundException.class)
+  @ResponseStatus(HttpStatus.NOT_FOUND)
+  public AppError taskNotFoundExceptionHandler() {
+    return AppError.justNow("Task not found");
+  }
+
   @ExceptionHandler(AuthServiceUnreachableException.class)
   @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
   public AppError authServiceUnreachableExceptionHandler() {

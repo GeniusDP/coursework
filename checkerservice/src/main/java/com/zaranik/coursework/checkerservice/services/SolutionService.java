@@ -31,31 +31,22 @@ public class SolutionService {
   private String dockerStartCommand;
 
   @Transactional(noRollbackFor = {ContainerRuntimeException.class, SolutionCheckingFailedException.class})
-  public FullReport performChecking(Long taskId, MultipartFile solutionZip, Boolean pmd, Boolean checkstyle) {
+  public Long performChecking(Long taskId, MultipartFile solutionZip, Boolean pmd, Boolean checkstyle) {
     Optional<Task> taskOptional = taskRepository.findById(taskId);
 
     Task task = taskOptional.orElseThrow(TaskNotFoundException::new);
 
     try {
       Solution solution = new Solution(solutionZip.getBytes());
-
       solution.setTask(task);
       solutionJpaRepository.save(solution);
-      Long solutionId = solution.getId();
-
-      SolutionCheckingResult result = runContainer(solutionId, taskId, pmd, checkstyle);
-      System.out.println("status = " + result.statusCode);
-
-      if (result.statusCode != 0) {
-        throw new ContainerRuntimeException(result.statusCode);
-      }
-      return result.fullReport;
+      return solution.getId();
     } catch (IOException e) {
       throw new SolutionCheckingFailedException(e);
     }
   }
 
-  private SolutionCheckingResult runContainer(Long solutionId, Long taskId, Boolean pmd, Boolean checkstyle) throws IOException {
+  public SolutionCheckingResult runContainer(Long solutionId, Long taskId, Boolean pmd, Boolean checkstyle) throws IOException {
     String cmdTemplate = dockerStartCommand;
     String cmd = String.format(cmdTemplate, solutionId, taskId, pmd, checkstyle);
     System.out.println(cmd);
@@ -67,7 +58,6 @@ public class SolutionService {
     while (process.isAlive()) {
       if (scanner.hasNextLine()) {
         String line = scanner.nextLine();
-//        System.out.println(line);
         sb.append(line);
       }
     }
@@ -77,7 +67,7 @@ public class SolutionService {
   }
 
   @AllArgsConstructor
-  static class SolutionCheckingResult {
+  public static class SolutionCheckingResult {
     public FullReport fullReport;
     public int statusCode;
   }

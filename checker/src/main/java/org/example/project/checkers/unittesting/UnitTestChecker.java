@@ -20,10 +20,13 @@ public class UnitTestChecker extends AbstractChecker {
     Runtime runtime = Runtime.getRuntime();
     Process process = runtime.exec(cmd, null, taskDir);
     Scanner scanner = new Scanner(process.getInputStream());
-    while(process.isAlive()){}
-    File reportsFolder = new File(taskDir.getAbsolutePath() + "/target/surefire-reports");
-    UnitTestingReport parse = UnitTestReportParser.parse(reportsFolder);
-    return parse;
+    StringBuilder result = new StringBuilder();
+    while (process.isAlive()) {
+      if (scanner.hasNextLine()) {
+        result.append(scanner.nextLine());
+      }
+    }
+    return UnitTestReportParser.parseLogString(result.toString());
   }
 
 }

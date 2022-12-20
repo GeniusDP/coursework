@@ -19,13 +19,12 @@ import org.example.project.dtos.compilation.CompilationReport;
 public class Main {
 
   public static void main(String[] args) throws Exception {
-    long solutionId = Long.parseLong(System.getProperty("SOLUTION_ID", "2"));
-    long taskId = Long.parseLong(System.getProperty("TASK_ID", "2"));
-    boolean checkPmd = Boolean.parseBoolean(System.getProperty("PMD", "true"));
-    boolean useCheckstyle = Boolean.parseBoolean(System.getProperty("CHECKSTYLE", "true"));
-
-//    System.out.println("solutionId = " + solutionId);
+    long solutionId = Long.parseLong(System.getenv("SOLUTION_ID"));
+    long taskId = Long.parseLong(System.getenv("TASK_ID"));
+    boolean checkPmd = Boolean.parseBoolean(System.getenv("PMD"));
+    boolean useCheckstyle = Boolean.parseBoolean(System.getenv("CHECKSTYLE"));
 //    System.out.println("taskId = " + taskId);
+//    System.out.println("solutionId = " + solutionId);
 //    System.out.println("checkPmd = " + checkPmd);
 //    System.out.println("useCheckstyle = " + useCheckstyle);
 

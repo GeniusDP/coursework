@@ -21,7 +21,7 @@ import org.zeroturnaround.zip.commons.FileUtils;
 
 public class ProjectLoader {
 
-  private final static String host = System.getProperty("SOLUTION_PIPE_SERVICE_HOST", "localhost");
+  private final static String host = System.getenv("SOLUTION_PIPE_SERVICE_HOST");
   private final static String url = "http://" + host + ":8085/api/solution-pipe-service";
 
   public static File fetchProject(Long taskId, Long solutionId) throws Exception {
@@ -53,7 +53,7 @@ public class ProjectLoader {
     for (File config : xmlConfigs) {
       boolean delete = config.delete();
       if (!delete) {
-        throw new IllegalArgumentException("Could not delete config " + config.getName() );
+        throw new IllegalArgumentException("Could not delete config " + config.getName());
       }
     }
   }
@@ -118,6 +118,8 @@ public class ProjectLoader {
 
     int status = response.getStatus();
     if (status != 200) {
+      System.out.println(solutionPipeUrl + solutionId);
+      System.out.println(status);
       throw new CouldNotFetchSolutionException();
     }
     String json = response.getBody();
@@ -132,7 +134,7 @@ public class ProjectLoader {
   }
 
   private static File getTheOnlySubfolderInFolder(File folder) {
-    if(!folder.isDirectory()){
+    if (!folder.isDirectory()) {
       throw new NotValidArchiveStructureException(folder + " is not a folder");
     }
     List<File> list = Arrays.stream(folder.listFiles())

@@ -6,7 +6,6 @@ create table if not exists public.tasks
     name                        text  not null,
     description                 text  not null,
     public_sources_in_zip       bytea not null,
-    pom_xml                     bytea not null,
     private_test_sources_in_zip bytea not null
 );
 
