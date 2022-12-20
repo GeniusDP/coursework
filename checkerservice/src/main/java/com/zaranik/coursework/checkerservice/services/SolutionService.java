@@ -1,17 +1,22 @@
 package com.zaranik.coursework.checkerservice.services;
 
+import static java.time.temporal.ChronoUnit.*;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zaranik.coursework.checkerservice.dtos.container.response.FullReport;
 import com.zaranik.coursework.checkerservice.entities.Solution;
 import com.zaranik.coursework.checkerservice.entities.Task;
+import com.zaranik.coursework.checkerservice.entities.checkstyle.CheckstyleReportEntity;
+import com.zaranik.coursework.checkerservice.entities.pmd.PmdReportEntity;
 import com.zaranik.coursework.checkerservice.exceptions.ContainerRuntimeException;
 import com.zaranik.coursework.checkerservice.exceptions.SolutionCheckingFailedException;
+import com.zaranik.coursework.checkerservice.exceptions.SubmissionNotFoundException;
+import com.zaranik.coursework.checkerservice.repositories.PmdReportRepository;
 import com.zaranik.coursework.checkerservice.repositories.SolutionRepository;
 import java.io.IOException;
 import java.time.Duration;
-import java.time.temporal.ChronoUnit;
 import java.util.Scanner;
-import java.util.concurrent.TimeUnit;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,10 +27,13 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 @RequiredArgsConstructor
 public class SolutionService {
-  
+
+  private final static long MAX_EXECUTION_TIME = MILLISECONDS.convert(Duration.of(10, MINUTES));
+
   private final SolutionRepository solutionJpaRepository;
+  private final PmdReportService pmdReportService;
+  private final CheckstyleReportService checkstyleReportService;
   private final ObjectMapper objectMapper;
-  private final static long MAX_EXECUTION_TIME = TimeUnit.MILLISECONDS.convert(Duration.of(10, ChronoUnit.MINUTES));
 
   @Value("${container.docker.start-command}")
   private String dockerStartCommand;
@@ -61,6 +69,30 @@ public class SolutionService {
     scanner.close();
     FullReport fullReport = objectMapper.readValue(sb.toString(), FullReport.class);
     return new SolutionCheckingResult(fullReport, process.exitValue());
+  }
+
+  @Transactional
+  public Solution saveReport(Solution solution, FullReport report) {
+    solution.setCompilationStatus(report.getCompilationReport().getCompilationStatus().name());
+
+    int testRun = report.getUnitTestingReport().getTestRun();
+    int testFailed = report.getUnitTestingReport().getTestFailed();
+    String testingStatus = report.getUnitTestingReport().getMessage();
+    solution.setTestsRun(testRun);
+    solution.setTestsPassed(testRun - testFailed);
+    solution.setTestingStatus(testingStatus);
+
+    PmdReportEntity pre = pmdReportService.savePmdReport(report.getPmdReport());
+    solution.setPmdReportEntity(pre);
+
+    CheckstyleReportEntity cre = checkstyleReportService.saveCheckstyleReport(report.getCheckstyleReport());
+    solution.setCheckstyleReportEntity(cre);
+
+    return solutionJpaRepository.save(solution);
+  }
+
+  public Solution getSubmissionDetails(Long id) {
+    return solutionJpaRepository.findById(id).orElseThrow(SubmissionNotFoundException::new);
   }
 
   @AllArgsConstructor

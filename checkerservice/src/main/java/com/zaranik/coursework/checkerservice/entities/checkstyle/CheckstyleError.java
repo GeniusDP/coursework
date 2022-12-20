@@ -1,5 +1,6 @@
 package com.zaranik.coursework.checkerservice.entities.checkstyle;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.zaranik.coursework.checkerservice.entities.BaseEntity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -29,6 +30,7 @@ public class CheckstyleError extends BaseEntity {
   private String source;
 
   @ManyToOne
+  @JsonBackReference
   @JoinColumn(name = "checkstyle_file_id")
   private CheckstyleSourceFile file;
 

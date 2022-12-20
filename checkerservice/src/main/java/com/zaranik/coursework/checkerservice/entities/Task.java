@@ -1,5 +1,6 @@
 package com.zaranik.coursework.checkerservice.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -22,9 +23,11 @@ public class Task extends BaseEntity {
   @Column(name = "description")
   private String description;
 
+  @JsonIgnore
   @Column(name = "public_sources_in_zip", nullable = false)
   private byte[] sourceInZip;
 
+  @JsonIgnore
   @Column(name = "private_test_sources_in_zip", nullable = false)
   private byte[] testSourceInZip;
 

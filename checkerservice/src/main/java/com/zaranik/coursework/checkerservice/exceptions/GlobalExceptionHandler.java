@@ -18,8 +18,14 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(ContainerRuntimeException.class)
   @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-  public AppError containerRuntimeExceptionHandler(){
+  public AppError containerRuntimeExceptionHandler() {
     return AppError.justNow("Container failed in runtime");
+  }
+
+  @ExceptionHandler(SubmissionNotFoundException.class)
+  @ResponseStatus(HttpStatus.NOT_FOUND)
+  public AppError submissionNotFoundExceptionHandler() {
+    return AppError.justNow("Submission not found");
   }
 
   @ExceptionHandler(SolutionCheckingFailedException.class)

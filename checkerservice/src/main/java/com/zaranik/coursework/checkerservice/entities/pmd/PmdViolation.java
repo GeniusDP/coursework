@@ -1,5 +1,6 @@
 package com.zaranik.coursework.checkerservice.entities.pmd;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.zaranik.coursework.checkerservice.entities.BaseEntity;
 import com.zaranik.coursework.checkerservice.entities.checkstyle.CheckstyleSourceFile;
 import javax.persistence.Column;
@@ -42,6 +43,7 @@ public class PmdViolation extends BaseEntity {
   private String methodName;
 
   @ManyToOne
+  @JsonBackReference
   @JoinColumn(name = "file_id")
   private PmdReportSourceFile file;
 

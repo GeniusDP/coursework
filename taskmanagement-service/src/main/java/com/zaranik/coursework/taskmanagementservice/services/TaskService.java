@@ -37,6 +37,9 @@ public class TaskService {
         .testSourceInZip(dto.getTestSourceInZip().getBytes())
         .checkstyleNeeded(dto.getCheckstyleNeeded())
         .pmdNeeded(dto.getPmdNeeded())
+        .testPoints(dto.getTestPoints())
+        .pmdPoints(dto.getPmdPoints())
+        .checkstylePoints(dto.getCheckstylePoints())
         .build();
       taskRepository.save(newTask);
       return new TaskResponseDto(newTask.getId(), newTask.getName());

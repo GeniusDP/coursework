@@ -1,7 +1,8 @@
 package com.zaranik.coursework.checkerservice.entities;
 
-import com.zaranik.coursework.checkerservice.entities.checkstyle.CheckstyleReport;
-import com.zaranik.coursework.checkerservice.entities.pmd.PmdReport;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.zaranik.coursework.checkerservice.entities.checkstyle.CheckstyleReportEntity;
+import com.zaranik.coursework.checkerservice.entities.pmd.PmdReportEntity;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -22,6 +23,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Solution extends BaseEntity {
 
+  @JsonIgnore
   @Column(name = "source_in_zip", nullable = false)
   private byte[] sourceInZip;
 
@@ -46,11 +48,11 @@ public class Solution extends BaseEntity {
 
   @OneToOne
   @JoinColumn(name = "checkstyle_report_id")
-  private CheckstyleReport checkstyleReport;
+  private CheckstyleReportEntity checkstyleReportEntity;
 
   @OneToOne
   @JoinColumn(name = "pmd_report_id")
-  private PmdReport pmdReport;
+  private PmdReportEntity pmdReportEntity;
 
   public Solution(byte[] sourceInZip) {
     this.sourceInZip = sourceInZip;
