@@ -36,10 +36,19 @@ public class Task {
   @Column(name = "private_test_sources_in_zip", nullable = false)
   private byte[] testSourceInZip;
 
-  public Task(String name, String description, byte[] sourceInZip, byte[] testSourceInZip) {
-    this.name = name;
-    this.description = description;
-    this.sourceInZip = sourceInZip;
-    this.testSourceInZip = testSourceInZip;
-  }
+  @Column(name = "pmd_needed", nullable = false)
+  private boolean pmdNeeded;
+
+  @Column(name = "checkstyle_needed", nullable = false)
+  private boolean checkstyleNeeded;
+
+  @Column(name = "pmd_points", nullable = false)
+  private int pmdPoints;
+
+  @Column(name = "checkstyle_points", nullable = false)
+  private int checkstylePoints;
+
+  @Column(name = "test_points", nullable = false)
+  private int testPoints;
+
 }

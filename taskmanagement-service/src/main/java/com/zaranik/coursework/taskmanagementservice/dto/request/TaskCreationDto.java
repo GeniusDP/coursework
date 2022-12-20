@@ -9,4 +9,9 @@ public class TaskCreationDto {
   private String description;
   private MultipartFile sourceInZip;
   private MultipartFile testSourceInZip;
+  private Boolean checkstyleNeeded;
+  private Boolean pmdNeeded;
+  private Integer pmdPoints;
+  private Integer checkstylePoints;
+  private Integer testPoints;
 }

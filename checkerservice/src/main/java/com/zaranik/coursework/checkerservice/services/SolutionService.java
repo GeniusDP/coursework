@@ -6,12 +6,12 @@ import com.zaranik.coursework.checkerservice.entities.Solution;
 import com.zaranik.coursework.checkerservice.entities.Task;
 import com.zaranik.coursework.checkerservice.exceptions.ContainerRuntimeException;
 import com.zaranik.coursework.checkerservice.exceptions.SolutionCheckingFailedException;
-import com.zaranik.coursework.checkerservice.exceptions.TaskNotFoundException;
 import com.zaranik.coursework.checkerservice.repositories.SolutionRepository;
-import com.zaranik.coursework.checkerservice.repositories.TaskRepository;
 import java.io.IOException;
-import java.util.Optional;
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,23 +24,19 @@ import org.springframework.web.multipart.MultipartFile;
 public class SolutionService {
   
   private final SolutionRepository solutionJpaRepository;
-  private final TaskRepository taskRepository;
   private final ObjectMapper objectMapper;
+  private final static long MAX_EXECUTION_TIME = TimeUnit.MILLISECONDS.convert(Duration.of(10, ChronoUnit.MINUTES));
 
   @Value("${container.docker.start-command}")
   private String dockerStartCommand;
 
   @Transactional(noRollbackFor = {ContainerRuntimeException.class, SolutionCheckingFailedException.class})
-  public Long performChecking(Long taskId, MultipartFile solutionZip, Boolean pmd, Boolean checkstyle) {
-    Optional<Task> taskOptional = taskRepository.findById(taskId);
-
-    Task task = taskOptional.orElseThrow(TaskNotFoundException::new);
-
+  public Solution registerSubmission(Task task, MultipartFile solutionZip) {
     try {
       Solution solution = new Solution(solutionZip.getBytes());
       solution.setTask(task);
       solutionJpaRepository.save(solution);
-      return solution.getId();
+      return solution;
     } catch (IOException e) {
       throw new SolutionCheckingFailedException(e);
     }
@@ -51,11 +47,12 @@ public class SolutionService {
     String cmd = String.format(cmdTemplate, solutionId, taskId, pmd, checkstyle);
     System.out.println(cmd);
 
+    long startTime = System.currentTimeMillis();
     Runtime runtime = Runtime.getRuntime();
     Process process = runtime.exec(cmd);
     Scanner scanner = new Scanner(process.getInputStream());
     StringBuilder sb = new StringBuilder();
-    while (process.isAlive()) {
+    while (process.isAlive() && (System.currentTimeMillis() - startTime) < MAX_EXECUTION_TIME) {
       if (scanner.hasNextLine()) {
         String line = scanner.nextLine();
         sb.append(line);

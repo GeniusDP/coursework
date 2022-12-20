@@ -12,7 +12,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 public class StyleError {
-  private String line;
+  private Integer line;
   private String message;
   private String source;
 }

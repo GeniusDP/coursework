@@ -16,16 +16,10 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @Order(-1000)
 public class GlobalExceptionHandler {
 
-  @ExceptionHandler(SubmissionNotFoundException.class)
-  @ResponseStatus(HttpStatus.NOT_FOUND)
-  public AppError solutionNotFoundExceptionHandler() {
-    return AppError.justNow("no such solution found");
-  }
-
   @ExceptionHandler(TaskCreationFailedException.class)
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   public AppError taskCreationFailedExceptionHandler() {
-    return AppError.justNow("creation of task failed");
+    return AppError.justNow("creation of task failed due to validation or archive content problem");
   }
 
   @ExceptionHandler(TaskNotFoundException.class)

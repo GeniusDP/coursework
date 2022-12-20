@@ -2,9 +2,6 @@ package com.zaranik.coursework.checkerservice.entities;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,12 +14,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "tasks")
 @NoArgsConstructor
 @AllArgsConstructor
-public class Task {
-
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "id", nullable = false)
-  private Long id;
+public class Task extends BaseEntity {
 
   @Column(name = "name")
   private String name;
@@ -35,5 +27,21 @@ public class Task {
 
   @Column(name = "private_test_sources_in_zip", nullable = false)
   private byte[] testSourceInZip;
+
+  @Column(name = "pmd_needed", nullable = false)
+  private boolean pmdNeeded;
+
+  @Column(name = "checkstyle_needed", nullable = false)
+  private boolean checkstyleNeeded;
+
+  @Column(name = "pmd_points", nullable = false)
+  private int pmdPoints;
+
+  @Column(name = "checkstyle_points", nullable = false)
+  private int checkstylePoints;
+
+  @Column(name = "test_points", nullable = false)
+  private int testPoints;
+
 
 }

@@ -13,8 +13,8 @@ import lombok.ToString;
 @AllArgsConstructor
 public class Violation {
   private String value;
-  private String beginLine;
-  private String endLine;
+  private Integer beginLine;
+  private Integer endLine;
   private String ruleName;
   private String packageName;
   private String className;
