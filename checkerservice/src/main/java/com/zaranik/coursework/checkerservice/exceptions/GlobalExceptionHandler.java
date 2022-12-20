@@ -22,6 +22,12 @@ public class GlobalExceptionHandler {
     return AppError.justNow("Container failed in runtime");
   }
 
+  @ExceptionHandler(ContainerTimeLimitExceededException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  public AppError containerTimeLimitExceededExceptionHandler() {
+    return AppError.justNow("Time limit for container exceeded");
+  }
+
   @ExceptionHandler(SubmissionNotFoundException.class)
   @ResponseStatus(HttpStatus.NOT_FOUND)
   public AppError submissionNotFoundExceptionHandler() {
