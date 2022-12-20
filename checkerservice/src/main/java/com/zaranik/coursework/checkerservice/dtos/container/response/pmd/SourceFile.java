@@ -1,4 +1,4 @@
-package org.example.project.checkers.checkstyle;
+package com.zaranik.coursework.checkerservice.dtos.container.response.pmd;
 
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -12,6 +12,5 @@ import lombok.ToString;
 @AllArgsConstructor
 public class SourceFile {
   private String fileName;
-  private List<StyleError> errors;
+  private List<Violation> violations;
 }
-

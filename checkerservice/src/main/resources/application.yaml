@@ -21,4 +21,4 @@ auth-service:
 
 container:
   docker:
-    start-command: "docker run --network=coursework_default -e SOLUTION_ID=%d --privileged -v /var/run/docker.sock:/var/run/docker.sock ${CHECKER_IMAGE_NAME}"
+    start-command: "docker run --network=coursework_default -e SOLUTION_ID=%d -e TASK_ID=%d -e PMD=%s -e CHECKSTYLE=%s -e SOLUTION_PIPE_SERVICE_HOST=solution-pipe-service --privileged -v /var/run/docker.sock:/var/run/docker.sock ${CHECKER_IMAGE_NAME}"

@@ -18,8 +18,8 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(ContainerRuntimeException.class)
   @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-  public AppError containerRuntimeExceptionHandler(){
-    return AppError.justNow("Runtime container error");
+  public AppError containerRuntimeExceptionHandler(ContainerRuntimeException exception){
+    return AppError.justNow("Container failed with status " + exception.getStatusCode());
   }
 
   @ExceptionHandler(SolutionCheckingFailedException.class)

@@ -1,6 +1,7 @@
 package com.zaranik.coursework.checkerservice.controllers;
 
 import com.zaranik.coursework.checkerservice.dtos.CheckingReport;
+import com.zaranik.coursework.checkerservice.dtos.container.response.FullReport;
 import com.zaranik.coursework.checkerservice.entities.Solution;
 import com.zaranik.coursework.checkerservice.repositories.SolutionRepository;
 import com.zaranik.coursework.checkerservice.services.SolutionService;
@@ -24,8 +25,12 @@ public class CheckerController {
 
   //@SecuredRoute
   @PostMapping(path = "/tasks/{taskId}/check-solution", consumes = "multipart/form-data")
-  public CheckingReport checkSolution(@PathVariable("taskId") Long taskId, @RequestParam("file") MultipartFile solutionZip) {
-    return solutionService.performChecking(taskId, solutionZip);
+  public FullReport checkSolution(
+    @PathVariable("taskId") Long taskId,
+    @RequestParam("file") MultipartFile solutionZip,
+    @RequestParam("pmd") Boolean pmd,
+    @RequestParam("checkstyle") Boolean checkstyle) {
+    return solutionService.performChecking(taskId, solutionZip, pmd, checkstyle);
   }
 
   @GetMapping("/solutions/stats/{id}")

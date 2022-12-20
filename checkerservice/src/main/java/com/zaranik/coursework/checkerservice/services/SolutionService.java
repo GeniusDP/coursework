@@ -1,6 +1,7 @@
 package com.zaranik.coursework.checkerservice.services;
 
-import com.zaranik.coursework.checkerservice.dtos.CheckingReport;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.zaranik.coursework.checkerservice.dtos.container.response.FullReport;
 import com.zaranik.coursework.checkerservice.entities.Solution;
 import com.zaranik.coursework.checkerservice.entities.Task;
 import com.zaranik.coursework.checkerservice.exceptions.ContainerRuntimeException;
@@ -24,57 +25,39 @@ public class SolutionService {
   
   private final SolutionRepository solutionJpaRepository;
   private final TaskRepository taskRepository;
+  private final ObjectMapper objectMapper;
 
-  private static final String COMPILED = "COMPILED";
-  private static final String NA = "N/A";
-  private static final String NOT_COMPILED = "NOT_COMPILED";
-  private static final String TESTS_PASSED = "TESTS_PASSED";
-  private static final String SOME_TESTS_FAILED = "SOME_TESTS_FAILED";
-  
   @Value("${container.docker.start-command}")
   private String dockerStartCommand;
 
   @Transactional(noRollbackFor = {ContainerRuntimeException.class, SolutionCheckingFailedException.class})
-  public CheckingReport performChecking(Long taskId, MultipartFile solutionZip) {
+  public FullReport performChecking(Long taskId, MultipartFile solutionZip, Boolean pmd, Boolean checkstyle) {
     Optional<Task> taskOptional = taskRepository.findById(taskId);
-    if(taskOptional.isEmpty()){
-      throw new TaskNotFoundException();
-    }
 
-    Task task = taskOptional.get();
+    Task task = taskOptional.orElseThrow(TaskNotFoundException::new);
 
     try {
       Solution solution = new Solution(solutionZip.getBytes());
 
       solution.setTask(task);
       solutionJpaRepository.save(solution);
-//      Long solutionId = solution.getId();
-//
-//      SolutionCheckingResult result = runContainer(solutionId);
-//      System.out.println(result.statusCode);
-//
-//      if (result.statusCode != 0) {
-//        throw new ContainerRuntimeException();
-//      }
-//      solution.setTestingStatus(result.solution.testingStatus);
-//      solution.setCompilationStatus(result.solution.compilationStatus);
-//      solutionJpaRepository.save(solution);
-//      System.out.println(solution);
-      return new CheckingReport(
-        solution.getId(),
-        solution.getCompilationStatus(),
-        solution.getTestsNumber(),
-        solution.getTestsPassed(),
-        solution.getTestingStatus()
-      );
+      Long solutionId = solution.getId();
+
+      SolutionCheckingResult result = runContainer(solutionId, taskId, pmd, checkstyle);
+      System.out.println("status = " + result.statusCode);
+
+      if (result.statusCode != 0) {
+        throw new ContainerRuntimeException(result.statusCode);
+      }
+      return result.fullReport;
     } catch (IOException e) {
       throw new SolutionCheckingFailedException(e);
     }
   }
 
-  private SolutionCheckingResult runContainer(Long solutionId) throws IOException {
+  private SolutionCheckingResult runContainer(Long solutionId, Long taskId, Boolean pmd, Boolean checkstyle) throws IOException {
     String cmdTemplate = dockerStartCommand;
-    String cmd = String.format(cmdTemplate, solutionId);
+    String cmd = String.format(cmdTemplate, solutionId, taskId, pmd, checkstyle);
     System.out.println(cmd);
 
     Runtime runtime = Runtime.getRuntime();
@@ -84,43 +67,20 @@ public class SolutionService {
     while (process.isAlive()) {
       if (scanner.hasNextLine()) {
         String line = scanner.nextLine();
-        System.out.println(line);
+//        System.out.println(line);
         sb.append(line);
       }
     }
     scanner.close();
-    SolutionDto solution = processSolutionCheckingResult(sb);
-    return new SolutionCheckingResult(solution, process.exitValue());
+    FullReport fullReport = objectMapper.readValue(sb.toString(), FullReport.class);
+    return new SolutionCheckingResult(fullReport, process.exitValue());
   }
 
-  private SolutionDto processSolutionCheckingResult(StringBuilder sb) {
-
-    System.out.println("processSolutionCheckingResult");
-    if(sb.indexOf(COMPILED) == -1) {
-      return new SolutionDto(NOT_COMPILED, NA);
-    }
-
-    if(sb.indexOf(TESTS_PASSED) == -1) {
-      return new SolutionDto(COMPILED, SOME_TESTS_FAILED);
-    }
-    /*
-      here should be other logic about testing: prettier, linter
-    */
-    SolutionDto solutionDto = new SolutionDto(COMPILED, TESTS_PASSED);
-    System.out.println("finally: " + solutionDto);
-    return solutionDto;
+  @AllArgsConstructor
+  static class SolutionCheckingResult {
+    public FullReport fullReport;
+    public int statusCode;
   }
-
 }
 
-@AllArgsConstructor
-class SolutionDto {
-  public String compilationStatus;
-  public String testingStatus;
-}
 
-@AllArgsConstructor
-class SolutionCheckingResult {
-  public SolutionDto solution;
-  public int statusCode;
-}

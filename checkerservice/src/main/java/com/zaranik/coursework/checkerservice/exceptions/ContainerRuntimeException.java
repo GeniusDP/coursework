@@ -1,16 +1,14 @@
 package com.zaranik.coursework.checkerservice.exceptions;
 
+import lombok.Getter;
+
+@Getter
 public class ContainerRuntimeException extends RuntimeException {
 
-  public ContainerRuntimeException() {
-    super();
+  private final int statusCode;
+
+  public ContainerRuntimeException(int statusCode) {
+    this.statusCode = statusCode;
   }
 
-  public ContainerRuntimeException(String message) {
-    super(message);
-  }
-
-  public ContainerRuntimeException(Throwable cause) {
-    super(cause);
-  }
 }

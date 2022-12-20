@@ -1,10 +1,12 @@
-package org.example.project.dtos.unittesting;
+package com.zaranik.coursework.checkerservice.dtos.container.response.unittesting;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Data
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 public class UnitTestingReport {

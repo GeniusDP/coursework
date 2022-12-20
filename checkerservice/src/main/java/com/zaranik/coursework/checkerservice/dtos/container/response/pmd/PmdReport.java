@@ -1,5 +1,6 @@
-package org.example.project.checkers.unittesting;
+package com.zaranik.coursework.checkerservice.dtos.container.response.pmd;
 
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,7 +10,6 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-class TestDto {
-  private int testsRun;
-  private int testsFailed;
+public class PmdReport {
+  List<SourceFile> sourceFiles;
 }

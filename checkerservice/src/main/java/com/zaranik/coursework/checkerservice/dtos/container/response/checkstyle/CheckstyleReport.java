@@ -1,4 +1,4 @@
-package org.example.project.checkers.checkstyle;
+package com.zaranik.coursework.checkerservice.dtos.container.response.checkstyle;
 
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -10,8 +10,6 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class SourceFile {
-  private String fileName;
-  private List<StyleError> errors;
+public class CheckstyleReport {
+  private List<SourceFile> sourceFiles;
 }
-

@@ -1,4 +1,4 @@
-package org.example.project.checkers.pmd;
+package com.zaranik.coursework.checkerservice.dtos.container.response.pmd;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
