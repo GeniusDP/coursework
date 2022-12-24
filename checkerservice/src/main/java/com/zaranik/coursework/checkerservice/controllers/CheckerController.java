@@ -37,8 +37,8 @@ public class CheckerController {
   ) {
     String username = jwtTokenUtil.getUserNameFromToken(authorizationHeader.substring(7));
     Solution solution = checkerService.registerSolution(taskId, solutionZip, username);
-//    return checkerService.checkSolution(solution);
-    return solution;
+    return checkerService.checkSolution(solution);
+    // return solution;
   }
 
   @SecuredRoute
