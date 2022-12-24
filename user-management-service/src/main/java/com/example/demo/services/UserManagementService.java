@@ -54,7 +54,6 @@ public class UserManagementService {
         .setEmail(email)
         .setFirstName(firstName)
         .setLastName(lastName)
-        .setActivated(false)
         .build();
     newUser.setRole(userRole);
     userRepository.save(newUser);
@@ -63,7 +62,7 @@ public class UserManagementService {
   @Transactional
   public User updateUser(UpdateUserDto updateDto) {
     User user = userRepository.findByUsername(updateDto.getUsername());
-    if(user == null || !user.getIsActivated()){
+    if(user == null){
       throw new UserDetailsUpdateException();
     }
 
@@ -101,7 +100,7 @@ public class UserManagementService {
       throw new ForbiddenAccessException();
     }
     User user = userRepository.findByUsername(username);
-    if(user == null || !user.getIsActivated()){
+    if(user == null){
       throw new UserNotFoundException();
     }
     return user;
@@ -109,7 +108,7 @@ public class UserManagementService {
 
   public User changeRole(String username, RoleValue roleValue) {
     User user = userRepository.findByUsername(username);
-    if(user == null || !user.getIsActivated()){
+    if(user == null){
       throw new UserNotFoundException();
     }
     Role role = roleRepository.findByName(roleValue);

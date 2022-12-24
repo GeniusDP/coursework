@@ -20,7 +20,6 @@ create table if not exists app_users
     password      varchar(50)        not null,
     first_name    varchar(50)        not null,
     last_name     varchar(50)        not null,
-    is_activated  boolean            not null default true,--надо будет вернуть в false
     refresh_token text,
     role_id       bigint             not null references roles (id)
 );

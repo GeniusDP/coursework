@@ -25,8 +25,6 @@ public class User extends BaseEntity {
 
   private String lastName;
 
-  private Boolean isActivated = false;
-
   @JsonIgnore
   private String refreshToken;
 
@@ -34,14 +32,12 @@ public class User extends BaseEntity {
   private Role role;
 
 
-  public User(String username, String email, String password,
-    String firstName, String lastName, boolean isActivated) {
+  public User(String username, String email, String password, String firstName, String lastName) {
     this.username = username;
     this.email = email;
     this.password = password;
     this.firstName = firstName;
     this.lastName = lastName;
-    this.isActivated = isActivated;
   }
 
 
@@ -56,7 +52,6 @@ public class User extends BaseEntity {
     private String password;
     private String firstName;
     private String lastName;
-    private boolean isActivated = false;
 
     public UserBuilder setUsername(String username) {
       this.username = username;
@@ -83,13 +78,8 @@ public class User extends BaseEntity {
       return this;
     }
 
-    public UserBuilder setActivated(boolean isActivated) {
-      this.isActivated = isActivated;
-      return this;
-    }
-
     public User build() {
-      return new User(username, email, password, firstName, lastName, isActivated);
+      return new User(username, email, password, firstName, lastName);
     }
 
   }
