@@ -87,6 +87,6 @@ create table if not exists public.submissions
     pmd_report_id        bigint references public.pmd_reports (id),
     checkstyle_report_id bigint references public.checkstyle_reports (id),
 
-    user_id              bigint,
+    user_username        text,
     task_id              bigint references tasks (id)
 );

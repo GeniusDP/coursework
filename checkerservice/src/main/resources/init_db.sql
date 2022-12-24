@@ -1,6 +1,6 @@
-drop table if exists submissionscascade , tasks,
+drop table if exists submissions, tasks,
     pmd_violation, pmd_files, pmd_report,
-    checkstyle_report, checkstyle_error, checkstyle_file cascade;
+    checkstyle_report, checkstyle_error, checkstyle_file;
 
 create table if not exists public.tasks
 (
@@ -27,7 +27,7 @@ create table if not exists public.pmd_reports
 create table if not exists public.pmd_files
 (
     id            bigserial primary key,
-    name          varchar(300) not null,
+    name          varchar(300),
     pmd_report_id bigint references public.pmd_reports (id)
 );
 
@@ -35,13 +35,13 @@ create table if not exists public.pmd_files
 create table if not exists public.pmd_violations
 (
     id           bigserial primary key,
-    value        text not null,
-    begin_line   int  not null,
-    end_line     int  not null,
-    rule_name    text not null,
-    package_name text not null,
-    class_name   text not null,
-    method_name  text not null,
+    value        text,
+    begin_line   int ,
+    end_line     int ,
+    rule_name    text,
+    package_name text,
+    class_name   text,
+    method_name  text,
     file_id      bigint references public.pmd_files (id)
 );
 
@@ -55,16 +55,16 @@ create table if not exists public.checkstyle_reports
 create table if not exists public.checkstyle_files
 (
     id                   bigserial primary key,
-    name                 varchar(230) not null,
+    name                 varchar(230),
     checkstyle_report_id bigint references public.checkstyle_reports (id)
 );
 
 create table if not exists public.checkstyle_errors
 (
     id                 bigserial primary key,
-    line               int  not null,
-    message            text not null,
-    source             text not null,
+    line               int,
+    message            text,
+    source             text,
     checkstyle_file_id bigint references public.checkstyle_files (id)
 );
 
@@ -87,6 +87,6 @@ create table if not exists public.submissions
     pmd_report_id        bigint references public.pmd_reports (id),
     checkstyle_report_id bigint references public.checkstyle_reports (id),
 
-    user_id              bigint,
+    user_username        text,
     task_id              bigint references tasks (id)
 );

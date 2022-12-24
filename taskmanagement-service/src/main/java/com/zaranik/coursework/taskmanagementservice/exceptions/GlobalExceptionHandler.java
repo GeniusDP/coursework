@@ -16,6 +16,30 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @Order(-1000)
 public class GlobalExceptionHandler {
 
+  @ExceptionHandler(AuthServiceUnreachableException.class)
+  @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+  public AppError authServiceUnreachableExceptionHandler() {
+    return AppError.justNow("Service unavailable");
+  }
+
+  @ExceptionHandler(AccessTokenInvalidException.class)
+  @ResponseStatus(HttpStatus.UNAUTHORIZED)
+  public AppError accessTokenInvalidExceptionHandler() {
+    return AppError.justNow("Access token is not valid");
+  }
+
+  @ExceptionHandler(ForbiddenAccessException.class)
+  @ResponseStatus(HttpStatus.FORBIDDEN)
+  public AppError forbiddenAccessExceptionHandler() {
+    return AppError.justNow("Access denied");
+  }
+
+  @ExceptionHandler(UnauthorizedException.class)
+  @ResponseStatus(HttpStatus.UNAUTHORIZED)
+  public AppError unauthorizedExceptionHandler() {
+    return AppError.justNow("Unauthorized");
+  }
+
   @ExceptionHandler(TaskCreationFailedException.class)
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   public AppError taskCreationFailedExceptionHandler() {

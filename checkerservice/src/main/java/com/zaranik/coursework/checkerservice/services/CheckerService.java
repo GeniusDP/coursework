@@ -20,10 +20,10 @@ public class CheckerService {
   private final TaskRepository taskRepository;
 
   @Transactional
-  public Solution registerSolution(Long taskId, MultipartFile solutionZip) {
+  public Solution registerSolution(Long taskId, MultipartFile solutionZip, String username) {
     Optional<Task> taskOptional = taskRepository.findById(taskId);
     Task task = taskOptional.orElseThrow(TaskNotFoundException::new);
-    return solutionService.registerSubmission(task, solutionZip);
+    return solutionService.registerSubmission(task, solutionZip, username);
   }
 
   @Transactional

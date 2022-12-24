@@ -12,9 +12,9 @@ spring:
 
 zaranik:
   app:
-    jwtAccessTokenExpirationSeconds: 900 # 15 minutes
-    jwtRefreshTokenExpirationSeconds: 2678400 # a one month
-    jwtSecret: BogdanZaranikBogdanZaranikBogdanZaranikBogdanZaranikBogdanZaranikBogdanZaranikBogdanZaranikBogdanZaranik
+    jwtAccessTokenExpirationSeconds: ${JWT_ACCESS_TOKEN_EXPIRATION_TIME_SECONDS}
+    jwtRefreshTokenExpirationSeconds: ${JWT_REFRESH_TOKEN_EXPIRATION_TIME_SECONDS}
+    jwtSecret: ${JWT_SECRET}
 springdoc:
   swagger-ui:
     path: /swagger

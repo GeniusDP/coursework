@@ -1,5 +1,7 @@
 package com.zaranik.coursework.taskmanagementservice.controllers;
 
+import com.zaranik.coursework.taskmanagementservice.aspect.security.basic.SecuredRoute;
+import com.zaranik.coursework.taskmanagementservice.aspect.security.roles.teacher.TeacherGrant;
 import com.zaranik.coursework.taskmanagementservice.dto.request.TaskCreationDto;
 import com.zaranik.coursework.taskmanagementservice.dto.response.TaskResponseDto;
 import com.zaranik.coursework.taskmanagementservice.services.TaskService;
@@ -30,6 +32,8 @@ public class TaskController {
     return taskService.getTaskById(id);
   }
 
+  @SecuredRoute
+  @TeacherGrant
   @PostMapping(value = "/tasks", consumes = "multipart/form-data")
   public TaskResponseDto createNewTask(TaskCreationDto dto) {
     return taskService.createNewTask(dto);

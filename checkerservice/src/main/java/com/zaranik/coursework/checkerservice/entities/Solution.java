@@ -39,8 +39,8 @@ public class Solution extends BaseEntity {
   @Column(name = "testing_status")
   private String testingStatus;
 
-  @Column(name = "user_id")
-  private Long userId;
+  @Column(name = "user_username")
+  private String userUsername;
 
   @Column(name = "total_score")
   private Double totalScore;

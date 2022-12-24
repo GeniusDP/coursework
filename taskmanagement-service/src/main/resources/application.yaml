@@ -10,3 +10,5 @@ spring:
     hibernate:
       ddl-auto: validate
 
+auth-service:
+  url: ${AUTH_SERVICE_URL}

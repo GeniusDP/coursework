@@ -43,9 +43,10 @@ public class SolutionService {
 
   @Transactional
   @SneakyThrows
-  public Solution registerSubmission(Task task, MultipartFile solutionZip) {
+  public Solution registerSubmission(Task task, MultipartFile solutionZip, String username) {
     try {
       Solution solution = new Solution(solutionZip.getBytes());
+      solution.setUserUsername(username);
       solution.setTask(task);
       solutionJpaRepository.save(solution);
       return solution;
