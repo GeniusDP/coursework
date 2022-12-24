@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
 
   @ExceptionHandler(ContainerRuntimeException.class)
-  @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
   public AppError containerRuntimeExceptionHandler() {
     return AppError.justNow("Container failed in runtime");
   }
@@ -35,7 +35,7 @@ public class GlobalExceptionHandler {
   }
 
   @ExceptionHandler(SolutionCheckingFailedException.class)
-  @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
   public AppError solutionCheckingFailedExceptionHandler() {
     return AppError.justNow("Solution checking failed");
   }
