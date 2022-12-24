@@ -78,7 +78,7 @@ create table if not exists public.submissions
     compilation_status   varchar(25),
 
     runtime_status       varchar(25),
-    total_score          int     default 0,
+    total_score          real     default 0,
 
     testing_status       varchar(25),
     tests_run            integer default 0,

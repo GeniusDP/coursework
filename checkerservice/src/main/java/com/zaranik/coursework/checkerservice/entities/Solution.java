@@ -42,6 +42,9 @@ public class Solution extends BaseEntity {
   @Column(name = "user_id")
   private Long userId;
 
+  @Column(name = "total_score")
+  private Double totalScore;
+
   @ManyToOne
   @JoinColumn(name = "task_id")
   private Task task;

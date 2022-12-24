@@ -2,8 +2,11 @@ package com.zaranik.coursework.checkerservice.services;
 
 import static java.time.temporal.ChronoUnit.MINUTES;
 
+import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zaranik.coursework.checkerservice.dtos.container.response.FullReport;
+import com.zaranik.coursework.checkerservice.dtos.container.response.checkstyle.CheckstyleReport;
+import com.zaranik.coursework.checkerservice.dtos.container.response.pmd.PmdReport;
 import com.zaranik.coursework.checkerservice.entities.Solution;
 import com.zaranik.coursework.checkerservice.entities.Task;
 import com.zaranik.coursework.checkerservice.entities.checkstyle.CheckstyleReportEntity;
@@ -14,9 +17,7 @@ import com.zaranik.coursework.checkerservice.exceptions.SolutionCheckingFailedEx
 import com.zaranik.coursework.checkerservice.exceptions.SubmissionNotFoundException;
 import com.zaranik.coursework.checkerservice.repositories.SolutionRepository;
 import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +31,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class SolutionService {
 
-  private final static long MAX_EXECUTION_TIME_MINUTES = 10;
+  private final static long MAX_EXECUTION_TIME_MINUTES = 2;
 
   private final SolutionRepository solutionJpaRepository;
   private final PmdReportService pmdReportService;
@@ -70,8 +71,12 @@ public class SolutionService {
     }
 
     String logs = new String(inputStream.readAllBytes());
-    FullReport fullReport = objectMapper.readValue(logs, FullReport.class);
-    return new SolutionCheckingResult(fullReport, process.exitValue());
+    try {
+      FullReport fullReport = objectMapper.readValue(logs, FullReport.class);
+      return new SolutionCheckingResult(fullReport, process.exitValue());
+    } catch (JacksonException e) {
+      throw new ContainerRuntimeException(process.exitValue());
+    }
   }
 
   @Transactional
@@ -80,16 +85,35 @@ public class SolutionService {
 
     int testRun = report.getUnitTestingReport().getTestRun();
     int testFailed = report.getUnitTestingReport().getTestFailed();
+    int testsPassed = testRun - testFailed;
     String testingStatus = report.getUnitTestingReport().getMessage();
     solution.setTestsRun(testRun);
-    solution.setTestsPassed(testRun - testFailed);
+    solution.setTestsPassed(testsPassed);
     solution.setTestingStatus(testingStatus);
 
-    PmdReportEntity pre = pmdReportService.savePmdReport(report.getPmdReport());
+    PmdReport pmdReport = report.getPmdReport();
+    if (pmdReport != null) {
+      pmdReport.setSourceFiles(pmdReport.getSourceFiles().stream().filter(f -> f.getFileName() != null).toList());
+    }
+    PmdReportEntity pre = pmdReportService.savePmdReport(pmdReport);
     solution.setPmdReportEntity(pre);
 
     CheckstyleReportEntity cre = checkstyleReportService.saveCheckstyleReport(report.getCheckstyleReport());
     solution.setCheckstyleReportEntity(cre);
+
+    if (testRun > 0) {
+      Task task = solution.getTask();
+      double totalScore = task.getTestPoints() * (testsPassed + 0.) / testRun;
+      if (pmdReport == null || pmdReport.getSourceFiles().isEmpty()) {
+        totalScore += task.getPmdPoints();
+      }
+
+      CheckstyleReport checkstyleReport = report.getCheckstyleReport();
+      if (checkstyleReport == null || checkstyleReport.getSourceFiles().isEmpty()) {
+        totalScore += task.getPmdPoints();
+      }
+      solution.setTotalScore(totalScore);
+    }
 
     return solutionJpaRepository.save(solution);
   }
@@ -100,6 +124,7 @@ public class SolutionService {
 
   @AllArgsConstructor
   public static class SolutionCheckingResult {
+
     public FullReport fullReport;
     public int statusCode;
   }

@@ -5,11 +5,14 @@ import com.zaranik.coursework.taskmanagementservice.dto.response.TaskResponseDto
 import com.zaranik.coursework.taskmanagementservice.services.TaskService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@CrossOrigin
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/task-management")
@@ -20,6 +23,11 @@ public class TaskController {
   @GetMapping("/tasks")
   public List<TaskResponseDto> getAllTasks() {
     return taskService.getAllTasks();
+  }
+
+  @GetMapping("/tasks/{id}")
+  public TaskResponseDto getAllTasks(@PathVariable Long id) {
+    return taskService.getTaskById(id);
   }
 
   @PostMapping(value = "/tasks", consumes = "multipart/form-data")

@@ -4,6 +4,7 @@ import com.zaranik.coursework.taskmanagementservice.dto.request.TaskCreationDto;
 import com.zaranik.coursework.taskmanagementservice.dto.response.TaskResponseDto;
 import com.zaranik.coursework.taskmanagementservice.entities.Task;
 import com.zaranik.coursework.taskmanagementservice.exceptions.TaskCreationFailedException;
+import com.zaranik.coursework.taskmanagementservice.exceptions.TaskNotFoundException;
 import com.zaranik.coursework.taskmanagementservice.repositories.TaskRepository;
 import java.io.IOException;
 import java.util.List;
@@ -20,13 +21,14 @@ public class TaskService {
 
   public List<TaskResponseDto> getAllTasks() {
     return taskRepository.findAll().stream()
-      .map(task -> new TaskResponseDto(task.getId(), task.getName()))
+      .map(TaskResponseDto::getFromEntity)
       .toList();
   }
 
   public TaskResponseDto createNewTask(TaskCreationDto dto) {
     int sumPoints = dto.getPmdPoints() + dto.getCheckstylePoints() + dto.getTestPoints();
-    if (sumPoints != 100) {
+    if(dto.getCheckstylePoints() > 0 != dto.getCheckstyleNeeded()
+      || dto.getPmdPoints() > 0 != dto.getPmdNeeded() || sumPoints != 100){
       throw new TaskCreationFailedException();
     }
     try {
@@ -42,11 +44,16 @@ public class TaskService {
         .checkstylePoints(dto.getCheckstylePoints())
         .build();
       taskRepository.save(newTask);
-      return new TaskResponseDto(newTask.getId(), newTask.getName());
+      return TaskResponseDto.getFromEntity(newTask);
     } catch (IOException e) {
       throw new TaskCreationFailedException(e);
     }
   }
 
+
+  public TaskResponseDto getTaskById(Long id) {
+    Task task = taskRepository.findById(id).orElseThrow(TaskNotFoundException::new);
+    return TaskResponseDto.getFromEntity(task);
+  }
 
 }
