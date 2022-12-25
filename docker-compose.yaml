@@ -50,34 +50,34 @@ services:
     volumes:
       - ./db_schema/checkerservice_postgres_init_db.sql:/docker-entrypoint-initdb.d/init.sql
   
-#   checkerservice:
-#     build: ./checkerservice
-#     restart: always
-#     container_name: 'checkerservice'
-#     ports:
-#       - 8084:8084
-#     environment:
-#       - DB_URL=jdbc:postgresql://checkerservice-postgres/postgres?user=postgres&password=postgres
-#       - AUTH_SERVICE_URL=http://auth-service:8081/api/auth
-#       - CHECKER_IMAGE_NAME=zaranik/checker:1.5.7
-#       - NETWORK_NAME=coursework_default
-#     depends_on:
-#       - checkerservice-postgres
-# #      - auth-service
-#     volumes:
-#       - /var/run/docker.sock:/var/run/docker.sock
+  checkerservice:
+    build: ./checkerservice
+    restart: always
+    container_name: 'checkerservice'
+    ports:
+      - 8084:8084
+    environment:
+      - DB_URL=jdbc:postgresql://checkerservice-postgres/postgres?user=postgres&password=postgres
+      - AUTH_SERVICE_URL=http://auth-service:8081/api/auth
+      - CHECKER_IMAGE_NAME=zaranik/checker:1.5.7
+      - NETWORK_NAME=coursework_default
+    depends_on:
+      - checkerservice-postgres
+      - auth-service
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
 
-#   solution-pipe-service:
-#     build: ./solution-pipe-service
-#     restart: always
-#     container_name: 'solution-pipe-service'
-#     ports:
-#       - 8085:8085
-#     environment:
-#       - DB_URL=jdbc:postgresql://checkerservice-postgres/postgres?user=postgres&password=postgres
-#     depends_on:
-#       - checkerservice
-#       - checkerservice-postgres
+  solution-pipe-service:
+    build: ./solution-pipe-service
+    restart: always
+    container_name: 'solution-pipe-service'
+    ports:
+      - 8085:8085
+    environment:
+      - DB_URL=jdbc:postgresql://checkerservice-postgres/postgres?user=postgres&password=postgres
+    depends_on:
+      - checkerservice
+      - checkerservice-postgres
 
   taskmanagement-service:
     build: ./taskmanagement-service

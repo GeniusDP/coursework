@@ -7,6 +7,7 @@ import com.zaranik.coursework.checkerservice.services.CheckerService;
 import com.zaranik.coursework.checkerservice.services.SolutionService;
 import com.zaranik.coursework.checkerservice.utils.JwtTokenUtil;
 import lombok.RequiredArgsConstructor;
+import java.util.*;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,19 +39,55 @@ public class CheckerController {
     String username = jwtTokenUtil.getUserNameFromToken(authorizationHeader.substring(7));
     Solution solution = checkerService.registerSolution(taskId, solutionZip, username);
     return checkerService.checkSolution(solution);
-    // return solution;
   }
 
   @SecuredRoute
-  @GetMapping("/my-submissions/{id}")
-  public Solution getMySubmission(@PathVariable Long id) {
-    return solutionService.getSubmissionDetails(id);
+  @GetMapping("/my-submissions/{submissionId}")
+  public Solution getMySubmissionOfTask(@PathVariable Long submissionId, @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authorizationHeader) {
+    String username = jwtTokenUtil.getUserNameFromToken(authorizationHeader.substring(7));
+    return solutionService.getMySubmissionDetails(submissionId, username);
+  }
+
+  @SecuredRoute
+  @GetMapping("/tasks/{taskId}/my-submissions")
+  public List<Solution> getAllMySubmissionsOfTask(@PathVariable Long taskId, @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authorizationHeader) {
+    String username = jwtTokenUtil.getUserNameFromToken(authorizationHeader.substring(7));
+    return solutionService.getAllMySubmissions(taskId, username);
   }
 
   @TeacherGrant
-  @GetMapping("/submissions/{id}")
-  public Solution getSubmission(@PathVariable Long id) {
-    return solutionService.getSubmissionDetails(id);
+  @SecuredRoute
+  @GetMapping("/tasks/{taskId}/submissions")
+  public List<Solution> getAllSubmissionDetailsOfTask(@PathVariable Long taskId) {
+    return solutionService.getAllSubmissionDetailsOfTask(taskId);
+  }
+
+  @TeacherGrant
+  @SecuredRoute
+  @GetMapping("/tasks/{taskId}/task-sources")
+  public byte[] getTaskSources(@PathVariable Long taskId) {
+    return solutionService.getTaskSources(taskId);
+  }
+
+  @TeacherGrant
+  @SecuredRoute
+  @GetMapping("/tasks/{taskId}/task-tests-sources")
+  public byte[] getTaskTestSources(@PathVariable Long taskId) {
+    return solutionService.getTaskTestsSources(taskId);
+  }
+
+  @SecuredRoute
+  @GetMapping("/my-submissions/{submissionId}/sources")
+  public byte[] getSolutionSources(@PathVariable Long submissionId, @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authorizationHeader) {
+    String myUsername = jwtTokenUtil.getUserNameFromToken(authorizationHeader.substring(7));
+    return solutionService.getMySubmissionSources(submissionId, myUsername);
+  }
+
+  @TeacherGrant
+  @SecuredRoute
+  @GetMapping("/submissions/{submissionId}/sources")
+  public byte[] getSubmissionSources(@PathVariable Long submissionId) {
+    return solutionService.getSubmissionSources(submissionId);
   }
 
 }

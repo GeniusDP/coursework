@@ -1,6 +1,5 @@
 package com.zaranik.coursework.checkerservice.aspect.security.roles.teacher;
 
-import com.zaranik.coursework.checkerservice.aspect.security.basic.SecuredRoute;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

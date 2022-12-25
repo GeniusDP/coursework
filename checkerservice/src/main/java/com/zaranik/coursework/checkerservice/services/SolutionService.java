@@ -13,11 +13,15 @@ import com.zaranik.coursework.checkerservice.entities.checkstyle.CheckstyleRepor
 import com.zaranik.coursework.checkerservice.entities.pmd.PmdReportEntity;
 import com.zaranik.coursework.checkerservice.exceptions.ContainerRuntimeException;
 import com.zaranik.coursework.checkerservice.exceptions.ContainerTimeLimitExceededException;
+import com.zaranik.coursework.checkerservice.exceptions.ForbiddenAccessException;
 import com.zaranik.coursework.checkerservice.exceptions.SolutionCheckingFailedException;
 import com.zaranik.coursework.checkerservice.exceptions.SubmissionNotFoundException;
+import com.zaranik.coursework.checkerservice.exceptions.TaskNotFoundException;
 import com.zaranik.coursework.checkerservice.repositories.SolutionRepository;
+import com.zaranik.coursework.checkerservice.repositories.TaskRepository;
 import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +41,7 @@ public class SolutionService {
   private final PmdReportService pmdReportService;
   private final CheckstyleReportService checkstyleReportService;
   private final ObjectMapper objectMapper;
+  private final TaskRepository taskRepository;
 
   @Value("${container.docker.start-command}")
   private String dockerStartCommand;
@@ -119,8 +124,43 @@ public class SolutionService {
     return solutionJpaRepository.save(solution);
   }
 
-  public Solution getSubmissionDetails(Long id) {
-    return solutionJpaRepository.findById(id).orElseThrow(SubmissionNotFoundException::new);
+  public Solution getMySubmissionDetails(Long submissionId, String username) {
+    Solution solution = solutionJpaRepository.findSolutionById(submissionId).orElseThrow(SubmissionNotFoundException::new);
+    if (!solution.getUserUsername().equals(username)) {
+      throw new ForbiddenAccessException();
+    }
+    return solution;
+  }
+
+  public List<Solution> getAllMySubmissions(Long taskId, String username) {
+    return solutionJpaRepository.findAllByUserUsernameIsAndTaskIdIs(username, taskId);
+  }
+
+  public List<Solution> getAllSubmissionDetailsOfTask(Long taskId) {
+    return solutionJpaRepository.findAllByTaskId(taskId);
+  }
+
+  public byte[] getTaskSources(Long taskId) {
+    Task task = taskRepository.findById(taskId).orElseThrow(TaskNotFoundException::new);
+    return task.getSourceInZip();
+  }
+
+  public byte[] getTaskTestsSources(Long taskId) {
+    Task task = taskRepository.findById(taskId).orElseThrow(TaskNotFoundException::new);
+    return task.getTestSourceInZip();
+  }
+
+  public byte[] getMySubmissionSources(Long submissionId, String myUsername) {
+    Solution solution = solutionJpaRepository.findSolutionById(submissionId).orElseThrow(SubmissionNotFoundException::new);
+    if (!solution.getUserUsername().equals(myUsername)) {
+      throw new ForbiddenAccessException();
+    }
+    return solution.getSourceInZip();
+  }
+
+  public byte[] getSubmissionSources(Long submissionId) {
+    Solution solution = solutionJpaRepository.findSolutionById(submissionId).orElseThrow(SubmissionNotFoundException::new);
+    return solution.getSourceInZip();
   }
 
   @AllArgsConstructor
