@@ -25,17 +25,17 @@ services:
       - JWT_SECRET=BogdanZaranikBogdanZaranikBogdanZaranikBogdanZaranikBogdanZaranikBogdanZaranikBogdanZaranikBogdanZaranik
     depends_on:
       - auth-postgres
-  # user-management-service:
-  #   build: ./user-management-service
-  #   container_name: 'user-management-service'
-  #   ports:
-  #     - 8082:8082
-  #   environment:
-  #     - DB_URL=jdbc:postgresql://auth-postgres/postgres?user=postgres&password=postgres
-  #     - AUTH_SERVICE_URL=http://auth-service:8081/api/auth
-  #   depends_on:
-  #     - auth-postgres
-  #     - auth-service
+  user-management-service:
+    build: ./user-management-service
+    container_name: 'user-management-service'
+    ports:
+      - 8082:8082
+    environment:
+      - DB_URL=jdbc:postgresql://auth-postgres/postgres?user=postgres&password=postgres
+      - AUTH_SERVICE_URL=http://auth-service:8081/api/auth
+    depends_on:
+      - auth-postgres
+      - auth-service
   
   checkerservice-postgres:
     image: 'postgres'
@@ -59,7 +59,7 @@ services:
     environment:
       - DB_URL=jdbc:postgresql://checkerservice-postgres/postgres?user=postgres&password=postgres
       - AUTH_SERVICE_URL=http://auth-service:8081/api/auth
-      - CHECKER_IMAGE_NAME=zaranik/checker:1.5.7
+      - CHECKER_IMAGE_NAME=zaranik/checker:1.5.8-snap
       - NETWORK_NAME=coursework_default
     depends_on:
       - checkerservice-postgres

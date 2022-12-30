@@ -5,10 +5,12 @@
 #COPY ./solution/ .
 ## To resolve dependencies in a safe way (no re-download when the source code changes)
 #WORKDIR /app/task
-#RUN mvn clean test --fail-never
+#RUN mvn clean package --fail-never
+#RUN mvn clean pmd:pmd --fail-never
+#RUN mvn clean checkstyle:check --fail-never
 #RUN rm -r /app
 
-FROM zaranik/checker-base:1.1
+FROM zaranik/checker-base:1.2-snap
 ARG JAR_FILE=/target/*-jar-with-dependencies.jar
 COPY ${JAR_FILE} /app/build.jar
 WORKDIR /app
