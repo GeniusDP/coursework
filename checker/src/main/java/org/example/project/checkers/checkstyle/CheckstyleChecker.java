@@ -18,8 +18,8 @@ public class CheckstyleChecker extends AbstractChecker {
     String cmd = "mvn checkstyle:check -q";
     Runtime runtime = Runtime.getRuntime();
     Process process = runtime.exec(cmd, null, taskDir);
-    while (process.isAlive()) {
-    }
+    process.waitFor();
+
     File checkstyleReport = new File(taskDir.getAbsolutePath() + "/target/checkstyle-result.xml");
     if (!checkstyleReport.exists()) {
       return new CheckstyleReport(Collections.emptyList());

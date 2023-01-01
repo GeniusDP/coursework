@@ -23,10 +23,6 @@ public class Main {
     long taskId = Long.parseLong(System.getenv("TASK_ID"));
     boolean checkPmd = Boolean.parseBoolean(System.getenv("PMD"));
     boolean useCheckstyle = Boolean.parseBoolean(System.getenv("CHECKSTYLE"));
-//    System.out.println("taskId = " + taskId);
-//    System.out.println("solutionId = " + solutionId);
-//    System.out.println("checkPmd = " + checkPmd);
-//    System.out.println("useCheckstyle = " + useCheckstyle);
 
     File taskDir = ProjectLoader.fetchProject(taskId, solutionId);
 
