@@ -6,6 +6,8 @@ import com.zaranik.coursework.checkerservice.entities.pmd.PmdReportEntity;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
@@ -32,6 +34,10 @@ public class Solution extends BaseEntity {
 
   @Column(name = "tests_run")
   private Integer testsRun;
+
+  @Column(name = "runtime_status")
+  @Enumerated(EnumType.STRING)
+  private RuntimeStatus runtimeStatus;
 
   @Column(name = "tests_passed")
   private Integer testsPassed;

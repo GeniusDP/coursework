@@ -1,3 +1,14 @@
+server:
+  port: 8083
 spring:
+  main:
+    allow-circular-references: true
   datasource:
+    driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/mydb?user=postgres&password=zaranik
+  jpa:
+    hibernate:
+      ddl-auto: validate
+
+auth-service:
+  url: no_url

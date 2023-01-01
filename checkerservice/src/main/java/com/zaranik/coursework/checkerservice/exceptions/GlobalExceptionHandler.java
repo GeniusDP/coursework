@@ -34,12 +34,6 @@ public class GlobalExceptionHandler {
     return AppError.justNow("Submission not found");
   }
 
-  @ExceptionHandler(SolutionCheckingFailedException.class)
-  @ResponseStatus(HttpStatus.BAD_REQUEST)
-  public AppError solutionCheckingFailedExceptionHandler() {
-    return AppError.justNow("Solution checking failed");
-  }
-
   @ExceptionHandler(TaskNotFoundException.class)
   @ResponseStatus(HttpStatus.NOT_FOUND)
   public AppError taskNotFoundExceptionHandler() {

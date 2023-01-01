@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class CheckerserviceApplication {
+public class CheckerServiceApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(CheckerserviceApplication.class, args);
+		SpringApplication.run(CheckerServiceApplication.class, args);
 	}
 
 }

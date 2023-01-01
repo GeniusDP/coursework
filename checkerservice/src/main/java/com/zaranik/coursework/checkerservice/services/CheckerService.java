@@ -1,18 +1,22 @@
 package com.zaranik.coursework.checkerservice.services;
 
+import com.zaranik.coursework.checkerservice.entities.RuntimeStatus;
 import com.zaranik.coursework.checkerservice.entities.Solution;
 import com.zaranik.coursework.checkerservice.entities.Task;
 import com.zaranik.coursework.checkerservice.exceptions.ContainerRuntimeException;
+import com.zaranik.coursework.checkerservice.exceptions.ContainerTimeLimitExceededException;
 import com.zaranik.coursework.checkerservice.exceptions.TaskNotFoundException;
 import com.zaranik.coursework.checkerservice.repositories.TaskRepository;
 import com.zaranik.coursework.checkerservice.services.SolutionService.SolutionCheckingResult;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class CheckerService {
 
@@ -26,7 +30,7 @@ public class CheckerService {
     return solutionService.registerSubmission(task, solutionZip, username);
   }
 
-  @Transactional
+  @Transactional(noRollbackFor = {ContainerRuntimeException.class, ContainerTimeLimitExceededException.class})
   public Solution checkSolution(Solution solution) {
     Task task = solution.getTask();
     SolutionCheckingResult result = solutionService.runContainer(
@@ -35,7 +39,7 @@ public class CheckerService {
       task.isPmdNeeded(),
       task.isCheckstyleNeeded()
     );
-    System.out.println("status = " + result.statusCode);
+    log.info("status = {}", result.statusCode);
     if (result.statusCode != 0) {
       throw new ContainerRuntimeException(result.statusCode);
     }

@@ -13,12 +13,13 @@ spring:
 
   servlet:
     multipart:
-      max-file-size: 15MB
-      max-request-size: 20MB
+      max-file-size: ${MAX_FILE_SIZE}
+      max-request-size: ${MAX_REQUEST_SIZE}
 
 auth-service:
   url: ${AUTH_SERVICE_URL}
 
 container:
   docker:
-    start-command: "docker run --network=coursework_default -e SOLUTION_ID=%d -e TASK_ID=%d -e PMD=%s -e CHECKSTYLE=%s -e SOLUTION_PIPE_SERVICE_HOST=solution-pipe-service --privileged -v /var/run/docker.sock:/var/run/docker.sock ${CHECKER_IMAGE_NAME}"
+    start-command: ${DOCKER_SCRIPT}
+    max-execution-time-minutes: ${MAX_EXECUTION_TIME_MINUTES}

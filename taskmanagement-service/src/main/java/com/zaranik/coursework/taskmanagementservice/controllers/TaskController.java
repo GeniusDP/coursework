@@ -32,8 +32,8 @@ public class TaskController {
     return taskService.getTaskById(id);
   }
 
-  @SecuredRoute
-  @TeacherGrant
+//  @SecuredRoute
+//  @TeacherGrant
   @PostMapping(value = "/tasks", consumes = "multipart/form-data")
   public TaskResponseDto createNewTask(TaskCreationDto dto) {
     return taskService.createNewTask(dto);
