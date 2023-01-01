@@ -3,12 +3,15 @@ package com.zaranik.coursework.taskmanagementservice.services;
 import com.zaranik.coursework.taskmanagementservice.dto.request.TaskCreationDto;
 import com.zaranik.coursework.taskmanagementservice.dto.response.TaskResponseDto;
 import com.zaranik.coursework.taskmanagementservice.entities.Task;
+import com.zaranik.coursework.taskmanagementservice.exceptions.ForbiddenAccessException;
 import com.zaranik.coursework.taskmanagementservice.exceptions.TaskCreationFailedException;
 import com.zaranik.coursework.taskmanagementservice.exceptions.TaskNotFoundException;
 import com.zaranik.coursework.taskmanagementservice.repositories.TaskRepository;
 import java.io.IOException;
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,4 +60,21 @@ public class TaskService {
     return TaskResponseDto.getFromEntity(task);
   }
 
+  @SneakyThrows
+  public TaskResponseDto changeTask(Long taskId, TaskCreationDto dto, String username) {
+    Task task = taskRepository.findById(taskId).orElseThrow(TaskNotFoundException::new);
+    if( !task.getCreatorName().equals(username) ){
+      throw new ForbiddenAccessException();
+    }
+    task.setName(dto.getName());
+    task.setDescription(dto.getDescription());
+    task.setSourceInZip(dto.getSourceInZip().getBytes());
+    task.setTestSourceInZip(dto.getTestSourceInZip().getBytes());
+    task.setPmdNeeded(dto.getPmdNeeded());
+    task.setPmdPoints(dto.getPmdPoints());
+    task.setCheckstyleNeeded(dto.getCheckstyleNeeded());
+    task.setCheckstylePoints(dto.getCheckstylePoints());
+    taskRepository.save(task);
+    return TaskResponseDto.getFromEntity(task);
+  }
 }
