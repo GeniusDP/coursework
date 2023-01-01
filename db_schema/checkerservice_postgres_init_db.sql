@@ -7,6 +7,7 @@ create table if not exists public.tasks
     id                          bigserial primary key,
     name                        text    not null,
     description                 text    not null,
+    creator_name                text    not null,
     public_sources_in_zip       bytea   not null,
     private_test_sources_in_zip bytea   not null,
     pmd_needed                  boolean not null,
@@ -36,8 +37,8 @@ create table if not exists public.pmd_violations
 (
     id           bigserial primary key,
     value        text,
-    begin_line   int ,
-    end_line     int ,
+    begin_line   int,
+    end_line     int,
     rule_name    text,
     package_name text,
     class_name   text,
@@ -78,7 +79,7 @@ create table if not exists public.submissions
     compilation_status   varchar(25),
 
     runtime_status       varchar(25),
-    total_score          real     default 0,
+    total_score          real    default 0,
 
     testing_status       varchar(25),
     tests_run            integer default 0,

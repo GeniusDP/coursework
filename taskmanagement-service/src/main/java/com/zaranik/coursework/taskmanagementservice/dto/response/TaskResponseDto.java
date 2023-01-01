@@ -12,6 +12,7 @@ public class TaskResponseDto {
   private Long id;
   private String name;
   private String description;
+  private String creatorName;
   private boolean pmdNeeded;
   private boolean checkstyleNeeded;
   private int pmdPoints;
@@ -23,6 +24,7 @@ public class TaskResponseDto {
       .id(task.getId())
       .name(task.getName())
       .description(task.getDescription())
+      .creatorName(task.getCreatorName())
       .pmdPoints(task.getPmdPoints())
       .checkstylePoints(task.getCheckstylePoints())
       .testPoints(task.getTestPoints())

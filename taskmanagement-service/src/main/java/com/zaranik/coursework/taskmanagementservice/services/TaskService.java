@@ -25,7 +25,7 @@ public class TaskService {
       .toList();
   }
 
-  public TaskResponseDto createNewTask(TaskCreationDto dto) {
+  public TaskResponseDto createNewTask(TaskCreationDto dto, String username) {
     int sumPoints = dto.getPmdPoints() + dto.getCheckstylePoints() + dto.getTestPoints();
     if(dto.getCheckstylePoints() > 0 != dto.getCheckstyleNeeded()
       || dto.getPmdPoints() > 0 != dto.getPmdNeeded() || sumPoints != 100){
@@ -35,6 +35,7 @@ public class TaskService {
       Task newTask = Task.builder()
         .name(dto.getName())
         .description(dto.getDescription())
+        .creatorName(username)
         .sourceInZip(dto.getSourceInZip().getBytes())
         .testSourceInZip(dto.getTestSourceInZip().getBytes())
         .checkstyleNeeded(dto.getCheckstyleNeeded())

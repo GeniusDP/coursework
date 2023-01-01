@@ -23,6 +23,9 @@ public class Task extends BaseEntity {
   @Column(name = "description")
   private String description;
 
+  @Column(name = "creator_name")
+  private String creatorName;
+
   @JsonIgnore
   @Column(name = "public_sources_in_zip", nullable = false)
   private byte[] sourceInZip;
