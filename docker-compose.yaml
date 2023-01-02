@@ -69,7 +69,7 @@ services:
           docker run --network=coursework_default -e SOLUTION_ID=%d 
           -e TASK_ID=%d -e PMD=%s -e CHECKSTYLE=%s -e SOLUTION_PIPE_SERVICE_HOST=solution-pipe-service 
           --privileged -v /var/run/docker.sock:/var/run/docker.sock 
-          zaranik/checker:1.5.9-snap
+          zaranik/checker:1.5.10-snap
     depends_on:
       - checkerservice-postgres
       - auth-service

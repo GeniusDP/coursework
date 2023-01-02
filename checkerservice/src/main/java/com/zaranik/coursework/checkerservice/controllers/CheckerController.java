@@ -29,7 +29,7 @@ public class CheckerController {
   private final CheckerService checkerService;
   private final JwtTokenUtil jwtTokenUtil;
 
-//  @SecuredRoute
+  @SecuredRoute
   @PostMapping(path = "/tasks/{taskId}/check-solution", consumes = "multipart/form-data")
   public Solution checkSolution(
     @PathVariable("taskId") Long taskId,
@@ -41,50 +41,50 @@ public class CheckerController {
     return checkerService.checkSolution(solution);
   }
 
-//  @SecuredRoute
+  @SecuredRoute
   @GetMapping("/my-submissions/{submissionId}")
   public Solution getMySubmissionOfTask(@PathVariable Long submissionId, @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authorizationHeader) {
     String username = jwtTokenUtil.getUserNameFromToken(authorizationHeader.substring(7));
     return solutionService.getMySubmissionDetails(submissionId, username);
   }
 
-//  @SecuredRoute
+  @SecuredRoute
   @GetMapping("/tasks/{taskId}/my-submissions")
   public List<Solution> getAllMySubmissionsOfTask(@PathVariable Long taskId, @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authorizationHeader) {
     String username = jwtTokenUtil.getUserNameFromToken(authorizationHeader.substring(7));
     return solutionService.getAllMySubmissions(taskId, username);
   }
 
-//  @TeacherGrant
-//  @SecuredRoute
+  @TeacherGrant
+  @SecuredRoute
   @GetMapping("/tasks/{taskId}/submissions")
   public List<Solution> getAllSubmissionDetailsOfTask(@PathVariable Long taskId) {
     return solutionService.getAllSubmissionDetailsOfTask(taskId);
   }
 
-//  @TeacherGrant
-//  @SecuredRoute
+  @TeacherGrant
+  @SecuredRoute
   @GetMapping("/tasks/{taskId}/task-sources")
   public byte[] getTaskSources(@PathVariable Long taskId) {
     return solutionService.getTaskSources(taskId);
   }
 
-//  @TeacherGrant
-//  @SecuredRoute
+  @TeacherGrant
+  @SecuredRoute
   @GetMapping("/tasks/{taskId}/task-tests-sources")
   public byte[] getTaskTestSources(@PathVariable Long taskId) {
     return solutionService.getTaskTestsSources(taskId);
   }
 
-//  @SecuredRoute
+  @SecuredRoute
   @GetMapping("/my-submissions/{submissionId}/sources")
   public byte[] getSolutionSources(@PathVariable Long submissionId, @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authorizationHeader) {
     String myUsername = jwtTokenUtil.getUserNameFromToken(authorizationHeader.substring(7));
     return solutionService.getMySubmissionSources(submissionId, myUsername);
   }
 
-//  @TeacherGrant
-//  @SecuredRoute
+  @TeacherGrant
+  @SecuredRoute
   @GetMapping("/submissions/{submissionId}/sources")
   public byte[] getSubmissionSources(@PathVariable Long submissionId) {
     return solutionService.getSubmissionSources(submissionId);

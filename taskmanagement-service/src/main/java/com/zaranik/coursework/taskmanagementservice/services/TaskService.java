@@ -12,6 +12,8 @@ import java.nio.file.AccessDeniedException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -76,5 +78,10 @@ public class TaskService {
     task.setCheckstylePoints(dto.getCheckstylePoints());
     taskRepository.save(task);
     return TaskResponseDto.getFromEntity(task);
+  }
+
+  public byte[] getTaskSources(Long id) {
+    Task task = taskRepository.findById(id).orElseThrow(TaskNotFoundException::new);
+    return task.getSourceInZip();
   }
 }

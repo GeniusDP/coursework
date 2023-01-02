@@ -117,6 +117,10 @@ public class SolutionService {
     PmdReportEntity pre = pmdReportService.savePmdReport(pmdReport);
     solution.setPmdReportEntity(pre);
 
+    CheckstyleReport checkstyleReport = report.getCheckstyleReport();
+    if (checkstyleReport != null) {
+      checkstyleReport.setSourceFiles(checkstyleReport.getSourceFiles().stream().filter(f -> f.getErrors().size() != 0).toList());
+    }
     CheckstyleReportEntity cre = checkstyleReportService.saveCheckstyleReport(report.getCheckstyleReport());
     solution.setCheckstyleReportEntity(cre);
 
@@ -127,7 +131,6 @@ public class SolutionService {
         totalScore += task.getPmdPoints();
       }
 
-      CheckstyleReport checkstyleReport = report.getCheckstyleReport();
       if (checkstyleReport == null || checkstyleReport.getSourceFiles().isEmpty()) {
         totalScore += task.getPmdPoints();
       }
@@ -181,6 +184,7 @@ public class SolutionService {
 
   @AllArgsConstructor
   public static class SolutionCheckingResult {
+
     public FullReport fullReport;
     public int statusCode;
   }
