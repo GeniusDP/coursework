@@ -23,3 +23,6 @@ container:
   docker:
     start-command: ${DOCKER_SCRIPT}
     max-execution-time-minutes: ${MAX_EXECUTION_TIME_MINUTES}
+
+submission:
+  min-time-between-in-seconds: ${MIN_TIME_BETWEEN_SUBMISSIONS_IN_SECONDS}

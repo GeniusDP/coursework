@@ -23,3 +23,6 @@ container:
   docker:
     start-command: "docker run --network=host -e SOLUTION_ID=%d -e TASK_ID=%d -e PMD=%s -e CHECKSTYLE=%s -e SOLUTION_PIPE_SERVICE_HOST=localhost --privileged -v /var/run/docker.sock:/var/run/docker.sock zaranik/checker:1.5.9-snap"
     max-execution-time-minutes: 2
+
+submission:
+  min-time-between-in-seconds: 30

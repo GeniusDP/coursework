@@ -1,6 +1,5 @@
 package com.zaranik.coursework.checkerservice.services;
 
-import com.zaranik.coursework.checkerservice.entities.RuntimeStatus;
 import com.zaranik.coursework.checkerservice.entities.Solution;
 import com.zaranik.coursework.checkerservice.entities.Task;
 import com.zaranik.coursework.checkerservice.exceptions.ContainerRuntimeException;

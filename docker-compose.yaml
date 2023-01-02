@@ -63,6 +63,7 @@ services:
       MAX_FILE_SIZE: 15MB
       MAX_REQUEST_SIZE: 20MB
       MAX_EXECUTION_TIME_MINUTES: 2
+      MIN_TIME_BETWEEN_SUBMISSIONS_IN_SECONDS: 30
       
       DOCKER_SCRIPT: >
           docker run --network=coursework_default -e SOLUTION_ID=%d 

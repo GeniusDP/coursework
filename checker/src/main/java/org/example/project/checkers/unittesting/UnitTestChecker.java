@@ -16,7 +16,7 @@ public class UnitTestChecker extends AbstractChecker {
   @SneakyThrows
   @Override
   public UnitTestingReport call() {
-    String cmd = "mvn test -q";
+    String cmd = "mvn test";
     Runtime runtime = Runtime.getRuntime();
     Process process = runtime.exec(cmd, null, taskDir);
     Scanner scanner = new Scanner(process.getInputStream());
