@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -61,6 +62,14 @@ public class TaskController {
   public TaskResponseDto changeMyTask(@PathVariable Long taskId, TaskCreationDto dto, @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
     String username = jwtTokenUtil.getUserNameFromToken(authorizationHeader.substring(7));
     return taskService.changeTask(taskId, dto, username);
+  }
+
+  @TeacherGrant
+  @SecuredRoute
+  @DeleteMapping("/tasks/{taskId}")
+  public void deleteOwnTask(@PathVariable Long taskId, @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+    String username = jwtTokenUtil.getUserNameFromToken(authorizationHeader.substring(7));
+    taskService.deleteOwnTask(taskId, username);
   }
 
 }

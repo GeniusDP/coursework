@@ -2,9 +2,11 @@ package com.zaranik.coursework.checkerservice.controllers;
 
 import com.zaranik.coursework.checkerservice.aspect.security.basic.SecuredRoute;
 import com.zaranik.coursework.checkerservice.aspect.security.roles.teacher.TeacherGrant;
-import com.zaranik.coursework.checkerservice.dtos.RuntimeStatusStatsDto;
+import com.zaranik.coursework.checkerservice.dtos.response.DoubleNumberValueDto;
+import com.zaranik.coursework.checkerservice.dtos.response.LongNumberValueDto;
+import com.zaranik.coursework.checkerservice.dtos.response.RuntimeStatusStatsDto;
+import com.zaranik.coursework.checkerservice.dtos.response.TotalScoreDistributionStatsDto;
 import com.zaranik.coursework.checkerservice.entities.Solution;
-import com.zaranik.coursework.checkerservice.services.CheckerService;
 import com.zaranik.coursework.checkerservice.services.SolutionService;
 import com.zaranik.coursework.checkerservice.services.StatisticsService;
 import com.zaranik.coursework.checkerservice.utils.JwtTokenUtil;
@@ -77,9 +79,32 @@ public class StatsController {
     return solutionService.getSubmissionSources(submissionId);
   }
 
-  @GetMapping("/stats/runtime-statuses-in-groups")
-  public List<RuntimeStatusStatsDto> countRuntimeStatusesGrouped(){
-    return statisticsService.countRuntimeStatusesGrouped();
+
+  @GetMapping("/stats/task/{taskId}/runtime-statuses-in-groups")
+  public List<RuntimeStatusStatsDto> countRuntimeStatusesGrouped(@PathVariable Long taskId){
+    return statisticsService.countRuntimeStatusesGrouped(taskId);
+  }
+
+
+  @GetMapping("/stats/task/{taskId}/percentage-of-fully-correct-solutions")
+  public DoubleNumberValueDto countPercentageOfFullyCorrectSolutions(@PathVariable Long taskId){
+    return statisticsService.countPercentageOfFullyCorrectSolutions(taskId);
+  }
+
+  @GetMapping("/stats/task/{taskId}/distribution-of-totalscores")
+  public TotalScoreDistributionStatsDto getDistributionOfTotalScores(@PathVariable Long taskId){
+    return statisticsService.getDistributionOfTotalScores(taskId);
+  }
+
+
+  @GetMapping("/stats/task/{taskId}/average-totalscore")
+  public DoubleNumberValueDto getAverageTotalScore(@PathVariable Long taskId){
+    return statisticsService.getAverageTotalScore(taskId);
+  }
+
+  @GetMapping("/stats/task/{taskId}/number-of-submissions")
+  public LongNumberValueDto countSubmissionsNumberOfTask(@PathVariable Long taskId){
+    return statisticsService.countSubmissionsNumberOfTask(taskId);
   }
 
 }

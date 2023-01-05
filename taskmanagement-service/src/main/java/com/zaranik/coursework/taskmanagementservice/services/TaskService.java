@@ -84,4 +84,11 @@ public class TaskService {
     Task task = taskRepository.findById(id).orElseThrow(TaskNotFoundException::new);
     return task.getSourceInZip();
   }
+
+  public void deleteOwnTask(Long taskId, String username) {
+    Task task = taskRepository.findById(taskId).orElseThrow(TaskNotFoundException::new);
+    if (task.getCreatorName().equals(username)) {
+      taskRepository.delete(task);
+    }
+  }
 }
