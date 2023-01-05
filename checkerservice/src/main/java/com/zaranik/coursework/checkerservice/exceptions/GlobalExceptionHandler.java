@@ -34,6 +34,12 @@ public class GlobalExceptionHandler {
     return AppError.justNow("Submission not found");
   }
 
+  @ExceptionHandler(NoSubmissionsLeftException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  public AppError noSubmissionsLeftException() {
+    return AppError.justNow("no submissions left for this task, you have reached the limit");
+  }
+
   @ExceptionHandler(TaskNotFoundException.class)
   @ResponseStatus(HttpStatus.NOT_FOUND)
   public AppError taskNotFoundExceptionHandler() {

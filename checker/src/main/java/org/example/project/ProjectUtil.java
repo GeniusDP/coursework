@@ -33,7 +33,6 @@ public class ProjectUtil {
       if (sc.hasNextLine()) {
         String line = sc.nextLine();
         sb.append(line);
-        System.out.println(line);
       }
     }
     sc.close();

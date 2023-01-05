@@ -18,6 +18,7 @@ public class TaskResponseDto {
   private int pmdPoints;
   private int checkstylePoints;
   private int testPoints;
+  private Integer submissionsNumberLimit;
 
   public static TaskResponseDto getFromEntity(Task task) {
     return TaskResponseDto.builder()
@@ -30,6 +31,7 @@ public class TaskResponseDto {
       .testPoints(task.getTestPoints())
       .pmdNeeded(task.isPmdNeeded())
       .checkstyleNeeded(task.isCheckstyleNeeded())
+      .submissionsNumberLimit(task.getSubmissionsNumberLimit())
       .build();
   }
 }

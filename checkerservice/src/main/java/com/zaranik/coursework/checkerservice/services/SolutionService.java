@@ -50,7 +50,8 @@ public class SolutionService {
   private Integer maxExecutionTimeMinutes;
 
   @Transactional
-  public Solution registerSubmission(Task task, MultipartFile solutionZip, String username) {
+  public Solution registerSubmission(Long taskId, MultipartFile solutionZip, String username) {
+    Task task = taskRepository.findById(taskId).orElseThrow(TaskNotFoundException::new);
     try {
       Solution solution = new Solution(solutionZip.getBytes());
       solution.setUserUsername(username);
@@ -101,14 +102,18 @@ public class SolutionService {
   @Transactional
   public Solution saveReport(Solution solution, FullReport report) {
     solution.setCompilationStatus(report.getCompilationReport().getCompilationStatus().name());
-
-    int testRun = report.getUnitTestingReport().getTestRun();
-    int testFailed = report.getUnitTestingReport().getTestFailed();
-    int testsPassed = testRun - testFailed;
-    String testingStatus = report.getUnitTestingReport().getMessage();
-    solution.setTestsRun(testRun);
-    solution.setTestsPassed(testsPassed);
-    solution.setTestingStatus(testingStatus);
+    int testRun = -1;
+    int testFailed = -1;
+    int testsPassed = -1;
+    if(report.getUnitTestingReport() != null) {
+      testRun = report.getUnitTestingReport().getTestRun();
+      testFailed = report.getUnitTestingReport().getTestFailed();
+      testsPassed = testRun - testFailed;
+      String testingStatus = report.getUnitTestingReport().getMessage();
+      solution.setTestsRun(testRun);
+      solution.setTestsPassed(testsPassed);
+      solution.setTestingStatus(testingStatus);
+    }
 
     PmdReport pmdReport = report.getPmdReport();
     if (pmdReport != null) {
@@ -180,6 +185,10 @@ public class SolutionService {
     Solution solution = solutionJpaRepository.findSolutionById(submissionId)
       .orElseThrow(SubmissionNotFoundException::new);
     return solution.getSourceInZip();
+  }
+
+  public int submissionsDoneOnTaskByUser(Long taskId, String username) {
+    return solutionJpaRepository.countSubmissionsOnTaskByUser(taskId, username);
   }
 
   @AllArgsConstructor

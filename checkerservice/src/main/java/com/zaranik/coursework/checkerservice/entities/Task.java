@@ -49,5 +49,7 @@ public class Task extends BaseEntity {
   @Column(name = "test_points", nullable = false)
   private int testPoints;
 
+  @Column(name = "submissions_number_limit", nullable = false)
+  private int submissionsNumberLimit;
 
 }

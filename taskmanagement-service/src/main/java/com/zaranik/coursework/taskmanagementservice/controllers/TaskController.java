@@ -10,8 +10,10 @@ import java.net.http.HttpResponse;
 import java.util.List;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @CrossOrigin
@@ -46,7 +49,7 @@ public class TaskController {
   @SecuredRoute
   @TeacherGrant
   @PostMapping(value = "/tasks", consumes = "multipart/form-data")
-  public TaskResponseDto createNewTask(TaskCreationDto dto, @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+  public TaskResponseDto createNewTask(@Valid TaskCreationDto dto, @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
     String username = jwtTokenUtil.getUserNameFromToken(authorizationHeader.substring(7));
     return taskService.createNewTask(dto, username);
   }
@@ -66,6 +69,7 @@ public class TaskController {
 
   @TeacherGrant
   @SecuredRoute
+  @ResponseStatus(HttpStatus.NO_CONTENT)
   @DeleteMapping("/tasks/{taskId}")
   public void deleteOwnTask(@PathVariable Long taskId, @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
     String username = jwtTokenUtil.getUserNameFromToken(authorizationHeader.substring(7));

@@ -8,12 +8,9 @@ import com.zaranik.coursework.taskmanagementservice.exceptions.TaskCreationFaile
 import com.zaranik.coursework.taskmanagementservice.exceptions.TaskNotFoundException;
 import com.zaranik.coursework.taskmanagementservice.repositories.TaskRepository;
 import java.io.IOException;
-import java.nio.file.AccessDeniedException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,6 +33,9 @@ public class TaskService {
       || dto.getPmdPoints() > 0 != dto.getPmdNeeded() || sumPoints != 100){
       throw new TaskCreationFailedException();
     }
+    if (dto.getSubmissionsNumberLimit() == null) {
+      dto.setSubmissionsNumberLimit(-1);
+    }
     try {
       Task newTask = Task.builder()
         .name(dto.getName())
@@ -48,6 +48,7 @@ public class TaskService {
         .testPoints(dto.getTestPoints())
         .pmdPoints(dto.getPmdPoints())
         .checkstylePoints(dto.getCheckstylePoints())
+        .submissionsNumberLimit(dto.getSubmissionsNumberLimit())
         .build();
       taskRepository.save(newTask);
       return TaskResponseDto.getFromEntity(newTask);

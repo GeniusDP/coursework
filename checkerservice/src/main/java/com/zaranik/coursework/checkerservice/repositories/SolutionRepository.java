@@ -46,4 +46,7 @@ public interface SolutionRepository extends JpaRepository<Solution, Long> {
     select sum(s.totalScore) from Solution s where s.totalScore is not null and s.task.id=:taskId
   """)
   double sumOfAllNonNullByTaskId(Long taskId);
+
+  @Query("select count(s) from Solution s where s.userUsername = :username and s.task.id = :taskId")
+  int countSubmissionsOnTaskByUser(Long taskId, String username);
 }

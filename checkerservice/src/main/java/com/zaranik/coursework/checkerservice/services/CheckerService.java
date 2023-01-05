@@ -4,6 +4,7 @@ import com.zaranik.coursework.checkerservice.entities.Solution;
 import com.zaranik.coursework.checkerservice.entities.Task;
 import com.zaranik.coursework.checkerservice.exceptions.ContainerRuntimeException;
 import com.zaranik.coursework.checkerservice.exceptions.ContainerTimeLimitExceededException;
+import com.zaranik.coursework.checkerservice.exceptions.NoSubmissionsLeftException;
 import com.zaranik.coursework.checkerservice.exceptions.TaskNotFoundException;
 import com.zaranik.coursework.checkerservice.repositories.TaskRepository;
 import com.zaranik.coursework.checkerservice.services.SolutionService.SolutionCheckingResult;
@@ -24,9 +25,24 @@ public class CheckerService {
 
   @Transactional
   public Solution registerSolution(Long taskId, MultipartFile solutionZip, String username) {
-    Optional<Task> taskOptional = taskRepository.findById(taskId);
-    Task task = taskOptional.orElseThrow(TaskNotFoundException::new);
-    return solutionService.registerSubmission(task, solutionZip, username);
+    if(submissionsLeft(taskId, username) == 0){
+      throw new NoSubmissionsLeftException();
+    }
+    return solutionService.registerSubmission(taskId, solutionZip, username);
+  }
+
+  public long submissionsLeft(Long taskId, String username) {
+    Task task = taskRepository.findById(taskId).orElseThrow(TaskNotFoundException::new);
+    if(task.getSubmissionsNumberLimit() == -1 || task.getCreatorName().equals(username)){
+      return 1_000_000_000L;
+    }
+    log.info("task.getSubmissionsNumberLimit() = {}", task.getSubmissionsNumberLimit());
+    log.info("submissionsDoneOnTaskByUser = {}", solutionService.submissionsDoneOnTaskByUser(taskId, username));
+    log.info("task.getSubmissionsNumberLimit() = {}", task.getSubmissionsNumberLimit());
+
+    int submissionsDone = solutionService.submissionsDoneOnTaskByUser(taskId, username);
+    log.info("minus = {}", task.getSubmissionsNumberLimit() - submissionsDone);
+    return Math.max(0, task.getSubmissionsNumberLimit() - submissionsDone);
   }
 
   @Transactional(noRollbackFor = {ContainerRuntimeException.class, ContainerTimeLimitExceededException.class})

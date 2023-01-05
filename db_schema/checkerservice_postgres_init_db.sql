@@ -14,7 +14,8 @@ create table if not exists public.tasks
     checkstyle_needed           boolean not null,
     pmd_points                  int     not null,
     checkstyle_points           int     not null,
-    test_points                 int     not null
+    test_points                 int     not null,
+    submissions_number_limit    int     not null
 );
 
 ---------------------------------------------------------
