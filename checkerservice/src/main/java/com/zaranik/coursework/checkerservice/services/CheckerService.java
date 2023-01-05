@@ -36,12 +36,7 @@ public class CheckerService {
     if(task.getSubmissionsNumberLimit() == -1 || task.getCreatorName().equals(username)){
       return 1_000_000_000L;
     }
-    log.info("task.getSubmissionsNumberLimit() = {}", task.getSubmissionsNumberLimit());
-    log.info("submissionsDoneOnTaskByUser = {}", solutionService.submissionsDoneOnTaskByUser(taskId, username));
-    log.info("task.getSubmissionsNumberLimit() = {}", task.getSubmissionsNumberLimit());
-
     int submissionsDone = solutionService.submissionsDoneOnTaskByUser(taskId, username);
-    log.info("minus = {}", task.getSubmissionsNumberLimit() - submissionsDone);
     return Math.max(0, task.getSubmissionsNumberLimit() - submissionsDone);
   }
 
