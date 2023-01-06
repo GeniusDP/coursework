@@ -77,6 +77,8 @@ public class TaskService {
     task.setPmdPoints(dto.getPmdPoints());
     task.setCheckstyleNeeded(dto.getCheckstyleNeeded());
     task.setCheckstylePoints(dto.getCheckstylePoints());
+    task.setTestPoints(dto.getTestPoints());
+    task.setSubmissionsNumberLimit(dto.getSubmissionsNumberLimit());
     taskRepository.save(task);
     return TaskResponseDto.getFromEntity(task);
   }
