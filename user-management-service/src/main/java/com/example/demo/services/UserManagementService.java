@@ -1,23 +1,31 @@
 package com.example.demo.services;
 
+import com.example.demo.dto.RateLimitDto;
 import com.example.demo.dto.RegistrationUserDto;
+import com.example.demo.dto.TeacherGrantRequestDto;
 import com.example.demo.dto.UpdateUserDto;
 import com.example.demo.entities.Role;
 import com.example.demo.entities.RoleValue;
+import com.example.demo.entities.TeacherGrantRequest;
 import com.example.demo.entities.User;
 import com.example.demo.exceptions.ForbiddenAccessException;
 import com.example.demo.exceptions.RegistrationException;
+import com.example.demo.exceptions.TeacherGrantRequestNotFoundException;
+import com.example.demo.exceptions.TooManyRequestsException;
 import com.example.demo.exceptions.UserDetailsUpdateException;
 import com.example.demo.exceptions.UserNotFoundException;
 import com.example.demo.repositories.RoleRepository;
+import com.example.demo.repositories.TeacherGrantRequestRepository;
 import com.example.demo.repositories.UserRepository;
 import com.example.demo.services.hashingutility.HashingUtilityService;
 import com.example.demo.utils.JwtTokenUtil;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class UserManagementService {
 
@@ -25,7 +33,9 @@ public class UserManagementService {
   private final UserRepository userRepository;
   private final HashingUtilityService hashingUtilityService;
   private final JwtTokenUtil jwtTokenUtil;
-
+  private final RateLimitService rateLimitService;
+  private final TeacherGrantRequestRepository teacherGrantRequestRepository;
+  
   public boolean userExistsByUsername(String username) {
     boolean exists = userRepository.existsByUsername(username);
     if(!exists){
@@ -33,7 +43,6 @@ public class UserManagementService {
     }
     return true;
   }
-
 
   @Transactional
   public void register(RegistrationUserDto registrationUserDto) {
@@ -115,5 +124,35 @@ public class UserManagementService {
     user.setRole(role);
     userRepository.save(user);
     return user;
+  }
+
+  @Transactional
+  public void requestTeacherGrant(String accessToken) {
+    String username = jwtTokenUtil.getUserNameFromToken(accessToken);
+    RateLimitDto rateLimitDto = rateLimitService.getRateLimitDto(username);
+    if (!rateLimitDto.succeeded()) {
+      throw new TooManyRequestsException(rateLimitDto);
+    }
+    TeacherGrantRequest grantRequest = new TeacherGrantRequest(username);
+    teacherGrantRequestRepository.save(grantRequest);
+  }
+
+  public List<TeacherGrantRequestDto> getAllTeacherGrantRequests() {
+    return teacherGrantRequestRepository.findAll().stream().map(TeacherGrantRequest::toDto).toList();
+  }
+
+  public void deleteTeacherGrantRequestByRequestId(Long requestId) {
+    TeacherGrantRequest grantRequest = teacherGrantRequestRepository.findById(requestId)
+      .orElseThrow(TeacherGrantRequestNotFoundException::new);
+    teacherGrantRequestRepository.delete(grantRequest);
+  }
+
+  public void acceptTeacherGrantRequest(Long requestId) {
+    TeacherGrantRequest grantRequest = teacherGrantRequestRepository.findById(requestId)
+      .orElseThrow(TeacherGrantRequestNotFoundException::new);
+
+    String username = grantRequest.getUsername();
+    changeRole(username, RoleValue.TEACHER);
+    teacherGrantRequestRepository.deleteAllByUsername(username);
   }
 }

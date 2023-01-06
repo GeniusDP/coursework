@@ -33,6 +33,8 @@ services:
     environment:
       DB_URL: jdbc:postgresql://auth-postgres/postgres?user=postgres&password=postgres
       AUTH_SERVICE_URL: http://auth-service:8081/api/auth
+      RATE_LIMIT_BUCKET_CAPACITY: 1
+      RATE_LIMIT_DURATION_IN_MINUTES: 1
     depends_on:
       - auth-postgres
       - auth-service

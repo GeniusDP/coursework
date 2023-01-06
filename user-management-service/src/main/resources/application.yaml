@@ -12,10 +12,11 @@ spring:
 
 auth-service:
   url: ${AUTH_SERVICE_URL}
-zaranik:
-  app:
-    jwtSecret: BogdanZaranikBogdanZaranikBogdanZaranikBogdanZaranikBogdanZaranikBogdanZaranikBogdanZaranikBogdanZaranik
 
 springdoc:
   swagger-ui:
     path: /swagger
+
+ratelimit:
+  bucketCapacity: ${RATE_LIMIT_BUCKET_CAPACITY}
+  durationInMinutes: ${RATE_LIMIT_DURATION_IN_MINUTES}

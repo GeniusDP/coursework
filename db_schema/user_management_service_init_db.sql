@@ -1,4 +1,4 @@
-drop table if exists app_users, roles cascade ;
+drop table if exists app_users, roles, teacher_grant_requests cascade;
 
 create table if not exists roles
 (
@@ -29,3 +29,10 @@ insert into app_users (username, email, password, first_name, last_name, is_acti
 values ('student', 'stud@gmail.com', 'student', 'John', 'Doe', true, null, 1),
        ('teacher', 'teacher@gmail.com', 'teacher', 'Marco', 'Behler', true, null, 2),
        ('admin', 'admin@gmail.com', 'admin', 'admin', 'admin', true, null, 3);
+
+
+create table if not exists teacher_grant_requests
+(
+    id            bigserial primary key,
+    username      varchar(50) not null
+);
