@@ -8,7 +8,6 @@ import com.zaranik.coursework.checkerservice.exceptions.NoSubmissionsLeftExcepti
 import com.zaranik.coursework.checkerservice.exceptions.TaskNotFoundException;
 import com.zaranik.coursework.checkerservice.repositories.TaskRepository;
 import com.zaranik.coursework.checkerservice.services.SolutionService.SolutionCheckingResult;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

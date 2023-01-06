@@ -2,8 +2,11 @@ package com.zaranik.coursework.checkerservice.controllers;
 
 import com.zaranik.coursework.checkerservice.aspect.security.basic.SecuredRoute;
 import com.zaranik.coursework.checkerservice.dtos.response.LongNumberValueDto;
+import com.zaranik.coursework.checkerservice.dtos.response.RateLimitDto;
 import com.zaranik.coursework.checkerservice.entities.Solution;
+import com.zaranik.coursework.checkerservice.exceptions.TooManyRequestsException;
 import com.zaranik.coursework.checkerservice.services.CheckerService;
+import com.zaranik.coursework.checkerservice.services.RateLimitService;
 import com.zaranik.coursework.checkerservice.utils.JwtTokenUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -25,6 +28,7 @@ public class CheckerController {
 
   private final CheckerService checkerService;
   private final JwtTokenUtil jwtTokenUtil;
+  private final RateLimitService rateLimitService;
 
   @SecuredRoute
   @PostMapping(path = "/tasks/{taskId}/check-solution", consumes = "multipart/form-data")
@@ -34,6 +38,10 @@ public class CheckerController {
     @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader
   ) {
     String username = jwtTokenUtil.getUserNameFromToken(authorizationHeader.substring(7));
+    RateLimitDto rateLimitDto = rateLimitService.getRateLimitDto(username);
+    if (!rateLimitDto.succeeded()) {
+      throw new TooManyRequestsException(rateLimitDto);
+    }
     Solution solution = checkerService.registerSolution(taskId, solutionZip, username);
     return checkerService.checkSolution(solution);
   }

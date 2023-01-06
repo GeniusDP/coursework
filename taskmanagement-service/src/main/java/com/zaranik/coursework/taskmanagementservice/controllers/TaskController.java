@@ -3,6 +3,7 @@ package com.zaranik.coursework.taskmanagementservice.controllers;
 import com.zaranik.coursework.taskmanagementservice.aspect.security.basic.SecuredRoute;
 import com.zaranik.coursework.taskmanagementservice.aspect.security.roles.teacher.TeacherGrant;
 import com.zaranik.coursework.taskmanagementservice.dto.request.TaskCreationDto;
+import com.zaranik.coursework.taskmanagementservice.dto.request.TaskUpdateDto;
 import com.zaranik.coursework.taskmanagementservice.dto.response.TaskResponseDto;
 import com.zaranik.coursework.taskmanagementservice.services.TaskService;
 import com.zaranik.coursework.taskmanagementservice.utils.JwtTokenUtil;
@@ -63,7 +64,7 @@ public class TaskController {
   @SecuredRoute
   @TeacherGrant
   @PutMapping(value = "/tasks/{taskId}", consumes = "multipart/form-data")
-  public TaskResponseDto changeMyTask(@PathVariable Long taskId, @Valid TaskCreationDto dto, @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+  public TaskResponseDto changeMyTask(@PathVariable Long taskId, @Valid TaskUpdateDto dto, @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
     String username = jwtTokenUtil.getUserNameFromToken(authorizationHeader.substring(7));
     return taskService.changeTask(taskId, dto, username);
   }

@@ -1,6 +1,7 @@
 package com.zaranik.coursework.taskmanagementservice.services;
 
 import com.zaranik.coursework.taskmanagementservice.dto.request.TaskCreationDto;
+import com.zaranik.coursework.taskmanagementservice.dto.request.TaskUpdateDto;
 import com.zaranik.coursework.taskmanagementservice.dto.response.TaskResponseDto;
 import com.zaranik.coursework.taskmanagementservice.entities.Task;
 import com.zaranik.coursework.taskmanagementservice.exceptions.ForbiddenAccessException;
@@ -64,7 +65,7 @@ public class TaskService {
   }
 
   @SneakyThrows
-  public TaskResponseDto changeTask(Long taskId, TaskCreationDto dto, String username) {
+  public TaskResponseDto changeTask(Long taskId, TaskUpdateDto dto, String username) {
     Task task = taskRepository.findById(taskId).orElseThrow(TaskNotFoundException::new);
     if( !task.getCreatorName().equals(username) ){
       throw new ForbiddenAccessException();
@@ -73,11 +74,6 @@ public class TaskService {
     task.setDescription(dto.getDescription());
     task.setSourceInZip(dto.getSourceInZip().getBytes());
     task.setTestSourceInZip(dto.getTestSourceInZip().getBytes());
-    task.setPmdNeeded(dto.getPmdNeeded());
-    task.setPmdPoints(dto.getPmdPoints());
-    task.setCheckstyleNeeded(dto.getCheckstyleNeeded());
-    task.setCheckstylePoints(dto.getCheckstylePoints());
-    task.setTestPoints(dto.getTestPoints());
     task.setSubmissionsNumberLimit(dto.getSubmissionsNumberLimit());
     taskRepository.save(task);
     return TaskResponseDto.getFromEntity(task);

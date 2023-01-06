@@ -1,5 +1,6 @@
 package com.zaranik.coursework.checkerservice.exceptions;
 
+import com.zaranik.coursework.checkerservice.dtos.response.RateLimitDto;
 import com.zaranik.coursework.checkerservice.exceptions.errors.AppError;
 import com.zaranik.coursework.checkerservice.exceptions.errors.ValidationExceptionResponse;
 import com.zaranik.coursework.checkerservice.exceptions.errors.Violation;
@@ -20,6 +21,12 @@ public class GlobalExceptionHandler {
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   public AppError containerRuntimeExceptionHandler() {
     return AppError.justNow("Container failed in runtime");
+  }
+
+  @ExceptionHandler(TooManyRequestsException.class)
+  @ResponseStatus(HttpStatus.TOO_MANY_REQUESTS)
+  public RateLimitDto tooManyRequestsExceptionHandler(TooManyRequestsException e) {
+    return e.getRateLimitDto();
   }
 
   @ExceptionHandler(ContainerTimeLimitExceededException.class)
