@@ -2,10 +2,12 @@ package com.zaranik.coursework.taskmanagementservice.dto.request;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import lombok.Builder;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
 @Data
+@Builder
 public class TaskCreationDto {
   @NotNull private String name;
   @NotNull private String description;
