@@ -4,6 +4,7 @@ import com.example.demo.exceptions.AuthServiceUnreachableException;
 import com.example.demo.exceptions.UnauthorizedException;
 import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
