@@ -1,6 +1,5 @@
 import React, { createContext } from "react";
-import Router from "./routes/AppRouter";
-
+import AppRouter from "./routes/AppRouter";
 export const AuthContext = createContext();
 
 const App = () => {
@@ -36,7 +35,7 @@ const App = () => {
   return (
     <div>
       <AuthContext.Provider value={tokenFunctions}>
-        <Router />
+        <AppRouter />
       </AuthContext.Provider>
     </div>
   );
