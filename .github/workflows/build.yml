@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - to-module-structure
+      - master
   pull_request:
     types: [opened, synchronize, reopened]
 jobs:
