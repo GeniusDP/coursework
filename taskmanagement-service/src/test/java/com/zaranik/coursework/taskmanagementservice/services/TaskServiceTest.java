@@ -10,8 +10,10 @@ import com.zaranik.coursework.taskmanagementservice.exceptions.TaskCreationFaile
 import com.zaranik.coursework.taskmanagementservice.exceptions.TaskNotFoundException;
 import com.zaranik.coursework.taskmanagementservice.repositories.TaskRepository;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -33,9 +35,9 @@ class TaskServiceTest {
   private TaskService taskService;
 
   @BeforeEach
-  public void initEach() throws IOException {
+  public void initEach() throws IOException, URISyntaxException {
 
-    byte[] taskZip = Files.readAllBytes(Path.of("src", "test", "resources", "task.zip"));
+    byte[] taskZip = Files.readAllBytes(Paths.get(getClass().getClassLoader().getResource("task.zip").toURI()));
     Task task1 = Task.builder()
       .name("Task 1")
       .description("Description for task 1")
@@ -124,8 +126,8 @@ class TaskServiceTest {
   }
 
   @Test
-  void createNewTask_normalCase() throws IOException {
-    byte[] fileZip = Files.readAllBytes(Path.of("src", "test", "resources", "task.zip"));
+  void createNewTask_normalCase() throws IOException, URISyntaxException {
+    byte[] fileZip = Files.readAllBytes(Paths.get(getClass().getClassLoader().getResource("task.zip").toURI()));
     TaskCreationDto dto = TaskCreationDto.builder()
       .name("New task")
       .description("Description for new task")
@@ -147,8 +149,8 @@ class TaskServiceTest {
   }
 
   @Test
-  void createNewTask_SumIsNot100() throws IOException {
-    byte[] fileZip = Files.readAllBytes(Path.of("src", "test", "resources", "task.zip"));
+  void createNewTask_SumIsNot100() throws IOException, URISyntaxException {
+    byte[] fileZip = Files.readAllBytes(Paths.get(getClass().getClassLoader().getResource("task.zip").toURI()));
     TaskCreationDto dto = TaskCreationDto.builder()
       .name("New task")
       .description("Description for new task")
@@ -167,8 +169,8 @@ class TaskServiceTest {
   }
 
   @Test
-  void createNewTask_ScoresDoesNotCorrespondTo() throws IOException {
-    byte[] fileZip = Files.readAllBytes(Path.of("src", "test", "resources", "task.zip"));
+  void createNewTask_ScoresDoesNotCorrespondTo() throws IOException, URISyntaxException {
+    byte[] fileZip = Files.readAllBytes(Paths.get(getClass().getClassLoader().getResource("task.zip").toURI()));
     TaskCreationDto dto = TaskCreationDto.builder()
       .name("New task")
       .description("Description for new task")
@@ -191,8 +193,8 @@ class TaskServiceTest {
   }
 
   @Test
-  void createNewTask_CheckIfSubmissionsLimitEstablishedNullSetsMinusOneToDB() throws IOException {
-    byte[] fileZip = Files.readAllBytes(Path.of("src", "test", "resources", "task.zip"));
+  void createNewTask_CheckIfSubmissionsLimitEstablishedNullSetsMinusOneToDB() throws IOException, URISyntaxException {
+    byte[] fileZip = Files.readAllBytes(Paths.get(getClass().getClassLoader().getResource("task.zip").toURI()));
     TaskCreationDto dto = TaskCreationDto.builder()
       .name("New task")
       .description("Description for new task")
