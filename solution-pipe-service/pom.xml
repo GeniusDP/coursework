@@ -42,7 +42,13 @@
 			<artifactId>postgresql</artifactId>
 			<version>42.4.1</version>
 		</dependency>
-	</dependencies>
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+      <version>1.15</version>
+    </dependency>
+
+  </dependencies>
 
     <build>
         <finalName>build</finalName>

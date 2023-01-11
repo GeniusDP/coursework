@@ -36,6 +36,13 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
       
+      - name: Build and analyze solution pipe service
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+              mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=GeniusDP_coursework sonar:sonar -Pcoverage
+        working-directory: ${{env.solution-pipe-service-working-directory}}
+
       - name: Build and analyze auth service
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -50,12 +57,6 @@ jobs:
               mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=GeniusDP_coursework sonar:sonar -Pcoverage
         working-directory: ${{env.checker-service-working-directory}}
       
-      - name: Build and analyze solution pipe service
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: |
-              mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=GeniusDP_coursework sonar:sonar -Pcoverage
-        working-directory: ${{env.solution-pipe-service-working-directory}}
 
       - name: Build and analyze task management service
         env:

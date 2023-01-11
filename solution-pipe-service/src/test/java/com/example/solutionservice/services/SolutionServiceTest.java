@@ -11,10 +11,6 @@ import com.example.solutionservice.exceptions.TaskNotFoundException;
 import com.example.solutionservice.repositories.SubmissionRepository;
 import com.example.solutionservice.repositories.TaskRepository;
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -26,6 +22,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
+import org.apache.commons.codec.Resources;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -34,10 +31,10 @@ class SolutionServiceTest {
   private SolutionService solutionService;
 
   @BeforeEach
-  public void initEach() throws IOException, URISyntaxException {
+  public void initEach() throws IOException {
 
-    byte[] taskZip = Files.readAllBytes(Paths.get(getClass().getClassLoader().getResource("task.zip").toURI()));
-    byte[] testZip = Files.readAllBytes(Paths.get(getClass().getClassLoader().getResource("test.zip").toURI()));
+    byte[] taskZip = Resources.getInputStream("task.zip").readAllBytes();
+    byte[] testZip = Resources.getInputStream("test.zip").readAllBytes();
 
     Task task = Task.builder()
       .name("Task 1")
@@ -90,7 +87,7 @@ class SolutionServiceTest {
 
     SubmissionRepository submissionRepository = Mockito.mock(SubmissionRepository.class);
 
-    byte[] solutionZip = Files.readAllBytes(Paths.get(getClass().getClassLoader().getResource("full-score-solution.zip").toURI()));
+    byte[] solutionZip = Resources.getInputStream("full-score-solution.zip").readAllBytes();
 
     Solution solution = Solution.builder()
       .sourceInZip(solutionZip)
@@ -122,9 +119,9 @@ class SolutionServiceTest {
   }
 
   @Test
-  void getTaskSourcesById() throws IOException, URISyntaxException {
-    byte[] expectedTaskZip = Files.readAllBytes(Paths.get(getClass().getClassLoader().getResource("task.zip").toURI()));
-    byte[] expectedTestZip = Files.readAllBytes(Paths.get(getClass().getClassLoader().getResource("test.zip").toURI()));
+  void getTaskSourcesById() throws IOException {
+    byte[] expectedTaskZip = Resources.getInputStream("task.zip").readAllBytes();
+    byte[] expectedTestZip = Resources.getInputStream("test.zip").readAllBytes();
 
     TaskSourcesDto taskSourcesById = solutionService.getTaskSourcesById(1L);
     Assertions.assertThat(taskSourcesById).isNotNull();
