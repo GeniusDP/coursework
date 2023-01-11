@@ -14,7 +14,7 @@ services:
       - ./db_schema/user_management_service_init_db.sql:/docker-entrypoint-initdb.d/init.sql
   
   auth-service:
-    build: ./authservice
+    build: ./parent-core/auth-service
     container_name: 'auth-service'
     ports:
       - 8081:8081
@@ -26,7 +26,7 @@ services:
     depends_on:
       - auth-postgres
   user-management-service:
-    build: ./user-management-service
+    build: ./parent-core/user-management-service
     container_name: 'user-management-service'
     ports:
       - 8082:8082
@@ -53,7 +53,7 @@ services:
       - ./db_schema/checkerservice_postgres_init_db.sql:/docker-entrypoint-initdb.d/init.sql
   
   checkerservice:
-    build: ./checkerservice
+    build: ./parent-core/checker-service
     restart: always
     container_name: 'checkerservice'
     ports:
@@ -79,7 +79,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
 
   solution-pipe-service:
-    build: ./solution-pipe-service
+    build: ./parent-core/solution-pipe-service
     restart: always
     container_name: 'solution-pipe-service'
     ports:
@@ -91,7 +91,7 @@ services:
       - checkerservice-postgres
 
   taskmanagement-service:
-    build: ./taskmanagement-service
+    build: ./parent-core/task-management-service
     restart: always
     container_name: 'taskmanagement-service'
     ports:
