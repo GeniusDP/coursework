@@ -1,0 +1,28 @@
+server:
+  port: 8084
+
+spring:
+  main:
+    allow-circular-references: true
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: ${DB_URL}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+
+  servlet:
+    multipart:
+      max-file-size: ${MAX_FILE_SIZE}
+      max-request-size: ${MAX_REQUEST_SIZE}
+
+auth-service:
+  url: ${AUTH_SERVICE_URL}
+
+container:
+  docker:
+    start-command: ${DOCKER_SCRIPT}
+    max-execution-time-minutes: ${MAX_EXECUTION_TIME_MINUTES}
+
+ratelimit:
+  bucketCapacity: ${RATE_LIMIT_BUCKET_CAPACITY_PER_MINUTE}
