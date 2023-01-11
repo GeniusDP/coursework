@@ -11,6 +11,10 @@ jobs:
     runs-on: ubuntu-latest
     env:
       auth-service-working-directory: ./authservice
+      checker-service-working-directory: ./checkerservice
+      solution-pipe-service-working-directory: ./solution-pipe-service
+      task-management-service-working-directory: ./taskmanagement-service
+      user-management-service-working-directory: ./user-management-service
     steps:
       - uses: actions/checkout@v2
         with:
@@ -31,12 +35,38 @@ jobs:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
-      - name: PWD
-        run: pwd # will respect working-directory
-        working-directory: ${{env.auth-service-working-directory}}
-      - name: Build and analyze
+      
+      - name: Build and analyze auth service
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
               mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=GeniusDP_coursework sonar:sonar -Pcoverage
         working-directory: ${{env.auth-service-working-directory}}
+      
+      - name: Build and analyze checker service
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+              mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=GeniusDP_coursework sonar:sonar -Pcoverage
+        working-directory: ${{env.checker-service-working-directory}}
+      
+      - name: Build and analyze solution pipe service
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+              mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=GeniusDP_coursework sonar:sonar -Pcoverage
+        working-directory: ${{env.solution-pipe-service-working-directory}}
+
+      - name: Build and analyze task management service
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+              mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=GeniusDP_coursework sonar:sonar -Pcoverage
+        working-directory: ${{env.task-management-service-working-directory}}
+
+      - name: Build and analyze user management service
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+              mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=GeniusDP_coursework sonar:sonar -Pcoverage
+        working-directory: ${{env.user-management-service-working-directory}}
