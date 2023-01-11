@@ -1,0 +1,20 @@
+server:
+  port: 8081
+spring:
+  main:
+    allow-circular-references: true
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: ${DB_URL}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+
+zaranik:
+  app:
+    jwtAccessTokenExpirationSeconds: ${JWT_ACCESS_TOKEN_EXPIRATION_TIME_SECONDS}
+    jwtRefreshTokenExpirationSeconds: ${JWT_REFRESH_TOKEN_EXPIRATION_TIME_SECONDS}
+    jwtSecret: ${JWT_SECRET}
+springdoc:
+  swagger-ui:
+    path: /swagger

@@ -1,0 +1,28 @@
+server:
+  port: 7000
+
+spring:
+  main:
+    allow-circular-references: true
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/mydb?user=postgres&password=zaranik
+  jpa:
+    hibernate:
+      ddl-auto: validate
+
+  servlet:
+    multipart:
+      max-file-size: 15MB
+      max-request-size: 20MB
+
+auth-service:
+  url: someUrlHere
+
+container:
+  docker:
+    start-command: "docker run --network=host -e SOLUTION_ID=%d -e TASK_ID=%d -e PMD=%s -e CHECKSTYLE=%s -e SOLUTION_PIPE_SERVICE_HOST=localhost --privileged -v /var/run/docker.sock:/var/run/docker.sock zaranik/checker:1.5.9-snap"
+    max-execution-time-minutes: 2
+
+ratelimit:
+  bucketCapacity: 5
