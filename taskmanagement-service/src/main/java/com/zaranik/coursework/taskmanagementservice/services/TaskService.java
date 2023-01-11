@@ -86,8 +86,10 @@ public class TaskService {
 
   public void deleteOwnTask(Long taskId, String username) {
     Task task = taskRepository.findById(taskId).orElseThrow(TaskNotFoundException::new);
-    if (task.getCreatorName().equals(username)) {
-      taskRepository.delete(task);
+    if (!task.getCreatorName().equals(username)) {
+      throw new ForbiddenAccessException();
     }
+    taskRepository.delete(task);
   }
+
 }

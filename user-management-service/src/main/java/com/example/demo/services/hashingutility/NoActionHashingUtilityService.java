@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import java.util.Objects;
 
 @Service
-@Profile("dev")
+@Profile({"dev", "test"})
 public class NoActionHashingUtilityService implements HashingUtilityService {
 
   public boolean match(String hashedValue, String actualValue) {
