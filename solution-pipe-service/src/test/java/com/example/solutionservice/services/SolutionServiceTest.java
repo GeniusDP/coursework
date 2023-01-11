@@ -32,9 +32,8 @@ class SolutionServiceTest {
 
   @BeforeEach
   public void initEach() throws IOException {
-
-    byte[] taskZip = Resources.getInputStream("task.zip").readAllBytes();
-    byte[] testZip = Resources.getInputStream("test.zip").readAllBytes();
+    byte[] taskZip = Resources.getInputStream("data/task.zip").readAllBytes();
+    byte[] testZip = Resources.getInputStream("data/test.zip").readAllBytes();
 
     Task task = Task.builder()
       .name("Task 1")
@@ -87,7 +86,7 @@ class SolutionServiceTest {
 
     SubmissionRepository submissionRepository = Mockito.mock(SubmissionRepository.class);
 
-    byte[] solutionZip = Resources.getInputStream("full-score-solution.zip").readAllBytes();
+    byte[] solutionZip = Resources.getInputStream("data/full-score-solution.zip").readAllBytes();
 
     Solution solution = Solution.builder()
       .sourceInZip(solutionZip)
@@ -120,8 +119,8 @@ class SolutionServiceTest {
 
   @Test
   void getTaskSourcesById() throws IOException {
-    byte[] expectedTaskZip = Resources.getInputStream("task.zip").readAllBytes();
-    byte[] expectedTestZip = Resources.getInputStream("test.zip").readAllBytes();
+    byte[] expectedTaskZip = Resources.getInputStream("data/task.zip").readAllBytes();
+    byte[] expectedTestZip = Resources.getInputStream("data/test.zip").readAllBytes();
 
     TaskSourcesDto taskSourcesById = solutionService.getTaskSourcesById(1L);
     Assertions.assertThat(taskSourcesById).isNotNull();
