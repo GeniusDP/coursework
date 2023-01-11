@@ -1,34 +1,103 @@
 version: '3'
 
 services:
-  auth_postgres:
+  auth-postgres:
     image: 'postgres'
-    container_name: 'auth_postgres'
+    container_name: 'auth-postgres'
     ports:
       - 5433
     environment:
-      - 'POSTGRES_USER=postgres'
-      - 'POSTGRES_HOST_AUTH_METHOD=trust'
-      - 'POSTGRES_DB=postgres'
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
     volumes:
-      - ./authservice/src/main/resources/init_db.sql:/docker-entrypoint-initdb.d/init.sql
-  auth_service:
+      - ./db_schema/user_management_service_init_db.sql:/docker-entrypoint-initdb.d/init.sql
+  
+  auth-service:
     build: ./authservice
-    container_name: 'auth_service'
+    container_name: 'auth-service'
     ports:
       - 8081:8081
     environment:
-      - 'DB_HOST=auth_postgres'
+      DB_URL: jdbc:postgresql://auth-postgres/postgres?user=postgres&password=postgres
+      JWT_ACCESS_TOKEN_EXPIRATION_TIME_SECONDS: 900
+      JWT_REFRESH_TOKEN_EXPIRATION_TIME_SECONDS: 2678400
+      JWT_SECRET: BogdanZaranikBogdanZaranikBogdanZaranikBogdanZaranikBogdanZaranikBogdanZaranikBogdanZaranikBogdanZaranik
     depends_on:
-      - auth_postgres
-  user_management_service:
+      - auth-postgres
+  user-management-service:
     build: ./user-management-service
-    container_name: 'user_management_service'
+    container_name: 'user-management-service'
     ports:
       - 8082:8082
     environment:
-      - 'DB_HOST=auth_postgres'
-      - 'AUTH_SERVICE_HOST=auth_service'
+      DB_URL: jdbc:postgresql://auth-postgres/postgres?user=postgres&password=postgres
+      AUTH_SERVICE_URL: http://auth-service:8081/api/auth
+      RATE_LIMIT_BUCKET_CAPACITY: 1
+      RATE_LIMIT_DURATION_IN_MINUTES: 44640
     depends_on:
-      - auth_postgres
-      - auth_service
+      - auth-postgres
+      - auth-service
+  
+  checkerservice-postgres:
+    image: 'postgres'
+    restart: always
+    container_name: 'checkerservice-postgres'
+    ports:
+      - 5434
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    volumes:
+      - ./db_schema/checkerservice_postgres_init_db.sql:/docker-entrypoint-initdb.d/init.sql
+  
+  checkerservice:
+    build: ./checkerservice
+    restart: always
+    container_name: 'checkerservice'
+    ports:
+      - 8084:8084
+    environment:
+      DB_URL: jdbc:postgresql://checkerservice-postgres/postgres?user=postgres&password=postgres
+      AUTH_SERVICE_URL: http://auth-service:8081/api/auth
+      
+      MAX_FILE_SIZE: 15MB
+      MAX_REQUEST_SIZE: 20MB
+      MAX_EXECUTION_TIME_MINUTES: 2
+      RATE_LIMIT_BUCKET_CAPACITY_PER_MINUTE: 3
+      
+      DOCKER_SCRIPT: >
+          docker run --network=coursework_default -e SOLUTION_ID=%d 
+          -e TASK_ID=%d -e PMD=%s -e CHECKSTYLE=%s -e SOLUTION_PIPE_SERVICE_HOST=solution-pipe-service 
+          --privileged -v /var/run/docker.sock:/var/run/docker.sock 
+          zaranik/checker:1.5.10-snap
+    depends_on:
+      - checkerservice-postgres
+      - auth-service
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  solution-pipe-service:
+    build: ./solution-pipe-service
+    restart: always
+    container_name: 'solution-pipe-service'
+    ports:
+      - 8085:8085
+    environment:
+      DB_URL: jdbc:postgresql://checkerservice-postgres/postgres?user=postgres&password=postgres
+    depends_on:
+      - checkerservice
+      - checkerservice-postgres
+
+  taskmanagement-service:
+    build: ./taskmanagement-service
+    restart: always
+    container_name: 'taskmanagement-service'
+    ports:
+      - 8083:8083
+    environment:
+      DB_URL: jdbc:postgresql://checkerservice-postgres/postgres?user=postgres&password=postgres
+      AUTH_SERVICE_URL: http://auth-service:8081/api/auth
+    depends_on:
+      - checkerservice-postgres

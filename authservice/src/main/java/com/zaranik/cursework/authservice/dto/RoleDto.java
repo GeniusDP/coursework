@@ -2,7 +2,6 @@ package com.zaranik.cursework.authservice.dto;
 
 import com.zaranik.cursework.authservice.entities.RoleValue;
 import javax.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

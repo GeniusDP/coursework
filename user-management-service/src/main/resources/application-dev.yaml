@@ -1,5 +1,5 @@
 server:
-  port: 8082
+  port: 7001
 spring:
   main:
     allow-circular-references: true
@@ -17,9 +17,11 @@ spring:
 
 auth-service:
   url: http://localhost:8081/api/auth
-zaranik:
-  app:
-    jwtSecret: BogdanZaranikBogdanZaranikBogdanZaranikBogdanZaranikBogdanZaranikBogdanZaranikBogdanZaranikBogdanZaranik
+
 springdoc:
   swagger-ui:
     path: /swagger
+
+ratelimit:
+  bucketCapacity: 1
+  durationInMinutes: 1

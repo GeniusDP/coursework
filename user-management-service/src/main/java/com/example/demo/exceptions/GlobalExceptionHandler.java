@@ -1,6 +1,7 @@
 package com.example.demo.exceptions;
 
 import com.example.demo.dto.AccessTokenInvalidException;
+import com.example.demo.dto.RateLimitDto;
 import com.example.demo.dto.errors.AppError;
 import com.example.demo.dto.errors.ValidationExceptionResponse;
 import com.example.demo.dto.errors.Violation;
@@ -17,6 +18,11 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @Order(-1000)
 public class GlobalExceptionHandler {
 
+  @ExceptionHandler(TooManyRequestsException.class)
+  @ResponseStatus(HttpStatus.TOO_MANY_REQUESTS)
+  public RateLimitDto tooManyRequestsExceptionHandler(TooManyRequestsException e) {
+    return e.getRateLimitDto();
+  }
 
   @ExceptionHandler(AuthServiceUnreachableException.class)
   @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)

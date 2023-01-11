@@ -3,8 +3,9 @@ import { Navigate } from "react-router-dom";
 import { AuthContext } from "../../App";
 import customFetch from "../../customFetch";
 import { parseJwt } from "../../jwtUtil";
+import { Spinner } from "../Spinner/Spinner";
 
-const AuthProvider = ({ children, roles }) => {
+const AuthProvider = ({ children, roles = "*" }) => {
   const {
     getAccessToken,
     getRefreshToken,
@@ -14,7 +15,7 @@ const AuthProvider = ({ children, roles }) => {
   } = useContext(AuthContext);
   const [hasPermission, setHasPermission] = useState(false);
   const [permissionAsked, setPermissionAsked] = useState(false);
-  const [errorOccured, setErrorOccured] = useState(false);
+  const [errorOccurred, setErrorOccurred] = useState(false);
 
 
   useEffect(() => {
@@ -26,13 +27,14 @@ const AuthProvider = ({ children, roles }) => {
   });
 
   const askForPermission = async () => {
-    const url = "http://localhost:8081/api/auth/validate-token";
-    const body = {
-      accessToken: getAccessToken(),
-      refreshToken: getRefreshToken(),
-    };
+    const url = process.env.REACT_APP_AUTH_URL + "/validate-token";
     try {
-      const response = await customFetch(url, body);
+      const options = {
+        headers: {
+          "Authorization": "Bearer " + getAccessToken(),
+        }
+      }
+      const response = await fetch(url, options);
       if (response.ok) {
         const { role } = parseJwt(getAccessToken());
         setHasPermission(roles === "*" ? true : roles.includes(role));
@@ -47,12 +49,12 @@ const AuthProvider = ({ children, roles }) => {
         }
       }
     } catch (e) {
-      setErrorOccured(true);
+      setErrorOccurred(true);
     }
   };
 
   const refreshToken = async () => {
-    const url = "http://localhost:8081/api/auth/refresh-token";
+    const url = process.env.REACT_APP_AUTH_URL + "/refresh-token";
     const body = {
       accessToken: getAccessToken(),
       refreshToken: getRefreshToken(),
@@ -71,13 +73,13 @@ const AuthProvider = ({ children, roles }) => {
     }
   };
 
-  if(errorOccured){
+  if(errorOccurred){
     alert('Connection with server was not successful:(\nMay be, you are offline.');
     return <Navigate to="/" replace />;
   }
 
   if (!permissionAsked) {
-    return <div>Loading spinner...</div>;
+    return <Spinner/>;
   }
   if (hasPermission) {
     return children;

@@ -5,18 +5,16 @@ spring:
     allow-circular-references: true
   datasource:
     driver-class-name: org.postgresql.Driver
-    username: postgres
-    password: postgres
-    url: jdbc:postgresql://${DB_HOST}/postgres
+    url: ${DB_URL}
   jpa:
     hibernate:
       ddl-auto: validate
 
 zaranik:
   app:
-    jwtAccessTokenExpirationSeconds: 900 # 15 minutes
-    jwtRefreshTokenExpirationSeconds: 2678400 # a one month
-    jwtSecret: BogdanZaranikBogdanZaranikBogdanZaranikBogdanZaranikBogdanZaranikBogdanZaranikBogdanZaranikBogdanZaranik
+    jwtAccessTokenExpirationSeconds: ${JWT_ACCESS_TOKEN_EXPIRATION_TIME_SECONDS}
+    jwtRefreshTokenExpirationSeconds: ${JWT_REFRESH_TOKEN_EXPIRATION_TIME_SECONDS}
+    jwtSecret: ${JWT_SECRET}
 springdoc:
   swagger-ui:
     path: /swagger

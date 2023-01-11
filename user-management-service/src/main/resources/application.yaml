@@ -5,19 +5,18 @@ spring:
     allow-circular-references: true
   datasource:
     driver-class-name: org.postgresql.Driver
-    username: postgres
-    password: postgres
-    url: jdbc:postgresql://${DB_HOST}/postgres
+    url: ${DB_URL}
   jpa:
     hibernate:
       ddl-auto: validate
 
 auth-service:
-  url: http://${AUTH_SERVICE_HOST}/api/auth
-zaranik:
-  app:
-    jwtSecret: BogdanZaranikBogdanZaranikBogdanZaranikBogdanZaranikBogdanZaranikBogdanZaranikBogdanZaranikBogdanZaranik
+  url: ${AUTH_SERVICE_URL}
 
 springdoc:
   swagger-ui:
     path: /swagger
+
+ratelimit:
+  bucketCapacity: ${RATE_LIMIT_BUCKET_CAPACITY}
+  durationInMinutes: ${RATE_LIMIT_DURATION_IN_MINUTES}
