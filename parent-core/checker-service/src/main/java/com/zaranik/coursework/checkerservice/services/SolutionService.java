@@ -132,13 +132,17 @@ public class SolutionService {
     if (testRun > 0) {
       Task task = solution.getTask();
       double totalScore = task.getTestPoints() * (testsPassed + 0.) / testRun;
+      log.info("tests score = {}", totalScore);
       if (pmdReport == null || pmdReport.getSourceFiles().isEmpty()) {
+        log.info("pmd score = {}", task.getPmdPoints());
         totalScore += task.getPmdPoints();
       }
 
       if (checkstyleReport == null || checkstyleReport.getSourceFiles().isEmpty()) {
-        totalScore += task.getPmdPoints();
+        log.info("checkstyle score = {}", task.getCheckstylePoints());
+        totalScore += task.getCheckstylePoints();
       }
+      log.info("TOTAL SCORE = {}", totalScore);
       solution.setTotalScore(totalScore);
     }
     solution.setRuntimeStatus(RuntimeStatus.CHECKED);
