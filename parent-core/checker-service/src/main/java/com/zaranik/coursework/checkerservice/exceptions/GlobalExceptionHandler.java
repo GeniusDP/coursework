@@ -5,6 +5,7 @@ import com.zaranik.coursework.checkerservice.exceptions.errors.AppError;
 import com.zaranik.coursework.checkerservice.exceptions.errors.ValidationExceptionResponse;
 import com.zaranik.coursework.checkerservice.exceptions.errors.Violation;
 import java.util.List;
+import org.apache.tomcat.util.http.fileupload.impl.SizeLimitExceededException;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindException;
@@ -21,6 +22,12 @@ public class GlobalExceptionHandler {
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   public AppError containerRuntimeExceptionHandler() {
     return AppError.justNow("Container failed in runtime");
+  }
+
+  @ExceptionHandler(SizeLimitExceededException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  public AppError sizeLimitExceededExceptionHandler() {
+    return AppError.justNow("Request size limit exceeded");
   }
 
   @ExceptionHandler(TooManyRequestsException.class)
