@@ -65,8 +65,10 @@ services:
       MAX_FILE_SIZE: 15MB
       MAX_REQUEST_SIZE: 20MB
       MAX_EXECUTION_TIME_MINUTES: 2
-      RATE_LIMIT_BUCKET_CAPACITY_PER_MINUTE: 2
-      
+
+      RATE_LIMIT_BUCKET_CAPACITY: 2
+      RATE_LIMIT_DURATION_IN_MINUTES: 1
+
       DOCKER_SCRIPT: >
           docker run --network=coursework_default -e SOLUTION_ID=%d 
           -e TASK_ID=%d -e PMD=%s -e CHECKSTYLE=%s -e SOLUTION_PIPE_SERVICE_HOST=solution-pipe-service 

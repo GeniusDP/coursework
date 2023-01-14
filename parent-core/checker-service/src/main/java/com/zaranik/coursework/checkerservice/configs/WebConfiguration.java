@@ -15,10 +15,13 @@ public class WebConfiguration implements WebMvcConfigurer {
   @Value("${ratelimit.bucketCapacity}")
   private Integer bucketCapacity;
 
+  @Value("${ratelimit.durationInMinutes}")
+  private Integer durationInMinutes;
+
   @Bean
   @Scope("prototype")
   public Bandwidth bandwidth() {
-    return Bandwidth.classic(bucketCapacity, Refill.intervally(bucketCapacity, Duration.ofMinutes(1)));
+    return Bandwidth.classic(bucketCapacity, Refill.intervally(bucketCapacity, Duration.ofMinutes(durationInMinutes)));
   }
 
 }

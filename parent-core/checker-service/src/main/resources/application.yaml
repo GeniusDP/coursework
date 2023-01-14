@@ -25,4 +25,5 @@ container:
     max-execution-time-minutes: ${MAX_EXECUTION_TIME_MINUTES}
 
 ratelimit:
-  bucketCapacity: ${RATE_LIMIT_BUCKET_CAPACITY_PER_MINUTE}
+  bucketCapacity: ${RATE_LIMIT_BUCKET_CAPACITY}
+  durationInMinutes: ${RATE_LIMIT_DURATION_IN_MINUTES}
