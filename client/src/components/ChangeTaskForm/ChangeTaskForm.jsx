@@ -9,8 +9,8 @@ import authRequestWrapper from "../../utils/authRequestWrapper.js";
 
 const ChangeTaskForm = () => {
   const { getAccessToken } = useContext(AuthContext);
-  const name = useInput("Some task name", { isEmpty: true, minLength: 3, maxLength: 50 });
-  const description = useInput("Dscription of the task", { isEmpty: true, maxLength: 4000 });
+  const name = useInput("", { isEmpty: true, minLength: 3, maxLength: 50 });
+  const description = useInput("", { isEmpty: true, maxLength: 4000 });
 
   const [submissionsNumberLimitEnabled, setSubmissionsNumberLimitEnabled] = useState(false);
   const [submissionsNumberLimit, setSubmissionsNumberLimit] = useState(-1);
