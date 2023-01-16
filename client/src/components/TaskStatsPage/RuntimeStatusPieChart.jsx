@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { PieChart, Pie, Sector, ResponsiveContainer } from 'recharts';
 import "react-circular-progressbar/dist/styles.css";
+import { Box, Typography } from '@material-ui/core';
 
 const renderActiveShape = (props) => {
   const RADIAN = Math.PI / 180;
@@ -69,24 +70,34 @@ const RuntimeStatusPieChart = ({taskId}) => {
     })();
 
   }, []);
-
+  
+  
+  let sum = 0;
+  for(let x of data){
+    sum += x.value;
+  }
   return (
-    <ResponsiveContainer width={600} height={400}>
-      <PieChart width={400}>
-        <Pie
-          activeIndex={activeIndex}
-          activeShape={renderActiveShape}
-          data={data}
-          cx="50%"
-          cy="50%"
-          innerRadius={100}
-          outerRadius={120}
-          fill="#8884d8"
-          dataKey="value"
-          onMouseEnter={onPieEnter}
-        />
-      </PieChart>
-    </ResponsiveContainer>
+    <>
+      {sum > 0 && <ResponsiveContainer width={600} height={400}>
+        <PieChart width={400}>
+          <Pie
+            activeIndex={activeIndex}
+            activeShape={renderActiveShape}
+            data={data}
+            cx="50%"
+            cy="50%"
+            innerRadius={100}
+            outerRadius={120}
+            fill="#8884d8"
+            dataKey="value"
+            onMouseEnter={onPieEnter}
+          />
+        </PieChart>
+      </ResponsiveContainer>}
+      {sum === 0 && <Box width={400} style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
+        <Typography variant='h5' style={{textAlign: "center"}}>No stats yet</Typography>
+      </Box>}
+    </>
   );
 
 }
