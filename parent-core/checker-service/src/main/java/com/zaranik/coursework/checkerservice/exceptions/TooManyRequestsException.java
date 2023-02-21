@@ -5,6 +5,6 @@ import lombok.Data;
 
 @Data
 public class TooManyRequestsException extends RuntimeException {
-  private final RateLimitDto rateLimitDto;
+  private transient final RateLimitDto rateLimitDto;
 
 }
